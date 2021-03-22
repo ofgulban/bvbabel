@@ -33,14 +33,14 @@ with open(FILE, 'rb') as reader:
     # coregistration routines as well as for proper visualization.
 
     # Expected binary data: unsigned short int (2 bytes)
-    value, = struct.unpack('<H', reader.read(2))
-    header["File version"] = value
-    value, = struct.unpack('<H', reader.read(2))
-    header["DimX"] = value
-    value, = struct.unpack('<H', reader.read(2))
-    header["DimY"] = value
-    value, = struct.unpack('<H', reader.read(2))
-    header["DimZ"] = value
+    data, = struct.unpack('<H', reader.read(2))
+    header["File version"] = data
+    data, = struct.unpack('<H', reader.read(2))
+    header["DimX"] = data
+    data, = struct.unpack('<H', reader.read(2))
+    header["DimY"] = data
+    data, = struct.unpack('<H', reader.read(2))
+    header["DimZ"] = data
 
     # -------------------------------------------------------------------------
     # VMR Data
@@ -86,65 +86,65 @@ with open(FILE, 'rb') as reader:
         # identical to file version "2".
 
         # Expected binary data: short int (2 bytes)
-        value, = struct.unpack('<h', reader.read(2))
-        header["X offset"] = value
-        value, = struct.unpack('<h', reader.read(2))
-        header["Y offset"] = value
-        value, = struct.unpack('<h', reader.read(2))
-        header["Z offset"] = value
-        value, = struct.unpack('<h', reader.read(2))
-        header["Framing cube dimensions"] = value
+        data, = struct.unpack('<h', reader.read(2))
+        header["X offset"] = data
+        data, = struct.unpack('<h', reader.read(2))
+        header["Y offset"] = data
+        data, = struct.unpack('<h', reader.read(2))
+        header["Z offset"] = data
+        data, = struct.unpack('<h', reader.read(2))
+        header["Framing cube dimensions"] = data
 
     # Expected binary data: int (4 bytes)
-    value, = struct.unpack('<i', reader.read(4))
-    header["PosInfosVerified"] = value
-    value, = struct.unpack('<i', reader.read(4))
-    header["Coordinate system"] = value
+    data, = struct.unpack('<i', reader.read(4))
+    header["PosInfosVerified"] = data
+    data, = struct.unpack('<i', reader.read(4))
+    header["Coordinate system"] = data
 
     # Expected binary data: float (4 bytes)
-    value, = struct.unpack('<f', reader.read(4))
-    header["First slice center X coordinate"] = value
-    value, = struct.unpack('<f', reader.read(4))
-    header["First slice center Y coordinate"] = value
-    value, = struct.unpack('<f', reader.read(4))
-    header["First slice center Z coordinate"] = value
-    value, = struct.unpack('<f', reader.read(4))
-    header["Last slice center X coordinate"] = value
-    value, = struct.unpack('<f', reader.read(4))
-    header["Last slice center Y coordinate"] = value
-    value, = struct.unpack('<f', reader.read(4))
-    header["Last slice center Z coordinate"] = value
-    header["Slice row direction vector of X component"] = value
-    value, = struct.unpack('<f', reader.read(4))
-    header["Slice row direction vector of Y component"] = value
-    value, = struct.unpack('<f', reader.read(4))
-    header["Slice row direction vector of Z component"] = value
-    value, = struct.unpack('<f', reader.read(4))
-    header["Slice column direction vector of X component"] = value
-    value, = struct.unpack('<f', reader.read(4))
-    header["Slice column direction vector of Y component"] = value
-    value, = struct.unpack('<f', reader.read(4))
-    header["Slice column direction vector of Z component"] = value
+    data, = struct.unpack('<f', reader.read(4))
+    header["First slice center X coordinate"] = data
+    data, = struct.unpack('<f', reader.read(4))
+    header["First slice center Y coordinate"] = data
+    data, = struct.unpack('<f', reader.read(4))
+    header["First slice center Z coordinate"] = data
+    data, = struct.unpack('<f', reader.read(4))
+    header["Last slice center X coordinate"] = data
+    data, = struct.unpack('<f', reader.read(4))
+    header["Last slice center Y coordinate"] = data
+    data, = struct.unpack('<f', reader.read(4))
+    header["Last slice center Z coordinate"] = data
+    header["Slice row direction vector of X component"] = data
+    data, = struct.unpack('<f', reader.read(4))
+    header["Slice row direction vector of Y component"] = data
+    data, = struct.unpack('<f', reader.read(4))
+    header["Slice row direction vector of Z component"] = data
+    data, = struct.unpack('<f', reader.read(4))
+    header["Slice column direction vector of X component"] = data
+    data, = struct.unpack('<f', reader.read(4))
+    header["Slice column direction vector of Y component"] = data
+    data, = struct.unpack('<f', reader.read(4))
+    header["Slice column direction vector of Z component"] = data
 
     # Expected binary data: int (4 bytes)
-    value, = struct.unpack('<i', reader.read(4))
-    header["Nr of rows of slice image matrix"] = value
-    value, = struct.unpack('<i', reader.read(4))
-    header["Nr of columns of slice image matrix"] = value
+    data, = struct.unpack('<i', reader.read(4))
+    header["Nr of rows of slice image matrix"] = data
+    data, = struct.unpack('<i', reader.read(4))
+    header["Nr of columns of slice image matrix"] = data
 
     # Expected binary data: float (4 bytes)
-    value, = struct.unpack('<f', reader.read(4))
-    header["Extent of field of view (FoV) in row direction [mm]"] = value
-    value, = struct.unpack('<f', reader.read(4))
-    header["Extent of field of view (FoV) in column direction [mm]"] = value
-    value, = struct.unpack('<f', reader.read(4))
-    header["Slice thickness in mm"] = value
-    value, = struct.unpack('<f', reader.read(4))
-    header["Gap thickness in mm"] = value
+    data, = struct.unpack('<f', reader.read(4))
+    header["Extent of field of view (FoV) in row direction [mm]"] = data
+    data, = struct.unpack('<f', reader.read(4))
+    header["Extent of field of view (FoV) in column direction [mm]"] = data
+    data, = struct.unpack('<f', reader.read(4))
+    header["Slice thickness in mm"] = data
+    data, = struct.unpack('<f', reader.read(4))
+    header["Gap thickness in mm"] = data
 
     # Expected binary data: int (4 bytes)
-    value, = struct.unpack('<i', reader.read(4))
-    header["NrOfPastSpatialTransformations"] = value
+    data, = struct.unpack('<i', reader.read(4))
+    header["NrOfPastSpatialTransformations"] = data
 
     if header["NrOfPastSpatialTransformations"] != 0:
         # NOTE(Developer Guide 2.6): For each past transformation, the
@@ -157,32 +157,32 @@ with open(FILE, 'rb') as reader:
         #   "5": Un-Talairach transformation
 
         # Expected binary data: char (1 byte)
-        value, = struct.unpack('<c', reader.read(1))
-        header["Left-right convention"] = value  # modified in v4
-        value, = struct.unpack('<c', reader.read(1))
-        header["Reference space flag"] = value  # new in v4
+        data, = struct.unpack('<c', reader.read(1))
+        header["Left-right convention"] = data  # modified in v4
+        data, = struct.unpack('<c', reader.read(1))
+        header["Reference space flag"] = data  # new in v4
 
         # Expected binary data: float (4 bytes)
-        value, = struct.unpack('<f', reader.read(4))
-        header["Voxel resolution along X axis"] = value
-        value, = struct.unpack('<f', reader.read(4))
-        header["Voxel resolution along Y axis"] = value
-        value, = struct.unpack('<f', reader.read(4))
-        header["Voxel resolution along Z axis"] = value
+        data, = struct.unpack('<f', reader.read(4))
+        header["Voxel resolution along X axis"] = data
+        data, = struct.unpack('<f', reader.read(4))
+        header["Voxel resolution along Y axis"] = data
+        data, = struct.unpack('<f', reader.read(4))
+        header["Voxel resolution along Z axis"] = data
 
         # Expected binary data: char (1 byte)
-        value, = struct.unpack('<c', reader.read(1))
-        header["Flag for voxel resolution verified"] = value
-        value, = struct.unpack('<c', reader.read(1))
-        header["Flag for Talairach space mm"] = value
+        data, = struct.unpack('<c', reader.read(1))
+        header["Flag for voxel resolution verified"] = data
+        data, = struct.unpack('<c', reader.read(1))
+        header["Flag for Talairach space mm"] = data
 
         # Expected binary data: int (4 bytes)
-        value, = struct.unpack('<i', reader.read(4))
-        header["Min intensity value in original 16-bit data"] = value
-        value, = struct.unpack('<i', reader.read(4))
-        header["Mean intensity value in original 16-bit data"] = value
-        value, = struct.unpack('<i', reader.read(4))
-        header["Max intensity value in original 16-bit data"] = value
+        data, = struct.unpack('<i', reader.read(4))
+        header["Min intensity value in original 16-bit data"] = data
+        data, = struct.unpack('<i', reader.read(4))
+        header["Mean intensity value in original 16-bit data"] = data
+        data, = struct.unpack('<i', reader.read(4))
+        header["Max intensity value in original 16-bit data"] = data
 
 # Print header information
 for key, value in header.items():
