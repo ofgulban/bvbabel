@@ -7,7 +7,7 @@ import nibabel as nb
 FILE = "/home/faruk/Documents/test_bvbabel/aseg_float_aligned.vmp"
 OUT_NII = "/home/faruk/Documents/test_bvbabel/aseg_float_aligned.nii.gz"
 
-s
+
 # =============================================================================
 def read_variable_length_string(reader):
     r"""Brainvoyager variable length strings terminate with b'\x00'."""
@@ -35,8 +35,9 @@ def read_float_array(reader, nr_floats):
         data, = struct.unpack('<f', reader.read(4))
         out_data[i] = data
     return out_data
-# =============================================================================
 
+
+# =============================================================================
 header = dict()
 with open(FILE, 'rb') as reader:
     # -------------------------------------------------------------------------
@@ -152,7 +153,7 @@ with open(FILE, 'rb') as reader:
         header["Map"][0]["ClusterSizeThreshold"] = data
 
         # Expected binary data: char (1 byte)
-        data, = struct.unpack('<c', reader.read(1))
+        data, = struct.unpack('<b', reader.read(1))
         header["Map"][0]["EnableClusterSizeThreshold"] = data
 
         # Expected binary data: int (4 bytes)
@@ -164,7 +165,7 @@ with open(FILE, 'rb') as reader:
         header["Map"][0]["DF2"] = data
 
         # Expected binary data: char (1 byte)
-        data, = struct.unpack('<c', reader.read(1))
+        data, = struct.unpack('<b', reader.read(1))
         header["Map"][0]["ShowPosNegValues"] = data
 
         # Expected binary data: int (4 bytes)
@@ -173,7 +174,18 @@ with open(FILE, 'rb') as reader:
         data, = struct.unpack('<i', reader.read(4))
         header["Map"][0]["SizeOfFDRTable"] = data
 
-        # Expected binary data: float (3 bytes) x SizeOfFDRTable
+        # Expected binary data: float (4 bytes) x SizeOfFDRTable x 3 (q, crit std, crit conservative)
+        # TODO: Check FDR Tables
+        temp = np.zeros((header["Map"][0]["SizeOfFDRTable"], 3))
+        for i in range(header["Map"][0]["SizeOfFDRTable"]):
+            for j in range(3):
+                data, = struct.unpack('<f', reader.read(4))
+                temp[i, j] = data
+        header["Map"][0]["FDRTableInfo"] = temp
+
+        # Expected binary data: int (4 bytes)
+        data, = struct.unpack('<i', reader.read(4))
+        header["Map"][0]["UseFDRTableIndex"] = data
 
 
 # Print header information
@@ -182,7 +194,7 @@ for key, value in header.items():
         for i, m in enumerate(value):
             print("Map index :", i)
             for map_key, map_value in m.items():
-                print("    ", map_key, ":", map_value)
+                print("  ", map_key, ":", map_value)
     else:
         print(key, ":", value)
 
