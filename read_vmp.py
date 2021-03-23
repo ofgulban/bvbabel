@@ -27,6 +27,15 @@ def read_RGB_bytes(reader):
     return RGB
 
 
+def read_float_array(reader, nr_floats):
+    r"""Read multiple floats into 1D numpy array."""
+    out_data = np.zeros(nr_floats, dtype=np.float)
+    for i in range(nr_floats):
+        data, = struct.unpack('<f', reader.read(4))
+        out_data[i] = data
+    return out_data
+
+
 header = dict()
 with open(FILE, 'rb') as reader:
     # -------------------------------------------------------------------------
@@ -162,6 +171,8 @@ with open(FILE, 'rb') as reader:
         header["Map"][0]["NrOfUsedVoxels"] = data
         data, = struct.unpack('<i', reader.read(4))
         header["Map"][0]["SizeOfFDRTable"] = data
+
+        # Expected binary data: float (3 bytes) x SizeOfFDRTable
 
 
 # Print header information
