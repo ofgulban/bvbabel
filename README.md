@@ -4,8 +4,8 @@ A lightweight read & write utility for BrainVoyager file formats. bvbabel is a s
 | File format | Read | Write |
 | ------------|------|-------|
 | [VMR](https://support.brainvoyager.com/brainvoyager/automation-development/84-file-formats/343-developer-guide-2-6-the-format-of-vmr-files)| Yes  | No    |
+| [VTC](https://support.brainvoyager.com/brainvoyager/automation-development/84-file-formats/348-users-guide-2-3-the-format-of-vtc-files)| Yes   | No    |
 | [VMP](https://support.brainvoyager.com/brainvoyager/automation-development/84-file-formats/353-users-guide-2-3-the-format-of-nr-vmp-files) | No   | No    |
-| [VTC](https://support.brainvoyager.com/brainvoyager/automation-development/84-file-formats/348-users-guide-2-3-the-format-of-vtc-files)| No   | No    |
 | [FMR](https://support.brainvoyager.com/brainvoyager/automation-development/84-file-formats/340-developer-guide-2-6-the-format-of-fmr-files) | No   | No    |
 
 ## Dependencies
