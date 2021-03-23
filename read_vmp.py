@@ -1,4 +1,4 @@
-"""Read BrainVoyager VMR file format."""
+"""Read BrainVoyager VMP file format."""
 
 import struct
 import numpy as np
@@ -7,6 +7,7 @@ import nibabel as nb
 FILE = "/home/faruk/Documents/test_bvbabel/aseg_float_aligned.vmp"
 OUT_NII = "/home/faruk/Documents/test_bvbabel/aseg_float_aligned.nii.gz"
 
+s
 # =============================================================================
 def read_variable_length_string(reader):
     r"""Brainvoyager variable length strings terminate with b'\x00'."""

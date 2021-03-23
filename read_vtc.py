@@ -1,4 +1,4 @@
-"""Read BrainVoyager VMR file format."""
+"""Read BrainVoyager VTC file format."""
 
 import struct
 import numpy as np
