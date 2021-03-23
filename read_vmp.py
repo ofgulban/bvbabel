@@ -7,7 +7,7 @@ import nibabel as nb
 FILE = "/home/faruk/Documents/test_bvbabel/aseg_float_aligned.vmp"
 OUT_NII = "/home/faruk/Documents/test_bvbabel/aseg_float_aligned.nii.gz"
 
-
+# =============================================================================
 def read_variable_length_string(reader):
     r"""Brainvoyager variable length strings terminate with b'\x00'."""
     text = ""
@@ -34,7 +34,7 @@ def read_float_array(reader, nr_floats):
         data, = struct.unpack('<f', reader.read(4))
         out_data[i] = data
     return out_data
-
+# =============================================================================
 
 header = dict()
 with open(FILE, 'rb') as reader:

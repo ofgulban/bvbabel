@@ -7,6 +7,7 @@ import nibabel as nb
 FILE = "/home/faruk/Documents/test_pybvio/T1.vmr"
 OUT_NII = "/home/faruk/Documents/test_pybvio/T1_test.nii.gz"
 
+# =============================================================================
 header = dict()
 with open(FILE, 'rb') as reader:
     # -------------------------------------------------------------------------
