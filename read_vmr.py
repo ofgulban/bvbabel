@@ -4,8 +4,8 @@ import struct
 import numpy as np
 import nibabel as nb
 
-FILE = "/home/faruk/Documents/test_bvbabel/T1.vmr"
-OUT_NII = "/home/faruk/Documents/test_bvbabel/T1_test.nii.gz"
+FILE = "/home/faruk/Documents/test_bvbabel/sub-01_ses-04_acq-nondistorted_T1w.vmr"
+OUT_NII = "/home/faruk/Documents/test_bvbabel/sub-01_ses-04_acq-nondistorted_T1w_bvbabel.nii.gz"
 
 # =============================================================================
 header = dict()
@@ -70,7 +70,7 @@ with open(FILE, 'rb') as reader:
     # data_img = np.transpose(data_img, (2, 0, 1))  # BV to Tal
 
     data_img = np.transpose(data_img, (0, 2, 1))  # BV to Tal
-    data_img = data_img[:, ::-1, ::-1]  # Flip BV axes
+    data_img = data_img[::-1, ::-1, ::-1]  # Flip BV axes
 
     # -------------------------------------------------------------------------
     # VMR Post-Data Header

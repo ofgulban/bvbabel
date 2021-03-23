@@ -112,7 +112,7 @@ with open(FILE, 'rb') as reader:
 
     data_img = np.reshape(data_img, (DimZ, DimY, DimX, DimT))
     data_img = np.transpose(data_img, (0, 2, 1, 3))  # BV to Tal
-    data_img = data_img[:, ::-1, ::-1, :]  # Flip BV axes
+    data_img = data_img[::-1, ::-1, ::-1, :]  # Flip BV axes
 
 # Print header information
 for key, value in header.items():
