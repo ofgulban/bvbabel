@@ -7,6 +7,7 @@ import nibabel as nb
 FILE = "/home/faruk/gdrive/test_bvbabel/S01_run1_sc.vtc"
 OUT_NII = "/home/faruk/Documents/test_bvbabel/S01_run1_sc.nii.gz"
 
+
 # =============================================================================
 def read_variable_length_string(reader):
     r"""Brainvoyager variable length strings terminate with b'\x00'."""
@@ -16,6 +17,7 @@ def read_variable_length_string(reader):
         text += data.decode("utf-8")
         data = reader.read(1)
     return text
+
 
 # =============================================================================
 header = dict()
@@ -48,7 +50,7 @@ with open(FILE, 'rb') as reader:
     data, = struct.unpack('<h', reader.read(2))
     header["Nr time points"] = data
     data, = struct.unpack('<h', reader.read(2))
-    header["Resolution relative to VMR (1, 2, or 3)"] = data
+    header["VTC resolution relative to VMR (1, 2, or 3)"] = data
 
     data, = struct.unpack('<h', reader.read(2))
     header["XStart"] = data
@@ -83,17 +85,41 @@ with open(FILE, 'rb') as reader:
     #       DimY
     #           DimX
     #               DimT
+    #
+    # The axes terminology follows the internal BrainVoyager (BV) format.
+    # The mapping to Talairach axes is as follows:
+    #   BV (X front -> back) [axis 2 after np.reshape] = Y in Tal space
+    #   BV (Y top -> bottom) [axis 1 after np.reshape] = Z in Tal space
+    #   BV (Z left -> right) [axis 0 after np.reshape] = X in Tal space
 
-    # data = np.zeros((header["DimX"] * header["DimY"] * header["DimZ"]))
-    # for i in range(data.size):
-    #     data[i], = struct.unpack('<B', reader.read(1))
-    # data = data.reshape((header["DimX"], header["DimY"], header["DimZ"]))
+    # Prepare dimensions of VTC data array
+    VTC_resolution = header["VTC resolution relative to VMR (1, 2, or 3)"]
+    DimX = (header["XEnd"] - header["XStart"]) // VTC_resolution
+    DimY = (header["YEnd"] - header["YStart"]) // VTC_resolution
+    DimZ = (header["ZEnd"] - header["ZStart"]) // VTC_resolution
+    DimT = header["Nr time points"]
 
+    data_img = np.zeros(DimZ * DimY * DimX * DimT)
+
+    if header["Data type of stored values (1:short int, 2:float)"] == 1:
+        for i in range(data_img.size):
+            data_img[i], = struct.unpack('<h', reader.read(2))
+    elif header["Data type of stored values (1:short int, 2:float)"] == 2:
+        for i in range(data_img.size):
+            data_img[i], = struct.unpack('<f', reader.read(4))
+    else:
+        raise("Unrecognized VTC data_img type.")
+
+    data_img = np.reshape(data_img, (DimZ, DimY, DimX, DimT))
+    data_img = np.transpose(data_img, (0, 2, 1, 3))  # BV to Tal
+    data_img = data_img[:, ::-1, ::-1, :]  # Flip BV axes
 
 # Print header information
 for key, value in header.items():
     print(key, ":", value)
 
-# # Test output data
-# img_nii = nb.Nifti1Image(data, affine=np.eye(4))
-# nb.save(img_nii, OUT_NII)
+# Test output data
+img_nii = nb.Nifti1Image(data_img, affine=np.eye(4))
+nb.save(img_nii, OUT_NII)
+
+print("Finished.")

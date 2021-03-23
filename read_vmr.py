@@ -4,8 +4,8 @@ import struct
 import numpy as np
 import nibabel as nb
 
-FILE = "/home/faruk/Documents/test_pybvio/T1.vmr"
-OUT_NII = "/home/faruk/Documents/test_pybvio/T1_test.nii.gz"
+FILE = "/home/faruk/Documents/test_bvbabel/T1.vmr"
+OUT_NII = "/home/faruk/Documents/test_bvbabel/T1_test.nii.gz"
 
 # =============================================================================
 header = dict()
@@ -49,19 +49,28 @@ with open(FILE, 'rb') as reader:
     # NOTE(Developer Guide 2.6): Each data element (intensity value) is
     # represented in 1 byte. The data is organized in three loops:
     #   DimZ
-    #   DimY
-    #   DimX
+    #       DimY
+    #           DimX
+    #
     # The axes terminology follows the internal BrainVoyager (BV) format.
     # The mapping to Talairach axes is as follows:
-    #   BV X front -> back = Y in Tal space
-    #   BV Y top -> bottom = Z in Tal space
-    #   BV Z left -> right = X in Tal space
+    #   BV (X front -> back) [axis 2 after np.reshape] = Y in Tal space
+    #   BV (Y top -> bottom) [axis 1 after np.reshape] = Z in Tal space
+    #   BV (Z left -> right) [axis 0 after np.reshape] = X in Tal space
 
     # Expected binary data: unsigned char (1 byte)
-    data = np.zeros((header["DimX"] * header["DimY"] * header["DimZ"]))
-    for i in range(data.size):
-        data[i], = struct.unpack('<B', reader.read(1))
-    data = data.reshape((header["DimX"], header["DimY"], header["DimZ"]))
+    data_img = np.zeros((header["DimZ"] * header["DimY"] * header["DimX"]))
+    for i in range(data_img.size):
+        data_img[i], = struct.unpack('<B', reader.read(1))
+    data_img = np.reshape(
+        data_img, (header["DimZ"], header["DimY"], header["DimX"]))
+
+    # Convert BV axes to standard nifti (Tal) axes
+    # data_img = np.transpose(data_img, (2, 1, 0))  # invert axes
+    # data_img = np.transpose(data_img, (2, 0, 1))  # BV to Tal
+
+    data_img = np.transpose(data_img, (0, 2, 1))  # BV to Tal
+    data_img = data_img[:, ::-1, ::-1]  # Flip BV axes
 
     # -------------------------------------------------------------------------
     # VMR Post-Data Header
@@ -190,5 +199,7 @@ for key, value in header.items():
     print(key, ":", value)
 
 # Test output data
-img_nii = nb.Nifti1Image(data, affine=np.eye(4))
+img_nii = nb.Nifti1Image(data_img, affine=np.eye(4))
 nb.save(img_nii, OUT_NII)
+
+print("Finished.")
