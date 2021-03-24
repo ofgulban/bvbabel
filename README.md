@@ -1,12 +1,23 @@
 # bvbabel
-A lightweight read & write utility for BrainVoyager file formats. bvbabel is a spiritual successor of [Neuroelf](https://neuroelf.net/)'s xff function and the currently unmerged Nibabel BrainVoyager I/O [pull request](https://github.com/nipy/nibabel/pull/216).
+A lightweight Python library for reading & writing [BrainVoyager](https://www.brainvoyager.com/products/brainvoyager.html) file formats.
 
-| File format | Read | Write |
-| ------------|------|-------|
-| [VMR](https://support.brainvoyager.com/brainvoyager/automation-development/84-file-formats/343-developer-guide-2-6-the-format-of-vmr-files)| Yes  | No    |
-| [VTC](https://support.brainvoyager.com/brainvoyager/automation-development/84-file-formats/348-users-guide-2-3-the-format-of-vtc-files)| Yes   | No    |
-| [VMP](https://support.brainvoyager.com/brainvoyager/automation-development/84-file-formats/353-users-guide-2-3-the-format-of-nr-vmp-files) | No   | No    |
-| [FMR](https://support.brainvoyager.com/brainvoyager/automation-development/84-file-formats/340-developer-guide-2-6-the-format-of-fmr-files) | No   | No    |
+`bvbabel` is a spiritual successor of [Neuroelf](https://neuroelf.net/)'s `xff` function and the currently unmerged Nibabel BrainVoyager I/O [pull request](https://github.com/nipy/nibabel/pull/216).
+
+
+### File format support overview
+
+| File format | Read | Write | Priority |
+| ------------|------|-------|----------|
+| VMR         | Yes  | No    | High     |
+| VTC         | Yes  | No    | High     |
+| VMP         | Yes  | No    | High     |
+| SRF         | No   | No    | High     |
+| SMP         | No   | No    | High     |
+| FMR & STC   | No   | No    | Medium   |
+| VOI         | No   | No    | Low      |
+| POI         | No   | No    | Low      |
+| MTC         | No   | No    | Low      |
+| GLM         | No   | No    | Low      |
 
 ## Dependencies
 
@@ -14,9 +25,6 @@ A lightweight read & write utility for BrainVoyager file formats. bvbabel is a s
 |---------------------------------------|----------------|
 | [Python 3](https://www.python.org/)   | 3.7.8          |
 | [NumPy](http://www.numpy.org/)        | 1.17.2         |
-| [Nibabel*](https://nipy.org/nibabel/) | 2.2.1          |
-
-*Nibabel is only needed for nifti exports.
 
 ## BrainVoyager documentation
 
@@ -25,7 +33,7 @@ A lightweight read & write utility for BrainVoyager file formats. bvbabel is a s
 - [File format categories](https://support.brainvoyager.com/brainvoyager/automation-development/84-file-formats/41-file-formats-categorised)
 
 ## License
-This project is licensed under MIT.
+This project is licensed under [MIT](./LICENSE).
 
 ## Acknowledgments
 Development and maintenance of this project is actively supported by [Brain Innovation](https://www.brainvoyager.com/) as the main developer ([Omer Faruk Gulban](https://github.com/ofgulban)) works there.
