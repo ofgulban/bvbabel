@@ -1,7 +1,7 @@
 # bvbabel
 A lightweight Python library for reading & writing [BrainVoyager](https://www.brainvoyager.com/products/brainvoyager.html) file formats.
 
-`bvbabel` is a spiritual successor of [Neuroelf](https://neuroelf.net/)'s `xff` function and the currently unmerged Nibabel BrainVoyager I/O [pull request](https://github.com/nipy/nibabel/pull/216).
+`bvbabel` is a spiritual successor of Jochen Weber's [Neuroelf](https://neuroelf.net/)'s `xff` function and Thomas Emmerling's currently unmerged Nibabel [pull request](https://github.com/nipy/nibabel/pull/216). I have been inspired by these earlier projects, but ended up deciding to implement from scratch based on [BrainVoyager file formats documentation](https://support.brainvoyager.com/brainvoyager/automation-development/84-file-formats).
 
 
 ### File format support overview
