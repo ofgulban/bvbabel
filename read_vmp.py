@@ -56,7 +56,7 @@ with open(FILE, 'rb') as reader:
 
     # Expected binary data: int (4 bytes)
     data, = struct.unpack('<i', reader.read(4))
-    header["NrOfSubMaps"] = data
+    header["NrOfSubMaps"] = data  # number of sub-maps/component maps
     data, = struct.unpack('<i', reader.read(4))
     header["NrOfTimePoints"] = data
     data, = struct.unpack('<i', reader.read(4))
@@ -100,6 +100,7 @@ with open(FILE, 'rb') as reader:
     data = read_variable_length_string(reader)
     header["NameOfVOIFile"] = data
 
+    # Store each map as a dictionary element of a list
     header["Map"] = []
     for i in range(header["NrOfSubMaps"]):
         header["Map"].append(dict())
@@ -174,7 +175,8 @@ with open(FILE, 'rb') as reader:
         data, = struct.unpack('<i', reader.read(4))
         header["Map"][0]["SizeOfFDRTable"] = data
 
-        # Expected binary data: float (4 bytes) x SizeOfFDRTable x 3 (q, crit std, crit conservative)
+        # Expected binary data: float (4 bytes) x SizeOfFDRTable x 3
+        # (q, crit std, crit conservative)
         # TODO: Check FDR Tables
         temp = np.zeros((header["Map"][0]["SizeOfFDRTable"], 3))
         for i in range(header["Map"][0]["SizeOfFDRTable"]):
@@ -186,6 +188,26 @@ with open(FILE, 'rb') as reader:
         # Expected binary data: int (4 bytes)
         data, = struct.unpack('<i', reader.read(4))
         header["Map"][0]["UseFDRTableIndex"] = data
+
+        # Time course values associated with component "c"
+        # NOTE(Faruk): I dont really understand the use-case of this. I need an
+        # example VMP that has this field to test it.
+        header["ComponentTimeCourseValues"] = []
+        if header["NrOfTimePoints"] > 0:
+            for i in range(header["NrOfSubMaps"]):
+                data = np.zeros(header["NrOfTimePoints"])
+                for j in range(header["NrOfTimePoints"]):
+                    data[j], = struct.unpack('<f', reader.read(4))
+                header["ComponentTimeCourseValues"].append(data)
+
+        # Component parameters
+        if header["NrOfComponentParams"] > 0:
+            header["ComponentTimeCourseParams"] = []
+            for i in range(header["NrOfComponentParams"]):
+                data = read_variable_length_string(reader)
+                header["NameOfParam"] = data
+                # for j in range(header["NrOfSubMaps"]):
+                #     header["ComponentParamValues"]
 
 
 # Print header information
