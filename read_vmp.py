@@ -4,8 +4,8 @@ import struct
 import numpy as np
 import nibabel as nb
 
-FILE = "/home/faruk/Documents/test_bvbabel/aseg_float_aligned.vmp"
-OUT_NII = "/home/faruk/Documents/test_bvbabel/aseg_float_aligned_bvbabel.nii.gz"
+FILE = "/home/faruk/Documents/test_bvbabel/sub-01_ses-01_RightHand.vmp"
+OUT_NII = "/home/faruk/Documents/test_bvbabel/sub-01_ses-01_RightHand_bvbabel.nii.gz"
 
 
 # =============================================================================
@@ -102,92 +102,93 @@ with open(FILE, 'rb') as reader:
 
     # Store each map as a dictionary element of a list
     header["Map"] = []
-    for i in range(header["NrOfSubMaps"]):
+    for m in range(header["NrOfSubMaps"]):
         header["Map"].append(dict())
 
         # Expected binary data: int (4 bytes)
         data, = struct.unpack('<i', reader.read(4))
-        header["Map"][0]["TypeOfMap"] = data
+        header["Map"][m]["TypeOfMap"] = data
 
         # Expected binary data: float (4 bytes)
         data, = struct.unpack('<f', reader.read(4))
-        header["Map"][0]["MapThreshold"] = data
+        header["Map"][m]["MapThreshold"] = data
         data, = struct.unpack('<f', reader.read(4))
-        header["Map"][0]["UpperThreshold"] = data
+        header["Map"][m]["UpperThreshold"] = data
 
         # Expected binary data: variable-length string
         data = read_variable_length_string(reader)
-        header["Map"][0]["MapName"] = data
+        header["Map"][m]["MapName"] = data
 
         # Expected binary data: char (1 byte) x 3
         data = read_RGB_bytes(reader)
-        header["Map"][0]["RGB positive min"] = data
+        header["Map"][m]["RGB positive min"] = data
         data = read_RGB_bytes(reader)
-        header["Map"][0]["RGB positive max"] = data
+        header["Map"][m]["RGB positive max"] = data
         data = read_RGB_bytes(reader)
-        header["Map"][0]["RGB negative min"] = data
+        header["Map"][m]["RGB negative min"] = data
         data = read_RGB_bytes(reader)
-        header["Map"][0]["RGB negative max"] = data
+        header["Map"][m]["RGB negative max"] = data
 
         # Expected binary data: char (1 byte)
         data, = struct.unpack('<B', reader.read(1))
-        header["Map"][0]["UseVMPColor"] = data
+        header["Map"][m]["UseVMPColor"] = data
 
         # Expected binary data: variable-length string
         data = read_variable_length_string(reader)
-        header["Map"][0]["LUTFileName"] = data
+        header["Map"][m]["LUTFileName"] = data
 
         # Expected binary data: float (4 bytes)
         data, = struct.unpack('<f', reader.read(4))
-        header["Map"][0]["TransparentColorFactor"] = data
+        header["Map"][m]["TransparentColorFactor"] = data
 
         # Expected binary data: int (4 bytes)
+        if header["Map"][m]["TypeOfMap"] == 3:  # cross-correlation values
+            data, = struct.unpack('<i', reader.read(4))
+            header["Map"][m]["NrOfLags"] = data
+            data, = struct.unpack('<i', reader.read(4))
+            header["Map"][m]["DisplayMinLag"] = data
+            data, = struct.unpack('<i', reader.read(4))
+            header["Map"][m]["DisplayMaxLag"] = data
+            data, = struct.unpack('<i', reader.read(4))
+            header["Map"][m]["ShowCorrelationOrLag"] = data
         data, = struct.unpack('<i', reader.read(4))
-        header["Map"][0]["TransparentColorFactor"] = data
-        data, = struct.unpack('<i', reader.read(4))
-        header["Map"][0]["DisplayMinLag"] = data
-        data, = struct.unpack('<i', reader.read(4))
-        header["Map"][0]["DisplayMaxLag"] = data
-        data, = struct.unpack('<i', reader.read(4))
-        header["Map"][0]["ShowCorrelationOrLag"] = data
-        data, = struct.unpack('<i', reader.read(4))
-        header["Map"][0]["ClusterSizeThreshold"] = data
+        header["Map"][m]["ClusterSizeThreshold"] = data
 
         # Expected binary data: char (1 byte)
         data, = struct.unpack('<b', reader.read(1))
-        header["Map"][0]["EnableClusterSizeThreshold"] = data
+        header["Map"][m]["EnableClusterSizeThreshold"] = data
 
         # Expected binary data: int (4 bytes)
         data, = struct.unpack('<i', reader.read(4))
-        header["Map"][0]["ShowValuesAboveUpperThreshold"] = data
+        header["Map"][m]["ShowValuesAboveUpperThreshold"] = data
         data, = struct.unpack('<i', reader.read(4))
-        header["Map"][0]["DF1"] = data
+        header["Map"][m]["DF1"] = data
         data, = struct.unpack('<i', reader.read(4))
-        header["Map"][0]["DF2"] = data
+        header["Map"][m]["DF2"] = data
 
         # Expected binary data: char (1 byte)
         data, = struct.unpack('<b', reader.read(1))
-        header["Map"][0]["ShowPosNegValues"] = data
+        header["Map"][m]["ShowPosNegValues"] = data
 
         # Expected binary data: int (4 bytes)
         data, = struct.unpack('<i', reader.read(4))
-        header["Map"][0]["NrOfUsedVoxels"] = data
+        header["Map"][m]["NrOfUsedVoxels"] = data
         data, = struct.unpack('<i', reader.read(4))
-        header["Map"][0]["SizeOfFDRTable"] = data
+        header["Map"][m]["SizeOfFDRTable"] = data
 
         # Expected binary data: float (4 bytes) x SizeOfFDRTable x 3
         # (q, crit std, crit conservative)
         # TODO: Check FDR Tables
-        temp = np.zeros((header["Map"][0]["SizeOfFDRTable"], 3))
-        for i in range(header["Map"][0]["SizeOfFDRTable"]):
+        temp = np.zeros((header["Map"][m]["SizeOfFDRTable"], 3))
+        for i in range(header["Map"][m]["SizeOfFDRTable"]):
             for j in range(3):
                 data, = struct.unpack('<f', reader.read(4))
                 temp[i, j] = data
-        header["Map"][0]["FDRTableInfo"] = temp
+        header["Map"][m]["FDRTableInfo"] = temp
 
         # Expected binary data: int (4 bytes)
         data, = struct.unpack('<i', reader.read(4))
-        header["Map"][0]["UseFDRTableIndex"] = data
+        header["Map"][m]["UseFDRTableIndex"] = data
 
         # Time course values associated with component "c"
         # NOTE(Faruk): I dont really understand the use-case of this. I need an
@@ -213,18 +214,30 @@ with open(FILE, 'rb') as reader:
     # -------------------------------------------------------------------------
     # Read VMP image data
     # -------------------------------------------------------------------------
-    # NOTE(Faruk): I think the VMP data is separated into is own header + image
-    # structre. Therefore, I might need to handle this within component loops
+    # NOTE(Users Guide 2.3): A NR-VMP file contains DimN = NrOfSubMaps 3D data
+    # sets. Each data set contains a 3D representation of a (statistical)
+    # entity. Each data element (single value) is represented in float format
+    # (4 bytes per value). The data is organized in four loops:
+    #   DimN (NrOfComponents)
+    #       DimZ
+    #           DimY
+    #               DimX
+    #
+    # The axes terminology follows the internal BrainVoyager (BV) format.
+    # The mapping to Talairach axes is as follows:
+    #   BV (X front -> back) [axis 2 after np.reshape] = Y in Tal space
+    #   BV (Y top -> bottom) [axis 1 after np.reshape] = Z in Tal space
+    #   BV (Z left -> right) [axis 0 after np.reshape] = X in Tal space
     VMP_resolution = header["Resolution"]
     DimX = (header["XEnd"] - header["XStart"]) // VMP_resolution
     DimY = (header["YEnd"] - header["YStart"]) // VMP_resolution
     DimZ = (header["ZEnd"] - header["ZStart"]) // VMP_resolution
     DimT = header["NrOfSubMaps"]
-    data_img = np.zeros(DimZ * DimY * DimX * DimT)
+    data_img = np.zeros(DimT * DimZ * DimY * DimX)
     for i in range(data_img.size):
         data_img[i], = struct.unpack('<f', reader.read(4))
-    data_img = np.reshape(data_img, (DimZ, DimY, DimX, DimT))
-    data_img = np.transpose(data_img, (0, 2, 1, 3))  # BV to Tal
+    data_img = np.reshape(data_img, (DimT, DimZ, DimY, DimX))
+    data_img = np.transpose(data_img, (1, 3, 2, 0))  # BV to Tal
     data_img = data_img[::-1, ::-1, ::-1, :]  # Flip BV axes
 
 # Print header information
