@@ -3,6 +3,11 @@ import struct
 import numpy as np
 
 
+def check_extension():
+    """Check whether the file extension is proper before reading any bytes."""
+    print("TODO")
+
+
 def read_variable_length_string(f):
     r"""Brainvoyager variable length strings terminate with b'\x00'."""
     text = ""
