@@ -73,15 +73,12 @@ def read_vmr(filename):
         #   BV (Z left -> right) [axis 0 after np.reshape] = X in Tal space
 
         # Expected binary data: unsigned char (1 byte)
-        data_img = np.zeros((header["DimZ"] * header["DimY"] * header["DimX"]))
+        data_img = np.zeros((header["DimZ"] * header["DimY"] * header["DimX"]),
+                            dtype="<B")
         for i in range(data_img.size):
             data_img[i], = struct.unpack('<B', f.read(1))
         data_img = np.reshape(
             data_img, (header["DimZ"], header["DimY"], header["DimX"]))
-
-        # Convert BV axes to standard nifti (Tal) axes
-        # data_img = np.transpose(data_img, (2, 1, 0))  # invert axes
-        # data_img = np.transpose(data_img, (2, 0, 1))  # BV to Tal
 
         data_img = np.transpose(data_img, (0, 2, 1))  # BV to Tal
         data_img = data_img[::-1, ::-1, ::-1]  # Flip BV axes
@@ -139,6 +136,7 @@ def read_vmr(filename):
         header["Last slice center Y coordinate"] = data
         data, = struct.unpack('<f', f.read(4))
         header["Last slice center Z coordinate"] = data
+        data, = struct.unpack('<f', f.read(4))
         header["Slice row direction vector of X component"] = data
         data, = struct.unpack('<f', f.read(4))
         header["Slice row direction vector of Y component"] = data
@@ -180,33 +178,173 @@ def read_vmr(filename):
             #   "2": Affine transformation (4x4 matrix)
             #   "4": Talairach transformation
             #   "5": Un-Talairach transformation
+            pass
 
-            # Expected binary data: char (1 byte)
-            data, = struct.unpack('<c', f.read(1))
-            header["Left-right convention"] = data  # modified in v4
-            data, = struct.unpack('<c', f.read(1))
-            header["Reference space flag"] = data  # new in v4
+        # Expected binary data: char (1 byte)
+        data, = struct.unpack('<B', f.read(1))
+        header["Left-right convention"] = data  # modified in v4
+        data, = struct.unpack('<B', f.read(1))
+        header["Reference space flag"] = data  # new in v4
 
-            # Expected binary data: float (4 bytes)
-            data, = struct.unpack('<f', f.read(4))
-            header["Voxel resolution along X axis"] = data
-            data, = struct.unpack('<f', f.read(4))
-            header["Voxel resolution along Y axis"] = data
-            data, = struct.unpack('<f', f.read(4))
-            header["Voxel resolution along Z axis"] = data
+        # Expected binary data: float (4 bytes)
+        data, = struct.unpack('<f', f.read(4))
+        header["Voxel resolution along X axis"] = data
+        data, = struct.unpack('<f', f.read(4))
+        header["Voxel resolution along Y axis"] = data
+        data, = struct.unpack('<f', f.read(4))
+        header["Voxel resolution along Z axis"] = data
 
-            # Expected binary data: char (1 byte)
-            data, = struct.unpack('<c', f.read(1))
-            header["Flag for voxel resolution verified"] = data
-            data, = struct.unpack('<c', f.read(1))
-            header["Flag for Talairach space mm"] = data
+        # Expected binary data: char (1 byte)
+        data, = struct.unpack('<B', f.read(1))
+        header["Flag for voxel resolution verified"] = data
+        data, = struct.unpack('<B', f.read(1))
+        header["Flag for Talairach space mm"] = data
 
-            # Expected binary data: int (4 bytes)
-            data, = struct.unpack('<i', f.read(4))
-            header["Min intensity value in original 16-bit data"] = data
-            data, = struct.unpack('<i', f.read(4))
-            header["Mean intensity value in original 16-bit data"] = data
-            data, = struct.unpack('<i', f.read(4))
-            header["Max intensity value in original 16-bit data"] = data
+        # Expected binary data: int (4 bytes)
+        data, = struct.unpack('<i', f.read(4))
+        header["Min intensity value in original 16-bit data"] = data
+        data, = struct.unpack('<i', f.read(4))
+        header["Mean intensity value in original 16-bit data"] = data
+        data, = struct.unpack('<i', f.read(4))
+        header["Max intensity value in original 16-bit data"] = data
 
     return header, data_img
+
+
+def write_vmr(header, data_img, filename):
+    """Write Brainvoyager VMR file.
+
+    Parameters
+    ----------
+    header : dictionary
+        Header of VMR file.
+    data_img : numpy.array, 3D
+        Image.
+    filename : string
+        Output filename.
+
+    """
+    with open(filename, 'wb') as f:
+        # ---------------------------------------------------------------------
+        # VMR Pre-Data Header
+        # ---------------------------------------------------------------------
+        # Expected binary data: unsigned short int (2 bytes)
+        data = header["File version"]
+        f.write(struct.pack('<H', data))
+        data = header["DimX"]
+        f.write(struct.pack('<H', data))
+        data = header["DimY"]
+        f.write(struct.pack('<H', data))
+        data = header["DimZ"]
+        f.write(struct.pack('<H', data))
+
+        # ---------------------------------------------------------------------
+        # VMR Data
+        # ---------------------------------------------------------------------
+        # Convert axes from Nifti standard back to BV standard
+        data_img = data_img[::-1, ::-1, ::-1]  # Flip BV axes
+        data_img = np.transpose(data_img, (0, 2, 1))  # BV to Tal
+
+        # Expected binary data: unsigned char (1 byte)
+        data_img = data_img.flatten()
+        for i in range(data_img.size):
+            f.write(struct.pack('<B', data_img[i]))
+
+        # ---------------------------------------------------------------------
+        # VMR Post-Data Header
+        # ---------------------------------------------------------------------
+        if header["File version"] >= 3:
+            # Expected binary data: short int (2 bytes)
+            data = header["X offset"]
+            f.write(struct.pack('<h', data))
+            data = header["Y offset"]
+            f.write(struct.pack('<h', data))
+            data = header["Z offset"]
+            f.write(struct.pack('<h', data))
+            data = header["Framing cube dimensions"]
+            f.write(struct.pack('<h', data))
+
+        # Expected binary data: int (4 bytes)
+        data = header["PosInfosVerified"]
+        f.write(struct.pack('<i', data))
+        data = header["Coordinate system"]
+        f.write(struct.pack('<i', data))
+
+        # Expected binary data: float (4 bytes)
+        data = header["First slice center X coordinate"]
+        f.write(struct.pack('<f', data))
+        data = header["First slice center Y coordinate"]
+        f.write(struct.pack('<f', data))
+        data = header["First slice center Z coordinate"]
+        f.write(struct.pack('<f', data))
+        data = header["Last slice center X coordinate"]
+        f.write(struct.pack('<f', data))
+        data = header["Last slice center Y coordinate"]
+        f.write(struct.pack('<f', data))
+        data = header["Last slice center Z coordinate"]
+        f.write(struct.pack('<f', data))
+        data = header["Slice row direction vector of X component"]
+        f.write(struct.pack('<f', data))
+        data = header["Slice row direction vector of Y component"]
+        f.write(struct.pack('<f', data))
+        data = header["Slice row direction vector of Z component"]
+        f.write(struct.pack('<f', data))
+        data = header["Slice column direction vector of X component"]
+        f.write(struct.pack('<f', data))
+        data = header["Slice column direction vector of Y component"]
+        f.write(struct.pack('<f', data))
+        data = header["Slice column direction vector of Z component"]
+        f.write(struct.pack('<f', data))
+
+        # Expected binary data: int (4 bytes)
+        data = header["Nr of rows of slice image matrix"]
+        f.write(struct.pack('<i', data))
+        data = header["Nr of columns of slice image matrix"]
+        f.write(struct.pack('<i', data))
+
+        # Expected binary data: float (4 bytes)
+        data = header["Extent of field of view (FoV) in row direction [mm]"]
+        f.write(struct.pack('<f', data))
+        data = header["Extent of field of view (FoV) in column direction [mm]"]
+        f.write(struct.pack('<f', data))
+        data = header["Slice thickness in mm"]
+        f.write(struct.pack('<f', data))
+        data = header["Gap thickness in mm"]
+        f.write(struct.pack('<f', data))
+
+        # Expected binary data: int (4 bytes)
+        data = header["NrOfPastSpatialTransformations"]
+        f.write(struct.pack('<i', data))
+
+        if header["NrOfPastSpatialTransformations"] != 0:
+            pass
+
+        # Expected binary data: char (1 byte)
+        data = header["Left-right convention"]
+        f.write(struct.pack('<B', data))
+        data = header["Reference space flag"]
+        f.write(struct.pack('<B', data))
+
+        # Expected binary data: float (4 bytes)
+        data = header["Voxel resolution along X axis"]
+        f.write(struct.pack('<f', data))
+        data = header["Voxel resolution along Y axis"]
+        f.write(struct.pack('<f', data))
+        data = header["Voxel resolution along Z axis"]
+        f.write(struct.pack('<f', data))
+
+        # Expected binary data: char (1 byte)
+        data = header["Flag for voxel resolution verified"]
+        f.write(struct.pack('<B', data))
+        data = header["Flag for Talairach space mm"]
+        f.write(struct.pack('<B', data))
+
+        # Expected binary data: int (4 bytes)
+        data = header["Min intensity value in original 16-bit data"]
+        f.write(struct.pack('<i', data))
+        data = header["Mean intensity value in original 16-bit data"]
+        f.write(struct.pack('<i', data))
+        data = header["Max intensity value in original 16-bit data"]
+        f.write(struct.pack('<i', data))
+
+    return print("VMR saved.")
