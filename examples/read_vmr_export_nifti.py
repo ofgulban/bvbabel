@@ -4,15 +4,15 @@ import os
 import numpy as np
 import nibabel as nb
 import bvbabel
+import pprint
 
-FILE = "/home/faruk/Documents/test_bvbabel/T1.vmr"
+FILE = "/home/faruk/Documents/test_bvbabel/derivatives/T1_int16.vmr"
 
 # Load vmr
 header, data = bvbabel.vmr.read_vmr(FILE)
 
-# Print header nicely
-for key, value in header.items():
-    print(key, ":", value)
+# See header information
+pprint.pprint(header)
 
 # Export nifti
 basename = FILE.split(os.extsep, 1)[0]
