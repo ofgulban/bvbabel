@@ -21,5 +21,4 @@ header2, data_img2 = bvbabel.vmr.read_vmr(OUT)
 for key, value in header2.items():
     print(key, ":", value)
 
-
 print("Finished.")
