@@ -160,7 +160,7 @@ def read_vmr(filename):
         data, = struct.unpack('<f', f.read(4))
         header["FoVRows"] = data  # Field of view extent in row direction [mm]
         data, = struct.unpack('<f', f.read(4))
-        header["FoVCols"] = data  # Field of view extent in column direction [mm]
+        header["FoVCols"] = data  # Field of view extent in column dir. [mm]
         data, = struct.unpack('<f', f.read(4))
         header["SliceThickness"] = data  # Slice thickness [mm]
         data, = struct.unpack('<f', f.read(4))
@@ -201,7 +201,6 @@ def read_vmr(filename):
 
                 # Store transformation values as a list
                 trans_values = []
-                print(header["PastTransformation"][i]["NrOfValues"])
                 for j in range(header["PastTransformation"][i]["NrOfValues"]):
                     # Expected binary data: float (4 bytes)
                     data, = struct.unpack('<f', f.read(4))
@@ -230,11 +229,11 @@ def read_vmr(filename):
 
         # Expected binary data: int (4 bytes)
         data, = struct.unpack('<i', f.read(4))
-        header["Min intensity value in original 16-bit data"] = data
+        header["VMROrigV16MinValue"] = data  # 16-bit data min intensity
         data, = struct.unpack('<i', f.read(4))
-        header["Mean intensity value in original 16-bit data"] = data
+        header["VMROrigV16MeanValue"] = data  # 16-bit data mean intensity
         data, = struct.unpack('<i', f.read(4))
-        header["Max intensity value in original 16-bit data"] = data
+        header["VMROrigV16MaxValue"] = data  # 16-bit data max intensity
 
     return header, data_img
 
@@ -283,61 +282,61 @@ def write_vmr(header, data_img, filename):
         # ---------------------------------------------------------------------
         if header["File version"] >= 3:
             # Expected binary data: short int (2 bytes)
-            data = header["X offset"]
+            data = header["OffsetX"]
             f.write(struct.pack('<h', data))
-            data = header["Y offset"]
+            data = header["OffsetY"]
             f.write(struct.pack('<h', data))
-            data = header["Z offset"]
+            data = header["OffsetZ"]
             f.write(struct.pack('<h', data))
-            data = header["Framing cube dimensions"]
+            data = header["FramingCubeDim"]
             f.write(struct.pack('<h', data))
 
         # Expected binary data: int (4 bytes)
         data = header["PosInfosVerified"]
         f.write(struct.pack('<i', data))
-        data = header["Coordinate system"]
+        data = header["CoordinateSystem"]
         f.write(struct.pack('<i', data))
 
         # Expected binary data: float (4 bytes)
-        data = header["First slice center X coordinate"]
+        data = header["Slice1CenterX"]
         f.write(struct.pack('<f', data))
-        data = header["First slice center Y coordinate"]
+        data = header["Slice1CenterY"]
         f.write(struct.pack('<f', data))
-        data = header["First slice center Z coordinate"]
+        data = header["Slice1CenterZ"]
         f.write(struct.pack('<f', data))
-        data = header["Last slice center X coordinate"]
+        data = header["SliceNCenterX"]
         f.write(struct.pack('<f', data))
-        data = header["Last slice center Y coordinate"]
+        data = header["SliceNCenterY"]
         f.write(struct.pack('<f', data))
-        data = header["Last slice center Z coordinate"]
+        data = header["SliceNCenterZ"]
         f.write(struct.pack('<f', data))
-        data = header["Slice row direction vector of X component"]
+        data = header["RowDirX"]
         f.write(struct.pack('<f', data))
-        data = header["Slice row direction vector of Y component"]
+        data = header["RowDirY"]
         f.write(struct.pack('<f', data))
-        data = header["Slice row direction vector of Z component"]
+        data = header["RowDirZ"]
         f.write(struct.pack('<f', data))
-        data = header["Slice column direction vector of X component"]
+        data = header["ColDirX"]
         f.write(struct.pack('<f', data))
-        data = header["Slice column direction vector of Y component"]
+        data = header["ColDirY"]
         f.write(struct.pack('<f', data))
-        data = header["Slice column direction vector of Z component"]
+        data = header["ColDirZ"]
         f.write(struct.pack('<f', data))
 
         # Expected binary data: int (4 bytes)
-        data = header["Nr of rows of slice image matrix"]
+        data = header["NRows"]
         f.write(struct.pack('<i', data))
-        data = header["Nr of columns of slice image matrix"]
+        data = header["NCols"]
         f.write(struct.pack('<i', data))
 
         # Expected binary data: float (4 bytes)
-        data = header["Extent of field of view (FoV) in row direction [mm]"]
+        data = header["FoVRows"]
         f.write(struct.pack('<f', data))
-        data = header["Extent of field of view (FoV) in column direction [mm]"]
+        data = header["FoVCols"]
         f.write(struct.pack('<f', data))
-        data = header["Slice thickness in mm"]
+        data = header["SliceThickness"]
         f.write(struct.pack('<f', data))
-        data = header["Gap thickness in mm"]
+        data = header["GapThickness"]
         f.write(struct.pack('<f', data))
 
         # Expected binary data: int (4 bytes)
@@ -345,34 +344,55 @@ def write_vmr(header, data_img, filename):
         f.write(struct.pack('<i', data))
 
         if header["NrOfPastSpatialTransformations"] != 0:
-            pass
+            for i in range(header["NrOfPastSpatialTransformations"]):
+                # Expected binary data: variable-length string
+                data = header["PastTransformation"][i]["Name"]
+                # TODO: write_variable_length_string(f)
+
+                # Expected binary data: int (4 bytes)
+                data = header["PastTransformation"][i]["Type"]
+                f.write(struct.pack('<i', data))
+
+                # Expected binary data: variable-length string
+                header["PastTransformation"][i]["SourceFileName"] = data
+                # TODO: write_variable_length_string(f)
+
+                # Expected binary data: int (4 bytes)
+                data = header["PastTransformation"][i]["NrOfValues"]
+                f.write(struct.pack('<i', data))
+
+                # Transformation values are stored as a list
+                trans_values = header["PastTransformation"][i]["Values"]
+                for j in range(header["PastTransformation"][i]["NrOfValues"]):
+                    # Expected binary data: float (4 bytes)
+                    f.write(struct.pack('<f', trans_values[j]))
 
         # Expected binary data: char (1 byte)
-        data = header["Left-right convention"]
+        data = header["LeftRightConvention"]
         f.write(struct.pack('<B', data))
-        data = header["Reference space flag"]
+        data = header["ReferenceSpaceVMR"]
         f.write(struct.pack('<B', data))
 
         # Expected binary data: float (4 bytes)
-        data = header["Voxel resolution along X axis"]
+        data = header["VoxelSizeX"]
         f.write(struct.pack('<f', data))
-        data = header["Voxel resolution along Y axis"]
+        data = header["VoxelSizeY"]
         f.write(struct.pack('<f', data))
-        data = header["Voxel resolution along Z axis"]
+        data = header["VoxelSizeZ"]
         f.write(struct.pack('<f', data))
 
         # Expected binary data: char (1 byte)
-        data = header["Flag for voxel resolution verified"]
+        data = header["VoxelResolutionVerified"]
         f.write(struct.pack('<B', data))
-        data = header["Flag for Talairach space mm"]
+        data = header["VoxelResolutionInTALmm"]
         f.write(struct.pack('<B', data))
 
         # Expected binary data: int (4 bytes)
-        data = header["Min intensity value in original 16-bit data"]
+        data = header["VMROrigV16MinValue"]
         f.write(struct.pack('<i', data))
-        data = header["Mean intensity value in original 16-bit data"]
+        data = header["VMROrigV16MeanValue"]
         f.write(struct.pack('<i', data))
-        data = header["Max intensity value in original 16-bit data"]
+        data = header["VMROrigV16MaxValue"]
         f.write(struct.pack('<i', data))
 
     return print("VMR saved.")
