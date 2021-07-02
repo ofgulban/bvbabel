@@ -27,6 +27,18 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 | [Python 3](https://www.python.org/)   | 3.7.8          |
 | [NumPy](http://www.numpy.org/)        | 1.17.2         |
 
+## Installation
+
+1. Clone the latest release and unzip it.
+2. Change directory in your command line:
+```
+cd /path/to/bvbabel
+```
+3. Install bvbabel:
+```
+python setup.py install
+```
+
 ## BrainVoyager documentation
 
 - [Overview](https://support.brainvoyager.com/brainvoyager/automation-development/84-file-formats/339-developer-guide-2-6-file-formats-overview)
