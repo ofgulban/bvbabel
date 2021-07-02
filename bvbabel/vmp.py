@@ -3,7 +3,7 @@
 import struct
 import numpy as np
 from bvbabel.utils import read_variable_length_string, read_RGB_bytes
-
+from bvbabel.utils import write_variable_length_string, write_RGB_bytes 
 
 # =============================================================================
 def read_vmp(filename):
@@ -187,11 +187,14 @@ def read_vmp(filename):
             if header["NrOfComponentParams"] > 0:
                 header["ComponentTimeCourseParams"] = []
                 for i in range(header["NrOfComponentParams"]):
+                    header["ComponentTimeCourseParams"].append(dict())
+
                     name = read_variable_length_string(f)
-                    header[name] = []
+                    header["ComponentTimeCourseParams"][i]["Name"] = name
+
                     for j in range(header["NrOfSubMaps"]):
                         data, = struct.unpack('<f', f.read(4))
-                        header[name].append(data)
+                        header["ComponentTimeCourseParams"][i]["Values"].append(data)
 
         # ---------------------------------------------------------------------
         # Read VMP image data
@@ -224,3 +227,191 @@ def read_vmp(filename):
         data_img = data_img[::-1, ::-1, ::-1, :]  # Flip BV axes
 
     return header, data_img
+
+
+# =============================================================================
+def write_vmp(filename, header, data_img):
+    """Protocol for writing Brainvoyager VMP file.
+
+    Parameters
+    ----------
+    filename : string
+        Path to file.
+    header : dictionary
+        Pre-data and post-data headers.
+    data_img : 3D numpy.array
+        Image data.
+
+    """
+    with open(filename, 'wb') as f:
+        # ---------------------------------------------------------------------
+        # NR-VMP Header (Version 6)
+        # ---------------------------------------------------------------------
+
+        # Expected binary data: int (4 bytes)
+        data = header["NR-VMP identifier"]
+        f.write(struct.pack('<i', data))
+
+        # Expected binary data: short int (2 bytes)
+        data = header["VersionNumber"]
+        f.write(struct.pack('<h', data))
+        data = header["DocumentType"]
+        f.write(struct.pack('<h', data))
+
+        # Expected binary data: int (4 bytes)
+        data = header["NrOfSubMaps"]  # number of sub-maps/component maps
+        f.write(struct.pack('<i', data))
+        data = header["NrOfTimePoints"]
+        f.write(struct.pack('<i', data))
+        data = header["NrOfComponentParams"]
+        f.write(struct.pack('<i', data))
+        data = header["ShowParamsRangeFrom"]
+        f.write(struct.pack('<i', data))
+        data = header["ShowParamsRangeTo"]
+        f.write(struct.pack('<i', data))
+        data = header["UseForFingerprintParamsRangeFrom"]
+        f.write(struct.pack('<i', data))
+        data = header["UseForFingerprintParamsRangeTo"]
+        f.write(struct.pack('<i', data))
+
+        data = header["XStart"]
+        f.write(struct.pack('<i', data))
+        data = header["XEnd"]
+        f.write(struct.pack('<i', data))
+        data = header["YStart"]
+        f.write(struct.pack('<i', data))
+        data = header["YEnd"]
+        f.write(struct.pack('<i', data))
+        data = header["ZStart"]
+        f.write(struct.pack('<i', data))
+        data = header["ZEnd"]
+        f.write(struct.pack('<i', data))
+
+        data = header["Resolution"]
+        f.write(struct.pack('<i', data))
+        data = header["DimX"]
+        f.write(struct.pack('<i', data))
+        data = header["DimY"]
+        f.write(struct.pack('<i', data))
+        data = header["DimZ"]
+        f.write(struct.pack('<i', data))
+
+        # Expected binary data: variable-length string
+        data = header["NameOfVTCFile"]
+        write_variable_length_string(f, data)
+        data = header["NameOfProtocolFile"]
+        write_variable_length_string(f, data)
+        data = header["NameOfVOIFile"]
+        write_variable_length_string(f, data)
+
+        # Store each map as a dictionary element of a list
+        for m in range(header["NrOfSubMaps"]):
+
+            # Expected binary data: int (4 bytes)
+            data = header["Map"][m]["TypeOfMap"]
+            f.write(struct.pack('<i', data))
+
+            # Expected binary data: float (4 bytes)
+            data = header["Map"][m]["MapThreshold"]
+            f.write(struct.pack('<f', data))
+            data = header["Map"][m]["UpperThreshold"]
+            f.write(struct.pack('<f', data))
+
+            # Expected binary data: variable-length string
+            write_variable_length_string(f, header["Map"][m]["MapName"])
+
+            # Expected binary data: char (1 byte) x 3
+            data = header["Map"][m]["RGB positive min"]
+            write_RGB_bytes(f, data)
+            data = header["Map"][m]["RGB positive max"]
+            write_RGB_bytes(f, data)
+            data = header["Map"][m]["RGB negative min"]
+            write_RGB_bytes(f, data)
+            data = header["Map"][m]["RGB negative max"]
+            write_RGB_bytes(f, data)
+
+            # Expected binary data: char (1 byte)
+            data = header["Map"][m]["UseVMPColor"]
+            f.write(struct.pack('<B', data))
+
+            # Expected binary data: variable-length string
+            data = header["Map"][m]["LUTFileName"]
+            write_variable_length_string(f, data)
+
+            # Expected binary data: float (4 bytes)
+            data = header["Map"][m]["TransparentColorFactor"]
+            f.write(struct.pack('<f', data))
+
+            # Expected binary data: int (4 bytes)
+            if header["Map"][m]["TypeOfMap"] == 3:  # cross-correlation values
+                data = header["Map"][m]["NrOfLags"]
+                f.write(struct.pack('<i', data))
+                data = header["Map"][m]["DisplayMinLag"]
+                f.write(struct.pack('<i', data))
+                data = header["Map"][m]["DisplayMaxLag"]
+                f.write(struct.pack('<i', data))
+                data = header["Map"][m]["ShowCorrelationOrLag"]
+                f.write(struct.pack('<i', data))
+            data = header["Map"][m]["ClusterSizeThreshold"]
+            f.write(struct.pack('<i', data))
+
+            # Expected binary data: char (1 byte)
+            data = header["Map"][m]["EnableClusterSizeThreshold"]
+            f.write(struct.pack('<b', data))
+
+            # Expected binary data: int (4 bytes)
+            data = header["Map"][m]["ShowValuesAboveUpperThreshold"]
+            f.write(struct.pack('<i', data))
+            data = header["Map"][m]["DF1"]
+            f.write(struct.pack('<i', data))
+            data = header["Map"][m]["DF2"]
+            f.write(struct.pack('<i', data))
+
+            # Expected binary data: char (1 byte)
+            data = header["Map"][m]["ShowPosNegValues"]
+            f.write(struct.pack('<b', data))
+
+            # Expected binary data: int (4 bytes)
+            data = header["Map"][m]["NrOfUsedVoxels"]
+            f.write(struct.pack('<i', data))
+            data = header["Map"][m]["SizeOfFDRTable"]
+            f.write(struct.pack('<i', data))
+
+            # Expected binary data: float (4 bytes) x SizeOfFDRTable x 3
+            # (q, crit std, crit conservative)
+            # TODO: Check FDR Tables
+            data = header["Map"][m]["FDRTableInfo"]
+            for i in range(header["Map"][m]["SizeOfFDRTable"]):
+                for j in range(3):
+                    f.write(struct.pack('<f', data[i, j]))
+
+            # Expected binary data: int (4 bytes)
+            data = header["Map"][m]["UseFDRTableIndex"]
+            f.write(struct.pack('<i', data))
+
+            # Time course values associated with component "c"
+            if header["NrOfTimePoints"] > 0:
+                data = header["ComponentTimeCourseValues"]
+                for i in range(header["NrOfSubMaps"]):
+                    for j in range(header["NrOfTimePoints"]):
+                        f.write(struct.pack('<f', data[i, j]))
+
+            # Component parameters
+            if header["NrOfComponentParams"] > 0:
+                for i in range(header["NrOfComponentParams"]):
+                    name = header["ComponentTimeCourseParams"][i]["Name"]
+                    write_variable_length_string(f, name)
+
+                    data = header["ComponentTimeCourseParams"][i]["Values"]
+                    for j in range(header["NrOfSubMaps"]):
+                        f.write(struct.pack('<f', data[j]))
+
+        # ---------------------------------------------------------------------
+        # Write VMP image data
+        # ---------------------------------------------------------------------
+        data_img = data_img[::-1, ::-1, ::-1, :]  # Flip BV axes
+        data_img = np.transpose(data_img, (3, 0, 2, 1))  # TAL to BV
+        data_img = np.reshape(data_img, data_img.size)
+
+        for i in range(data_img.size):
+            f.write(struct.pack('<f', data_img[i]))
