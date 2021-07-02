@@ -238,17 +238,18 @@ def read_vmr(filename):
     return header, data_img
 
 
-def write_vmr(header, data_img, filename):
-    """Write Brainvoyager VMR file.
+# =============================================================================
+def write_vmr(filename, header, data_img):
+    """Protocol for writing Brainvoyager VMR file.
 
     Parameters
     ----------
+    filename : string
+        Output filename.
     header : dictionary
         Header of VMR file.
     data_img : numpy.array, 3D
         Image.
-    filename : string
-        Output filename.
 
     """
     with open(filename, 'wb') as f:

@@ -8,6 +8,7 @@ import pprint
 
 FILE = "/home/faruk/Documents/test_bvbabel/derivatives/T1_int16.vmr"
 
+# =============================================================================
 # Load vmr
 header, data = bvbabel.vmr.read_vmr(FILE)
 

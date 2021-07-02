@@ -8,14 +8,13 @@ from pprint import pprint
 
 FILE = "/home/faruk/Documents/test_bvbabel/vtc/S01_run1_sc.vtc"
 
+# =============================================================================
 # Load vmr
 header, data = bvbabel.vtc.read_vtc(FILE)
 
-# -----------------------------------------------------------------------------
 # See header information
 pprint(header)
 
-# -----------------------------------------------------------------------------
 # Export nifti
 basename = FILE.split(os.extsep, 1)[0]
 outname = "{}_bvbabel.nii.gz".format(basename)

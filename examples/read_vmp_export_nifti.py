@@ -8,14 +8,13 @@ import pprint
 
 FILE = "/home/faruk/Documents/test_bvbabel/vmp/sub-01_ses-01_RightHand.vmp"
 
+# =============================================================================
 # Load vmr
 header, data = bvbabel.vmp.read_vmp(FILE)
 
-# -----------------------------------------------------------------------------
 # See header information
 pprint.pprint(header)
 
-# -----------------------------------------------------------------------------
 # Export nifti
 basename = FILE.split(os.extsep, 1)[0]
 outname = "{}_bvbabel.nii.gz".format(basename)
