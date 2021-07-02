@@ -240,7 +240,7 @@ def read_vmr(filename):
 
 # =============================================================================
 def write_vmr(filename, header, data_img):
-    """Protocol for writing Brainvoyager VMR file.
+    """Protocol to write Brainvoyager VMR file.
 
     Parameters
     ----------

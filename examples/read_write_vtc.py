@@ -7,6 +7,7 @@ import bvbabel
 from pprint import pprint
 
 FILE = "/home/faruk/Documents/test_bvbabel/vtc_test.vtc"
+OUTNAME = "/home/faruk/Documents/test_bvbabel/vtc_test_bvbabel.vtc"
 
 # =============================================================================
 # Load vmr
@@ -15,10 +16,10 @@ header, data = bvbabel.vtc.read_vtc(FILE)
 # See header information
 pprint(header)
 
+# Invert voxel intensities
+data = (data * -1) + np.max(data)
+
 # Export nifti
-basename = FILE.split(os.extsep, 1)[0]
-outname = "{}_bvbabel.nii.gz".format(basename)
-img = nb.Nifti1Image(data, affine=np.eye(4))
-nb.save(img, outname)
+bvbabel.vtc.write_vtc(OUTNAME, header, data)
 
 print("Finished.")

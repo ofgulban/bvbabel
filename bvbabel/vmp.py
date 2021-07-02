@@ -3,7 +3,7 @@
 import struct
 import numpy as np
 from bvbabel.utils import read_variable_length_string, read_RGB_bytes
-from bvbabel.utils import write_variable_length_string, write_RGB_bytes 
+from bvbabel.utils import write_variable_length_string, write_RGB_bytes
 
 # =============================================================================
 def read_vmp(filename):
@@ -231,7 +231,7 @@ def read_vmp(filename):
 
 # =============================================================================
 def write_vmp(filename, header, data_img):
-    """Protocol for writing Brainvoyager VMP file.
+    """Protocol to write Brainvoyager VMP file.
 
     Parameters
     ----------
