@@ -23,10 +23,11 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 
 ## Dependencies
 
-| Package                               | Tested version |
-|---------------------------------------|----------------|
-| [Python 3](https://www.python.org/)   | 3.7.8          |
-| [NumPy](http://www.numpy.org/)        | 1.17.2         |
+| Required | Package                               | Tested version |
+| ---------|---------------------------------------|----------------|
+| Yes      | [Python 3](https://www.python.org/)   | 3.7.8          |
+| Yes      | [NumPy](http://www.numpy.org/)        | 1.17.2         |
+| No       | [NiBabel](https://nipy.org/nibabel/)  | 3.2.0          |
 
 ## Installation
 
