@@ -6,20 +6,20 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 
 ### File format support overview
 
-| File format | Read | Write | Create |
-| ------------|------|-------|--------|
-| VMR         | Yes  | Yes   | No     |
-| VMP         | Yes  | Yes   | No     |
-| VTC         | Yes  | Yes   | No     |
-| GTC         | Yes  | Yes   | No     |
-| SRF         | No   | No    | No     |
-| FMR & STC   | No   | No    | No     |
-| PRT         | No   | No    | No     |
-| SMP         | No   | No    | No     |
-| VOI         | No   | No    | No     |
-| POI         | No   | No    | No     |
-| MTC         | No   | No    | No     |
-| GLM         | No   | No    | No     |
+| File format | Read  | Write | Create |
+| ------------|-------|-------|--------|
+| FMR & STC   | No    | No    | No     |
+| GLM         | No    | No    | No     |
+| GTC         | Yes   | Yes   | No     |
+| MTC         | No    | No    | No     |
+| POI         | No    | No    | No     |
+| PRT         | No    | No    | No     |
+| SMP         | No    | No    | No     |
+| SRF         | No    | No    | No     |
+| VMP         | Yes   | Yes   | No     |
+| VMR         | Yes   | Yes   | No     |
+| VOI         | No    | No    | No     |
+| VTC         | Yes   | Yes   | No     |
 
 ## Dependencies
 
