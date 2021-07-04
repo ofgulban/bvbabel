@@ -11,6 +11,7 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 | VMR         | Yes  | Yes   | No     |
 | VMP         | Yes  | Yes   | No     |
 | VTC         | Yes  | Yes   | No     |
+| GTC         | Yes  | Yes   | No     |
 | SRF         | No   | No    | No     |
 | FMR & STC   | No   | No    | No     |
 | PRT         | No   | No    | No     |
