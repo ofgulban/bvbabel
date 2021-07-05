@@ -6,26 +6,28 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 
 ### File format support overview
 
-| File format | Read | Write | Create |
-| ------------|------|-------|--------|
-| VMR         | Yes  | Yes   | No     |
-| VMP         | Yes  | Yes   | No     |
-| VTC         | Yes  | Yes   | No     |
-| SRF         | No   | No    | No     |
-| FMR & STC   | No   | No    | No     |
-| PRT         | No   | No    | No     |
-| SMP         | No   | No    | No     |
-| VOI         | No   | No    | No     |
-| POI         | No   | No    | No     |
-| MTC         | No   | No    | No     |
-| GLM         | No   | No    | No     |
+| File format | Read  | Write | Create |
+| ------------|-------|-------|--------|
+| FMR & STC   | No    | No    | No     |
+| GLM         | No    | No    | No     |
+| GTC         | Yes   | Yes   | No     |
+| MTC         | No    | No    | No     |
+| POI         | No    | No    | No     |
+| PRT         | No    | No    | No     |
+| SMP         | No    | No    | No     |
+| SRF         | No    | No    | No     |
+| VMP         | Yes   | Yes   | No     |
+| VMR         | Yes   | Yes   | No     |
+| VOI         | No    | No    | No     |
+| VTC         | Yes   | Yes   | No     |
 
 ## Dependencies
 
-| Package                               | Tested version |
-|---------------------------------------|----------------|
-| [Python 3](https://www.python.org/)   | 3.7.8          |
-| [NumPy](http://www.numpy.org/)        | 1.17.2         |
+| Required | Package                               | Tested version |
+| ---------|---------------------------------------|----------------|
+| Yes      | [Python 3](https://www.python.org/)   | 3.7.8          |
+| Yes      | [NumPy](http://www.numpy.org/)        | 1.17.2         |
+| No       | [NiBabel](https://nipy.org/nibabel/)  | 3.2.0          |
 
 ## Installation
 
