@@ -13,7 +13,7 @@ def read_variable_length_string(f):
     text = ""
     data, = struct.unpack('<s', f.read(1))
     while data != b'\x00':
-        text += data.decode("utf-8")
+        text += data.decode("utf-8", 'ignore')
         data = f.read(1)
     return text
 
