@@ -169,19 +169,6 @@ def read_srf(filename):
                 temp[i].append(NN)
         vertex_neighbors = temp
 
-        # temp = []
-        # for i in range(header["Nr vertices"]):
-        #     temp.append([])
-        #
-        #     # Expected binary data: int (4 bytes)
-        #     N, = struct.unpack('<i', f.read(4))
-        #     temp[i].append(N)
-        #
-        #     for n in range(N):  # Nearest neighbors
-        #         NN, = struct.unpack('<i', f.read(4))
-        #         temp[i].append(NN)
-        # header["Vertex nearest neighbor info 2"] = temp
-
         # ---------------------------------------------------------------------
         # Sequence of three indices to constituting vertices of each triangle
         faces = np.zeros((header["Nr vertices"], 3), dtype=np.uint16)
