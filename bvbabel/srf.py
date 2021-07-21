@@ -18,21 +18,25 @@ def read_srf(filename):
     -------
     header : dictionary
         Pre-data and post-data headers.
-    vertices : 2D numpy.array, (nr_vertices, XYZ coordinates)
-        Vertex coordinates (float32).
-    vertex_normals : 2D numpy.array, (nr_vertices, XYZ coordinates)
-        Vertex normals (float32).
-    faces : 2D numpy.array, (nr_vertices, vertex_indices)
-        Faces (triangles), as indices of vertices (uint16).
-    vertex_colors : 2D numpy.array, (nr_vertices, RGBA coordinates)
-        Vertex colors. Values are in between 0-1 (float32).
-    vertex_neighbors: list of lists, (nr vertices, nr neighbors)
-        Other vertex members if the faces each vertex is a member of (uint16).
-        Number of neighbors can vary but in conventional meshes they are often
-        6 and occasionaly 5.
+    data : dictionary
+        "vertices" : 2D numpy.array, (nr_vertices, XYZ coordinates)
+            Vertex coordinates (float32).
+        "vertex_normals" : 2D numpy.array, (nr_vertices, XYZ coordinates)
+            Vertex normals (float32).
+        "faces" : 2D numpy.array, (nr_vertices, vertex_indices)
+            Faces (triangles), as indices of vertices (int).
+        "vertex_colors" : 2D numpy.array, (nr_vertices, RGBA coordinates)
+            Vertex colors. Values are in between 0-1 (float32).
+        "vertex_neighbors" : list of lists, (nr vertices, nr neighbors)
+            Other vertex members if the faces each vertex is a member of (int).
+            Number of neighbors can vary but in conventional meshes they are
+            often 6 and occasionaly 5.
+        "strip sequence" : TODO.
+            TODO.
 
     """
     header = dict()
+    mesh_data = dict()
     with open(filename, 'rb') as f:
         # Expected binary data: float (4 bytes)
         data, = struct.unpack('<f', f.read(4))
@@ -40,7 +44,7 @@ def read_srf(filename):
 
         # Expected binary data: int (4 bytes)
         data, = struct.unpack('<i', f.read(4))
-        header["Reserved"] = data  # Must be '0'
+        header["Surface type"] = data
         data, = struct.unpack('<i', f.read(4))
         header["Nr vertices"] = data
         data, = struct.unpack('<i', f.read(4))
@@ -67,6 +71,7 @@ def read_srf(filename):
         for i in range(header["Nr vertices"]):
             data, = struct.unpack('<f', f.read(4))
             vertices[i, 2] = data
+        mesh_data["vertices"] = vertices
 
         # Vertex normals, Expected binary data: float (4 bytes)
         vertex_normals = np.zeros((header["Nr vertices"], 3), dtype=np.float32)
@@ -81,25 +86,27 @@ def read_srf(filename):
         for i in range(header["Nr vertices"]):
             data, = struct.unpack('<f', f.read(4))
             vertex_normals[i, 2] = data
+        mesh_data["vertex normals"] = vertex_normals
 
-        # Expected binary data: float (4 bytes)
-        data, = struct.unpack('<f', f.read(4))
-        header["Vertex convex curvature R"] = data
-        data, = struct.unpack('<f', f.read(4))
-        header["Vertex convex curvature G"] = data
-        data, = struct.unpack('<f', f.read(4))
-        header["Vertex convex curvature B"] = data
-        data, = struct.unpack('<f', f.read(4))
-        header["Vertex convex curvature A"] = data
+        if header["File version"] >= 1.0:
+            # Expected binary data: float (4 bytes)
+            data, = struct.unpack('<f', f.read(4))
+            header["Vertex convex curvature R"] = data
+            data, = struct.unpack('<f', f.read(4))
+            header["Vertex convex curvature G"] = data
+            data, = struct.unpack('<f', f.read(4))
+            header["Vertex convex curvature B"] = data
+            data, = struct.unpack('<f', f.read(4))
+            header["Vertex convex curvature A"] = data
 
-        data, = struct.unpack('<f', f.read(4))
-        header["Vertex concave curvature R"] = data
-        data, = struct.unpack('<f', f.read(4))
-        header["Vertex concave curvature G"] = data
-        data, = struct.unpack('<f', f.read(4))
-        header["Vertex concave curvature B"] = data
-        data, = struct.unpack('<f', f.read(4))
-        header["Vertex concave curvature A"] = data
+            data, = struct.unpack('<f', f.read(4))
+            header["Vertex concave curvature R"] = data
+            data, = struct.unpack('<f', f.read(4))
+            header["Vertex concave curvature G"] = data
+            data, = struct.unpack('<f', f.read(4))
+            header["Vertex concave curvature B"] = data
+            data, = struct.unpack('<f', f.read(4))
+            header["Vertex concave curvature A"] = data
 
         # ---------------------------------------------------------------------
         # NOTE(Users Guide 2.3): MeshColor, sequence of color indices.
@@ -167,30 +174,31 @@ def read_srf(filename):
             for n in range(N):  # Nearest neighbors
                 NN, = struct.unpack('<i', f.read(4))
                 temp[i].append(NN)
-        vertex_neighbors = temp
+        mesh_data["vertex neighbors"] = temp
 
         # ---------------------------------------------------------------------
         # Sequence of three indices to constituting vertices of each triangle
-        faces = np.zeros((header["Nr vertices"], 3), dtype=np.uint16)
-        for i in range(header["Nr vertices"]):
+        faces = np.zeros((header["Nr triangles"], 3), dtype=np.int32)
+        for i in range(header["Nr triangles"]):
             # Expected binary data: int (4 bytes)
             faces[i, 0], = struct.unpack('<i', f.read(4))
             faces[i, 1], = struct.unpack('<i', f.read(4))
             faces[i, 2], = struct.unpack('<i', f.read(4))
+        mesh_data["faces"] = faces
 
         # ---------------------------------------------------------------------
         # Expected binary data: int (4 bytes)
         data, = struct.unpack('<i', f.read(4))
         header["Nr triangle strip elements"] = data
         if header["Nr triangle strip elements"] > 0:
-            temp = np.zeros(header["Nr triangle strip elements"], dtype=np.int16)
+            temp = np.zeros(header["Nr triangle strip elements"], dtype=np.int32)
             for i in range(header["Nr triangle strip elements"]):
                 data, = struct.unpack('<i', f.read(4))
                 temp[i] = data
-        header["Sequence of strip elements"] = temp
+        mesh_data["Strip sequence"] = temp
 
         # Expected binary data: variable-length string
         data = read_variable_length_string(f)
         header["MTC name"] = data
 
-    return header, vertices, vertex_normals, faces, vertex_colors, vertex_neighbors
+    return header, mesh_data
