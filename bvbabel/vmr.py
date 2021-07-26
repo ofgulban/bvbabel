@@ -2,7 +2,8 @@
 
 import struct
 import numpy as np
-from bvbabel.utils import read_variable_length_string
+from bvbabel.utils import (read_variable_length_string,
+                           write_variable_length_string)
 
 
 # =============================================================================
@@ -348,15 +349,15 @@ def write_vmr(filename, header, data_img):
             for i in range(header["NrOfPastSpatialTransformations"]):
                 # Expected binary data: variable-length string
                 data = header["PastTransformation"][i]["Name"]
-                # TODO: write_variable_length_string(f)
+                write_variable_length_string(f, data)
 
                 # Expected binary data: int (4 bytes)
                 data = header["PastTransformation"][i]["Type"]
                 f.write(struct.pack('<i', data))
 
                 # Expected binary data: variable-length string
-                header["PastTransformation"][i]["SourceFileName"] = data
-                # TODO: write_variable_length_string(f)
+                data = header["PastTransformation"][i]["SourceFileName"]
+                write_variable_length_string(f, data)
 
                 # Expected binary data: int (4 bytes)
                 data = header["PastTransformation"][i]["NrOfValues"]
