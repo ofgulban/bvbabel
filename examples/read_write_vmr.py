@@ -1,10 +1,9 @@
 """Read Brainvoyager vmr and export nifti."""
 
+import os
 import bvbabel
-import numpy as np
 
 FILE = "/home/faruk/Documents/test_bvbabel/sub-01_MNI.vmr"
-OUTNAME = "/home/faruk/Documents/test_bvbabel/sub-01_MNI_bvbabel.vmr"
 
 # =============================================================================
 # Load vmr
@@ -18,9 +17,12 @@ for key, value in header.items():
     print(key, ":", value)
 
 # Write VMR
-bvbabel.vmr.write_vmr(OUTNAME, header, data_img)
+basename = FILE.split(os.extsep, 1)[0]
+outname = "{}_bvbabel.vmr".format(basename)
+bvbabel.vmr.write_vmr(outname, header, data_img)
 
-header2, data_img2 = bvbabel.vmr.read_vmr(OUTNAME)
+header2, data_img2 = bvbabel.vmr.read_vmr(outname)
+
 # Print header nicely
 for key, value in header2.items():
     print(key, ":", value)
