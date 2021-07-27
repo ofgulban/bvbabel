@@ -12,13 +12,14 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 | GLM         | No    | No    | No     |
 | GTC         | Yes   | Yes   | No     |
 | MTC         | No    | No    | No     |
+| OBJ         | No    | Yes   | No     |
 | POI         | No    | No    | No     |
 | PRT         | No    | No    | No     |
 | SMP         | No    | No    | No     |
-| SRF         | No    | No    | No     |
+| SRF         | Yes   | No    | No     |
 | VMP         | Yes   | Yes   | No     |
 | VMR         | Yes   | Yes   | No     |
-| VOI         | No    | No    | No     |
+| VOI         | Yes   | No    | No     |
 | VTC         | Yes   | Yes   | No     |
 
 ## Dependencies
