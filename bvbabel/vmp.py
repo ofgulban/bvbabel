@@ -5,6 +5,7 @@ import numpy as np
 from bvbabel.utils import read_variable_length_string, read_RGB_bytes
 from bvbabel.utils import write_variable_length_string, write_RGB_bytes
 
+
 # =============================================================================
 def read_vmp(filename):
     """Read Brainvoyager VMP file.
