@@ -17,6 +17,7 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 | PRT         | No    | No    | No     |
 | SMP         | No    | No    | No     |
 | SRF         | Yes   | No    | No     |
+| SSM         | WIP   | No    | No     |
 | VMP         | Yes   | Yes   | No     |
 | VMR         | Yes   | Yes   | No     |
 | VOI         | Yes   | No    | No     |
