@@ -2,7 +2,7 @@
 
 import bvbabel
 
-FILE = "/home/faruk/Documents/test_bvbabel/voi/aparc+aseg.voi"
+FILE = "/home/faruk/Documents/test_bvbabel/voi/sub-07_leftMT_Sphere16radius.voi"
 
 # =============================================================================
 # Load voi
@@ -16,7 +16,7 @@ for key, value in header.items():
 print("\nVOI data")
 for d in data:
     for key, value in d.items():
-        print("  ", key, ":", value)
 
+        print("  ", key, ":", value)
 
 print("Finished.")

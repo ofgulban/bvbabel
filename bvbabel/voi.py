@@ -27,7 +27,8 @@ def read_voi(filename):
 
     # VOI header
     header = dict()
-    for line in lines[0:12]:
+    header_rows = 12
+    for line in lines[0:header_rows]:
         content = line.split(":")
         content = [i.strip() for i in content]
         if content[1].isdigit():
@@ -38,7 +39,7 @@ def read_voi(filename):
     # VOI data (x, y, z coordinates of voxels)
     count_voi = -1
     data = list()
-    for line in lines[12:]:
+    for r, line in enumerate(lines[header_rows:]):
         content = line.split(":")
         content = [i.strip() for i in content]
 
@@ -47,6 +48,9 @@ def read_voi(filename):
             data.append(dict())
             data[count_voi]["Coordinates"] = []  # Prepare for coordinates
             data[count_voi]["NameOfVOI"] = content[1]
+
+        elif content[0] == "NrOfVOIVTCs":
+            break
 
         elif content[0] == "ColorOfVOI":
             values = content[1].split(" ")
@@ -60,6 +64,12 @@ def read_voi(filename):
             values = content[0].split(" ")
             values = [int(v) for v in values]
             data[count_voi]["Coordinates"].append(values)
+
+    # Handle VOI VTC information at the end
+    header["NrOfVOIVTCs"] = int(content[1])
+    header["VOIVTCs"] = []
+    for line in lines[r+header_rows+1:]:
+        header["VOIVTCs"].append(line)
 
     # Convert coordinates (x, y, z) to numpy arrays [nr_voxels, 3]
     for d in data:
