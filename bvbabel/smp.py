@@ -18,9 +18,11 @@ def read_smp(filename):
     Returns
     -------
     header : dictionary
-        Pre-data and post-data headers.
-    data_img : 3D numpy.array, [maps, vertices]
-        Vertex data.
+        Header containing SMP information. See "Map" entry to reach information
+        of individual maps. Such as their thresholds, color maps etc.
+    data_smp : 2D numpy.array, [vertices, maps]
+        Number of vertices is equal to the SRF on which the SMP is created.
+        Each vertex has a number of values corresponding to maps in the header.
 
     """
     header = dict()
@@ -114,11 +116,105 @@ def read_smp(filename):
         # ---------------------------------------------------------------------
         # Read SMP data
         # ---------------------------------------------------------------------
-        data_img = np.zeros((header["Nr maps"], header["Nr vertices"]),
+        data_smp = np.zeros((header["Nr vertices"], header["Nr maps"]),
                             dtype=np.float32)
         for i in range(header["Nr maps"]):
             for j in range(header["Nr vertices"]):
                 data, = struct.unpack('<f', f.read(4))
-                data_img[i, j] = data
+                data_smp[j, i] = data
 
-    return header, data_img
+    return header, data_smp
+
+
+def write_smp(filename, header, data_smp):
+    """Procecure to write Brainvoyager SMP file.
+
+    Parameters
+    ----------
+    filename : string
+        Path to file.
+    header : dictionary
+        Header containing SMP information. See "Map" entry to reach information
+        of individual maps. Such as their thresholds, color maps etc.
+    data_smp : 2D numpy.array, [vertices, maps]
+        Number of vertices is equal to the SRF on which the SMP is created.
+        Each vertex has a number of values corresponding to maps in the header.
+
+    """
+    with open(filename, 'wb') as f:
+        # Expected binary data: short int (2 bytes)
+        data = header["File version"]
+        f.write(struct.pack('<h', data))
+
+        # Expected binary data: int (4 bytes)
+        data = header["Nr vertices"]
+        f.write(struct.pack('<i', data))
+
+        # Expected binary data: short int (2 bytes)
+        data = header["Nr maps"]
+        f.write(struct.pack('<h', data))
+
+        # Expected binary data: variable length string
+        data = header["SRF name"]
+        write_variable_length_string(f, data)
+
+        # Expected binary data: int (4 bytes)
+        data = header["Map type"]
+        f.write(struct.pack('<i', data))
+
+        data = header["Nr lags"]
+        f.write(struct.pack('<i', data))
+        data = header["Min lag"]
+        f.write(struct.pack('<i', data))
+        data = header["Max lag"]
+        f.write(struct.pack('<i', data))
+        data = header["CC overlay"]
+        f.write(struct.pack('<i', data))
+        data = header["Cluster size"]
+        f.write(struct.pack('<i', data))
+
+        if header["File version"] >= 2:
+            # Expected binary data: char (1 byte)
+            data = header["Enable cluster check"]
+            f.write(struct.pack('<B', data))
+
+        # Expected binary data: float (4 bytes)
+        data = header["Statistical threshold, critical value"]
+        f.write(struct.pack('<f', data))
+        data = header["Statistical threshold, max value"]
+        f.write(struct.pack('<f', data))
+
+        # Expected binary data: int (4 bytes)
+        data = header["Degrees of freedom, nominator if F-test"]
+        f.write(struct.pack('<i', data))
+        data = header["Degrees of freedom, denominator if F-test"]
+        f.write(struct.pack('<i', data))
+        data = header["Bonferroni correction value"]
+        f.write(struct.pack('<i', data))
+
+        if header["File version"] >= 2:
+            # Expected binary data: char (1 byte) x 3
+            data = header["Critical value RGB"]
+            write_RGB_bytes(f, data)
+            data = header["Max value RGB"]
+            write_RGB_bytes(f, data)
+
+        # Expected binary data: char (1 byte)
+        data = header["Enable SMP color"]
+        f.write(struct.pack('<B', data))
+
+        if header["File version"] >= 2:
+            # Expected binary data: float (4 bytes)
+            data = header["Color transparency"]
+            f.write(struct.pack('<f', data))
+
+        # Expected binary data: variable length string
+        data = header["Map name"]
+        write_variable_length_string(f, data)
+
+        # ---------------------------------------------------------------------
+        # Write SMP data
+        # ---------------------------------------------------------------------
+        for i in range(header["Nr maps"]):
+            for j in range(header["Nr vertices"]):
+                f.write(struct.pack('<f', data_smp[j, i]))
