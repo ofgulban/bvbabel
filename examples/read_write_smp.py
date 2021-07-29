@@ -1,8 +1,6 @@
 """Read Brainvoyager smp file."""
 
 import os
-import numpy as np
-import nibabel as nb
 import bvbabel
 from pprint import pprint
 
@@ -18,6 +16,6 @@ pprint(header)
 # Save SMP
 basename = FILE.split(os.extsep, 1)[0]
 outname = "{}_bvbabel.smp".format(basename)
-bvbabel.smp.write_smp(outname, data_smp)
+bvbabel.smp.write_smp(outname, header, data_smp)
 
 print("Finished.")
