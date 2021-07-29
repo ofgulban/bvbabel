@@ -24,6 +24,14 @@ def read_smp(filename):
         Number of vertices is equal to the SRF on which the SMP is created.
         Each vertex has a number of values corresponding to maps in the header.
 
+    Notes
+    -----
+    An SMP file may contain any statistic. See some of Brain Voyager map codes:
+        1: T-statistic, 2: Correlation, 3: Cross-correlation, 4: F-statistic
+        5: Z-statistic, 11: Percent signal change, 12: ICA, 14: Chi^2, 15: Beta
+        16: Probability, 21: Mean diffusivity, 22: Fractional anisotropy,
+        25: Polar angle
+
     """
     header = dict()
     with open(filename, 'rb') as f:
@@ -43,85 +51,105 @@ def read_smp(filename):
         data = read_variable_length_string(f)
         header["SRF name"] = data
 
-        # NOTE(BV user guide): An SMP file may contain any statistic.
-        #
-        # BrainVoyager map type codes:
-        # 1: T-statistic
-        # 2: correlation
-        # 3: cross-correlation
-        # 4: F-statistic
-        # 5: Z-statistic
-        # 11: percent signal change
-        # 12: ICA
-        # 14: chi^2
-        # 15: beta
-        # 16: probability
-        # 21: mean diffusivity map
-        # 22: fractional anisotropy map
-
-        # Expected binary data: int (4 bytes)
-        data, = struct.unpack('<i', f.read(4))
-        header["Map type"] = data
-
-        data, = struct.unpack('<i', f.read(4))
-        header["Nr lags"] = data
-        data, = struct.unpack('<i', f.read(4))
-        header["Min lag"] = data
-        data, = struct.unpack('<i', f.read(4))
-        header["Max lag"] = data
-        data, = struct.unpack('<i', f.read(4))
-        header["CC overlay"] = data
-        data, = struct.unpack('<i', f.read(4))
-        header["Cluster size"] = data
-
-        if header["File version"] >= 2:
-            # Expected binary data: char (1 byte)
-            data, = struct.unpack('<B', f.read(1))
-            header["Enable cluster check"] = data
-
-        # Expected binary data: float (4 bytes)
-        data, = struct.unpack('<f', f.read(4))
-        header["Statistical threshold, critical value"] = data
-        data, = struct.unpack('<f', f.read(4))
-        header["Statistical threshold, max value"] = data
-
-        # Expected binary data: int (4 bytes)
-        data, = struct.unpack('<i', f.read(4))
-        header["Degrees of freedom, nominator if F-test"] = data
-        data, = struct.unpack('<i', f.read(4))
-        header["Degrees of freedom, denominator if F-test"] = data
-        data, = struct.unpack('<i', f.read(4))
-        header["Bonferroni correction value"] = data
-
-        if header["File version"] >= 2:
-            # Expected binary data: char (1 byte) x 3
-            data = read_RGB_bytes(f)
-            header["Critical value RGB"] = data
-            data = read_RGB_bytes(f)
-            header["Max value RGB"] = data
-
-        # Expected binary data: char (1 byte)
-        data, = struct.unpack('<B', f.read(1))
-        header["Enable SMP color"] = data
-
-        if header["File version"] >= 2:
-            # Expected binary data: float (4 bytes)
-            data, = struct.unpack('<f', f.read(4))
-            header["Color transparency"] = data
-
-        # Expected binary data: variable length string
-        data = read_variable_length_string(f)
-        header["Map name"] = data
-
-        # ---------------------------------------------------------------------
-        # Read SMP data
         # ---------------------------------------------------------------------
         data_smp = np.zeros((header["Nr vertices"], header["Nr maps"]),
-                            dtype=np.float32)
-        for i in range(header["Nr maps"]):
-            for j in range(header["Nr vertices"]):
+                            dtype=np.float32)  # Prepare data array
+        header["Map"] = []
+        for m in range(header["Nr maps"]):
+            header["Map"].append(dict())
+
+            # Expected binary data: int (4 bytes)
+            data, = struct.unpack('<i', f.read(4))
+            header["Map"][m]["Map type"] = data
+
+            # Read additional values only if a lag map
+            if header["File version"] >= 3 and header["Map"][m]["Map type"] == 3:
+                data, = struct.unpack('<i', f.read(4))
+                header["Map"][m]["CC nr lags"] = data
+                data, = struct.unpack('<i', f.read(4))
+                header["Map"][m]["CC min lag"] = data
+                data, = struct.unpack('<i', f.read(4))
+                header["Map"][m]["CC max lag"] = data
+                data, = struct.unpack('<i', f.read(4))
+                header["Map"][m]["CC overlay"] = data
+            else:
+                header["Map"][m]["Nr lags"] = 0
+                header["Map"][m]["CC min lag"] = 0
+                header["Map"][m]["CC max lag"] = 0
+                header["Map"][m]["CC overlay"] = 0
+
+            data, = struct.unpack('<i', f.read(4))
+            header["Map"][m]["Cluster size"] = data
+
+            # Expected binary data: char (1 byte)
+            data, = struct.unpack('<B', f.read(1))
+            header["Map"][m]["Cluster checkbox"] = data
+
+            # Expected binary data: float (4 bytes)
+            data, = struct.unpack('<f', f.read(4))
+            header["Map"][m]["Threshold min"] = data
+            data, = struct.unpack('<f', f.read(4))
+            header["Map"][m]["Threshold max"] = data
+
+            if header["File version"] >= 4:
+                # Expected binary data: int (4 bytes)
+                data, = struct.unpack('<i', f.read(4))
+                header["Map"][m]["Threshold include greater than max"] = data
+
+            # Expected binary data: int (4 bytes)
+            data, = struct.unpack('<i', f.read(4))
+            header["Map"][m]["Degrees of freedom, nominator if F-test"] = data
+            data, = struct.unpack('<i', f.read(4))
+            header["Map"][m]["Degrees of freedom, denominator if F-test"] = data
+
+            if header["File version"] >= 5:
+                # Expected binary data: int (4 bytes)
+                data, = struct.unpack('<i', f.read(4))
+                header["Map"][m]["Show positive negative"] = data
+            else:
+                header["Map"][m]["Show positive negative"] = 3
+
+            data, = struct.unpack('<i', f.read(4))
+            header["Map"][m]["Bonferroni correction value"] = data
+
+            if header["File version"] >= 2:
+                # Expected binary data: char (1 byte) x 3
+                data = read_RGB_bytes(f)
+                header["Map"][m]["RGB positive min"] = data
+                data = read_RGB_bytes(f)
+                header["Map"][m]["RGB positive max"] = data
+
+                if header["File version"] >= 4:
+                    data = read_RGB_bytes(f)
+                    header["Map"][m]["RGB negative min"] = data
+                    data = read_RGB_bytes(f)
+                    header["Map"][m]["RGB negative max"] = data
+
+                # Expected binary data: char (1 byte)
+                data, = struct.unpack('<B', f.read(1))
+                header["Map"][m]["RGB or LUT"] = data
+
+                if header["File version"] >= 5:
+                    # Expected binary data: variable length string
+                    data = read_variable_length_string(f)
+                    header["Map"][m]["LUT file"] = data
+                else:
+                    header["Map"][m]["LUT file"] = "<default>"
+
+                # Expected binary data: float (4 bytes)
                 data, = struct.unpack('<f', f.read(4))
-                data_smp[j, i] = data
+                header["Map"][m]["Color transparency"] = data
+
+            # Expected binary data: variable length string
+            data = read_variable_length_string(f)
+            header["Map"][m]["Map name"] = data
+
+            # -----------------------------------------------------------------
+            # Read SMP data
+            # -----------------------------------------------------------------
+            for v in range(header["Nr vertices"]):
+                data, = struct.unpack('<f', f.read(4))
+                data_smp[v, m] = data
 
     return header, data_smp
 
