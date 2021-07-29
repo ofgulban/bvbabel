@@ -72,11 +72,6 @@ def read_smp(filename):
                 header["Map"][m]["CC max lag"] = data
                 data, = struct.unpack('<i', f.read(4))
                 header["Map"][m]["CC overlay"] = data
-            else:
-                header["Map"][m]["CC nr lags"] = 0
-                header["Map"][m]["CC min lag"] = 0
-                header["Map"][m]["CC max lag"] = 0
-                header["Map"][m]["CC overlay"] = 0
 
             data, = struct.unpack('<i', f.read(4))
             header["Map"][m]["Cluster size"] = data
@@ -194,14 +189,15 @@ def write_smp(filename, header, data_smp):
             data = header["Map"][m]["Map type"]
             f.write(struct.pack('<i', data))
 
-            data = header["Map"][m]["CC nr lags"]
-            f.write(struct.pack('<i', data))
-            data = header["Map"][m]["CC min lag"]
-            f.write(struct.pack('<i', data))
-            data = header["Map"][m]["CC max lag"]
-            f.write(struct.pack('<i', data))
-            data = header["Map"][m]["CC overlay"]
-            f.write(struct.pack('<i', data))
+            if header["File version"] >= 3 and header["Map"][m]["Map type"] == 3:
+                data = header["Map"][m]["CC nr lags"]
+                f.write(struct.pack('<i', data))
+                data = header["Map"][m]["CC min lag"]
+                f.write(struct.pack('<i', data))
+                data = header["Map"][m]["CC max lag"]
+                f.write(struct.pack('<i', data))
+                data = header["Map"][m]["CC overlay"]
+                f.write(struct.pack('<i', data))
 
             data = header["Map"][m]["Cluster size"]
             f.write(struct.pack('<i', data))
@@ -221,47 +217,47 @@ def write_smp(filename, header, data_smp):
                 data = header["Map"][m]["Threshold include greater than max"]
                 f.write(struct.pack('<i', data))
 
-        # Expected binary data: int (4 bytes)
-        data = header["Map"][m]["Degrees of freedom 1"]
-        f.write(struct.pack('<i', data))
-        data = header["Map"][m]["Degrees of freedom 2"]
-        f.write(struct.pack('<i', data))
-        data = header["Map"][m]["Show positive negative"]
-        f.write(struct.pack('<i', data))
-        data = header["Map"][m]["Bonferroni correction value"]
-        f.write(struct.pack('<i', data))
+            # Expected binary data: int (4 bytes)
+            data = header["Map"][m]["Degrees of freedom 1"]
+            f.write(struct.pack('<i', data))
+            data = header["Map"][m]["Degrees of freedom 2"]
+            f.write(struct.pack('<i', data))
+            data = header["Map"][m]["Show positive negative"]
+            f.write(struct.pack('<i', data))
+            data = header["Map"][m]["Bonferroni correction value"]
+            f.write(struct.pack('<i', data))
 
-        if header["File version"] >= 2:
-            # Expected binary data: char (1 byte) x 3
-            data = header["Map"][m]["RGB positive min"]
-            write_RGB_bytes(f, data)
-            data = header["Map"][m]["RGB positive max"]
-            write_RGB_bytes(f, data)
-
-            if header["File version"] >= 4:
-                data = header["Map"][m]["RGB negative min"]
+            if header["File version"] >= 2:
+                # Expected binary data: char (1 byte) x 3
+                data = header["Map"][m]["RGB positive min"]
                 write_RGB_bytes(f, data)
-                data = header["Map"][m]["RGB negative max"]
+                data = header["Map"][m]["RGB positive max"]
                 write_RGB_bytes(f, data)
 
-            # Expected binary data: char (1 byte)
-            data = header["Map"][m]["RGB or LUT"]
-            f.write(struct.pack('<B', data))
+                if header["File version"] >= 4:
+                    data = header["Map"][m]["RGB negative min"]
+                    write_RGB_bytes(f, data)
+                    data = header["Map"][m]["RGB negative max"]
+                    write_RGB_bytes(f, data)
+
+                # Expected binary data: char (1 byte)
+                data = header["Map"][m]["RGB or LUT"]
+                f.write(struct.pack('<B', data))
+
+                # Expected binary data: variable length string
+                data = header["Map"][m]["LUT file"]
+                write_variable_length_string(f, data)
+
+                # Expected binary data: float (4 bytes)
+                data = header["Map"][m]["Color transparency"]
+                f.write(struct.pack('<f', data))
 
             # Expected binary data: variable length string
-            data = header["Map"][m]["LUT file"]
+            data = header["Map"][m]["Name"]
             write_variable_length_string(f, data)
 
-            # Expected binary data: float (4 bytes)
-            data = header["Map"][m]["Color transparency"]
-            f.write(struct.pack('<f', data))
-
-        # Expected binary data: variable length string
-        data = header["Map"][m]["Name"]
-        write_variable_length_string(f, data)
-
-        # ---------------------------------------------------------------------
-        # Write SMP data
-        # ---------------------------------------------------------------------
-        for v in range(header["Nr vertices"]):
-            f.write(struct.pack('<f', data_smp[m, v]))
+            # -----------------------------------------------------------------
+            # Write SMP data
+            # -----------------------------------------------------------------
+            for v in range(header["Nr vertices"]):
+                f.write(struct.pack('<f', data_smp[m, v]))
