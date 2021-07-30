@@ -20,7 +20,7 @@ def read_smp(filename):
     header : dictionary
         Header containing SMP information. See "Map" entry to reach information
         of individual maps. Such as their thresholds, color maps etc.
-    data_smp : 2D numpy.array, [nr maps, nr vertices]
+    data_smp : 2D numpy.array, [nr vertices, nr maps]
         Number of vertices is equal to the SRF on which the SMP is created.
         Each vertex has a number of values corresponding to maps in the header.
 
@@ -52,7 +52,7 @@ def read_smp(filename):
         header["SRF file"] = data
 
         # ---------------------------------------------------------------------
-        data_smp = np.zeros((header["Nr maps"], header["Nr vertices"]),
+        data_smp = np.zeros((header["Nr vertices"], header["Nr maps"]),
                             dtype=np.float32)  # Prepare data array
         header["Map"] = []
         for m in range(header["Nr maps"]):
@@ -146,7 +146,7 @@ def read_smp(filename):
             # -----------------------------------------------------------------
             for v in range(header["Nr vertices"]):
                 data, = struct.unpack('<f', f.read(4))
-                data_smp[m, v] = data
+                data_smp[v, m] = data
 
     return header, data_smp
 
@@ -260,4 +260,4 @@ def write_smp(filename, header, data_smp):
             # Write SMP data
             # -----------------------------------------------------------------
             for v in range(header["Nr vertices"]):
-                f.write(struct.pack('<f', data_smp[m, v]))
+                f.write(struct.pack('<f', data_smp[v, m]))
