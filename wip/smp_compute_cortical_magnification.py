@@ -40,8 +40,6 @@ map_cmf = np.zeros(nr_vtx)
 # Compute cortical magnification for each vertex
 for v in range(nr_vtx):
     if map[v] != 0:
-        # ---------------------------------------------------------------------
-        # Compute distance in space between neighboring vertices
         cmf_sum = 0
         n_count = 0
         for n in nbr[v][1:]:  # Loop over neighbor vertices
