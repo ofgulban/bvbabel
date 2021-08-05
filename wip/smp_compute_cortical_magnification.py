@@ -6,8 +6,8 @@ from copy import copy
 import bvbabel
 
 
-FILE_SRF = "/home/faruk/Documents/test_bvbabel/srf_smp/surface.srf"
-FILE_SMP = "/home/faruk/Documents/test_bvbabel/srf_smp/maps.smp"
+FILE_SRF = "/home/faruk/Documents/test_bvbabel/SRF/surface.srf"
+FILE_SMP = "/home/faruk/Documents/test_bvbabel/SRF/maps.smp"
 
 # These values are required to compute vertex-wise distance in mm
 VMR_IMAGE_DIMS = 512  # Stands for e.g. 512 x 512 x 512, or 256 x 256 x 256
@@ -39,7 +39,7 @@ map_cmf = np.zeros(nr_vtx)
 
 # Compute cortical magnification for each vertex
 for v in range(nr_vtx):
-    if map[v] != 0:
+    if prf_xy[v, 0] != 0 and prf_xy[v, 1] != 0:
         cmf_sum = 0
         n_count = 0
         for n in nbr[v][1:]:  # Loop over neighbor vertices
