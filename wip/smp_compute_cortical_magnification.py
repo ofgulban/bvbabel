@@ -51,11 +51,14 @@ for v in range(nr_vtx):
             # Compute vertex to vertex PRF xy coordinates distance
             dist_vfield = np.linalg.norm(prf_xy[v, :] - prf_xy[n, :])
             # TODO: Convert Vertex to vertex PRF xy distance to vis. angle deg.
+            # http://stephenrho.github.io/visual-angle.html
+            rad = 2*atan2(dist_vfield, 198)
+            vang = rad*(180/pi)
 
             # Compute cortical magnification factor (CMF)
             # NOTE: CMF = "mm of cortical surface" / "degree of visual angle"
             if dist_vfield > 0:
-                cmf_sum += dist_cortex / dist_vfield
+                cmf_sum += dist_cortex / vang
                 n_count += 1
 
         # Normalize cumulative CMF with the number of non-zero neighbours
