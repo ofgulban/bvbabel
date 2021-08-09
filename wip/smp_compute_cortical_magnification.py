@@ -16,6 +16,7 @@ VMR_VOXEL_DIMS = 0.4  # Stands for e.g 0.4 x 0.4 x 0.4 mm^3 ot 1 x 1 x 1 mm^3
 # TODO: More information might be needed to compute visual angle degrees to
 # have the right numerical range in CMF computation.
 #   CMF = "millimeters of cortical surface" / "degree of visual angle"
+VIEW_DISTANCE = 198  # cm
 
 # =============================================================================
 # Load files
@@ -50,15 +51,16 @@ for v in range(nr_vtx):
 
             # Compute vertex to vertex PRF xy coordinates distance
             dist_vfield = np.linalg.norm(prf_xy[v, :] - prf_xy[n, :])
-            # TODO: Convert Vertex to vertex PRF xy distance to vis. angle deg.
-            # http://stephenrho.github.io/visual-angle.html
-            rad = 2*atan2(dist_vfield, 198)
-            vang = rad*(180/pi)
+
+            # Convert Vertex to vertex PRF xy distance to vis. angle deg.
+            # NOTE: <http://stephenrho.github.io/visual-angle.html>)
+            vang_rad = 2 * np.arctan2(dist_vfield, VIEW_DISTANCE)
+            vang_deg = vang_rad * (180 / np.pi)
 
             # Compute cortical magnification factor (CMF)
             # NOTE: CMF = "mm of cortical surface" / "degree of visual angle"
             if dist_vfield > 0:
-                cmf_sum += dist_cortex / vang
+                cmf_sum += dist_cortex / vang_deg
                 n_count += 1
 
         # Normalize cumulative CMF with the number of non-zero neighbours
