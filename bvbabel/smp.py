@@ -161,7 +161,7 @@ def write_smp(filename, header, data_smp):
     header : dictionary
         Header containing SMP information. See "Map" entry to reach information
         of individual maps. Such as their thresholds, color maps etc.
-    data_smp : 2D numpy.array, [nr maps, nr vertices]
+    data_smp : 2D numpy.array, [nr vertices, nr maps]
         Number of vertices is equal to the SRF on which the SMP is created.
         Each vertex has a number of values corresponding to maps in the header.
 
@@ -261,3 +261,55 @@ def write_smp(filename, header, data_smp):
             # -----------------------------------------------------------------
             for v in range(header["Nr vertices"]):
                 f.write(struct.pack('<f', data_smp[v, m]))
+
+
+def generate_smp(nr_maps=1, nr_vertices=64000):
+    """Generate Brainvoyager SMP file with default values."""
+
+    nr_vertices = int(nr_vertices)
+    nr_maps = int(nr_maps)
+
+    header = dict()
+    # Expected binary data: short int (2 bytes)
+    header["File version"] = 5
+    # Expected binary data: int (4 bytes)
+    header["Nr vertices"] = nr_vertices
+    # Expected binary data: short int (2 bytes)
+    header["Nr maps"] = nr_maps
+    # Expected binary data: variable length string
+    header["SRF file"] = ""
+
+    header["Map"] = list()
+    for m in range(int(nr_maps)):
+        header["Map"].append(dict())
+        header["Map"][m]["Map type"] = 15
+        header["Map"][m]["Cluster size"] = 4
+        header["Map"][m]["Cluster checkbox"] = 0
+        header["Map"][m]["Threshold min"] = 0.001
+        header["Map"][m]["Threshold max"] = 1.
+        header["Map"][m]["Threshold include greater than max"] = 1
+
+        # Expected binary data: int (4 bytes)
+        header["Map"][m]["Degrees of freedom 1"] = 100
+        header["Map"][m]["Degrees of freedom 2"] = 0
+        header["Map"][m]["Show positive negative"] = 3
+        header["Map"][m]["Bonferroni correction value"] = nr_vertices
+        header["Map"][m]["RGB positive min"] = np.array([1, 1, 1], dtype=np.uint8)
+        header["Map"][m]["RGB positive max"] = np.array([255, 1, 1], dtype=np.uint8)
+        header["Map"][m]["RGB negative min"] = np.array([1, 1, 1], dtype=np.uint8)
+        header["Map"][m]["RGB negative max"] = np.array([1, 1, 255], dtype=np.uint8)
+
+        # Expected binary data: char (1 byte)
+        header["Map"][m]["RGB or LUT"] = 0
+        # Expected binary data: variable length string
+        header["Map"][m]["LUT file"] = "<default>"
+        # Expected binary data: float (4 bytes)
+        header["Map"][m]["Color transparency"] = 1.0
+        # Expected binary data: variable length string
+        header["Map"][m]["Name"] = "Map {}".format(nr_maps)
+
+        # Generate data
+        data = np.ones((nr_vertices, nr_maps), dtype=np.float32)
+        data[0:nr_vertices//2] = 0.5
+
+    return header, data
