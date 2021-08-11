@@ -20,8 +20,8 @@ nr_vertices = mgh_data.shape[0]
 smp_header, smp_data = bvbabel.smp.generate_smp(nr_vertices=nr_vertices)
 
 # Update some fields with mgh information
-header["Map"][m]["Threshold min"] = np.min(mgh_data)
-header["Map"][m]["Threshold max"] = np.max(mgh_data)
+smp_header["Map"][0]["Threshold min"] = np.percentile(mgh_data, 5)
+smp_header["Map"][0]["Threshold max"] = np.percentile(mgh_data, 95)
 
 # Determine output name
 basename = FILE.split(os.extsep, 1)[0]
