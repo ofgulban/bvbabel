@@ -24,7 +24,8 @@ smp_header["Map"][0]["Threshold min"] = np.percentile(mgh_data, 5)
 smp_header["Map"][0]["Threshold max"] = np.percentile(mgh_data, 95)
 
 # Determine output name
-basename = FILE.split(os.extsep, 1)[0]
+basename = FILE[:-4]  # get rid of mgh extension
+basename = basename.replace(".", "_")
 outname = "{}_bvbabel.smp".format(basename)
 
 # Save SMP file while using the freesurfer MGH data
