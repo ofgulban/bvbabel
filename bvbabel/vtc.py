@@ -199,3 +199,55 @@ def write_vtc(filename, header, data_img):
                 f.write(struct.pack('<f', data_img[i]))
         else:
             raise("Unrecognized VTC data_img type.")
+
+
+# def generate_vtc():
+#     """Generate Brainvoyager VTC file with default values.
+#
+#     Returns
+#     -------
+#     header:
+#     data:
+#
+#     """
+#     header = dict()
+#     # Expected binary data: short int (2 bytes)
+#     header["File version"] = 0
+#
+#     # Expected binary data: variable-length string
+#     header["Source FMR name"] = ""
+#
+#     # Expected binary data: short int (2 bytes)
+#     header["Protocol attached"] = 0
+#
+#     # if header["Protocol attached"] > 0:
+#     #     # Expected binary data: variable-length string
+#     #     data = header["Protocol name"]
+#     #     write_variable_length_string(f, data)
+#
+#     # Expected binary data: short int (2 bytes)
+#     header["Current protocol index"] = 0
+#     header["Data type (1:short int, 2:float)"] = 2
+#     header["Nr time points"] = 100
+#     header["VTC resolution relative to VMR (1, 2, or 3)"] = 1
+#
+#     header["XStart"] = 0
+#     header["XEnd"] = 256
+#     header["YStart"] = 0
+#     header["YEnd"] = 256
+#     header["ZStart"] = 0
+#     header["ZEnd"] = 256
+#
+#     # Expected binary data: char (1 byte)
+#     header["L-R convention (0:unknown, 1:radiological, 2:neurological)"] = 1
+#     header["Reference space (0:unknown, 1:native, 2:ACPC, 3:Tal)"] = 1
+#
+#     # Expected binary data: char (4 bytes)
+#     header["TR (ms)"] = 1
+#
+#     # -------------------------------------------------------------------------
+#     # Create data
+#     data = np.random.random(256**3)
+#     data = data.reshape([256, 256, 256])
+#
+#     return header, data
