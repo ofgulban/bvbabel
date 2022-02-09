@@ -18,6 +18,7 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 | SMP         | Yes   | Yes   | Yes    |
 | SRF         | Yes   | No    | No     |
 | SSM         | Yes   | No    | No     |
+| SDM         | No    | No    | No     |
 | VMP         | Yes   | Yes   | No     |
 | VMR         | Yes   | Yes   | No     |
 | VOI         | Yes   | No    | No     |
