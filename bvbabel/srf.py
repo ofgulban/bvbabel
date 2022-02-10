@@ -202,3 +202,143 @@ def read_srf(filename):
         header["MTC name"] = data
 
     return header, mesh_data
+
+
+# =============================================================================
+def write_srf(filename, header, mesh_data):
+    """Protocol to write Brainvoyager SRF file.
+
+    Parameters
+    ----------
+    filename : string
+        Path to file.
+    header : dictionary
+        Pre-data and post-data headers.
+    mesh_data : dictionary
+        "vertices" : 2D numpy.array, (nr_vertices, XYZ coordinates)
+            Vertex coordinates (float32).
+        "vertex_normals" : 2D numpy.array, (nr_vertices, XYZ coordinates)
+            Vertex normals (float32).
+        "faces" : 2D numpy.array, (nr_vertices, vertex_indices)
+            Faces (triangles), as indices of vertices (int).
+        "vertex_colors" : 2D numpy.array, (nr_vertices, RGBA coordinates)
+            Vertex colors. Values are in between 0-1 (float32).
+        "vertex_neighbors" : list of lists, (nr vertices, nr neighbors)
+            Other vertex members if the faces each vertex is a member of (int).
+            Number of neighbors can vary but in conventional meshes they are
+            often 6 and occasionaly 5.
+        "strip sequence" : TODO.
+            TODO.
+
+    """
+
+    with open(filename, 'wb') as f:
+        # Expected binary data: float (4 bytes)
+        data = header["File version"]
+        f.write(struct.pack('<f', data))
+
+        # Expected binary data: int (4 bytes)
+        data = header["Surface type"]
+        f.write(struct.pack('<i', data))
+        data = header["Nr vertices"]
+        f.write(struct.pack('<i', data))
+        data = header["Nr triangles"]
+        f.write(struct.pack('<i', data))
+
+        # Expected binary data: float (4 bytes)
+        data = header["Mesh center X"]
+        f.write(struct.pack('<f', data))
+        data = header["Mesh center Y"]
+        f.write(struct.pack('<f', data))
+        data = header["Mesh center Z"]
+        f.write(struct.pack('<f', data))
+
+        # Vertex coordinates, Expected binary data: float (4 bytes)
+        for i in range(header["Nr vertices"]):
+            data = mesh_data["vertices"][i, 0]
+            f.write(struct.pack('<f', data))
+
+        for i in range(header["Nr vertices"]):
+            data = mesh_data["vertices"][i, 1]
+            f.write(struct.pack('<f', data))
+
+        for i in range(header["Nr vertices"]):
+            data = mesh_data["vertices"][i, 2]
+            f.write(struct.pack('<f', data))
+
+        # Vertex normals, Expected binary data: float (4 bytes)
+        vertex_normals = np.zeros((header["Nr vertices"], 3), dtype=np.float32)
+        for i in range(header["Nr vertices"]):
+            data = mesh_data["vertex normals"][i, 0]
+            f.write(struct.pack('<f', data))
+
+        for i in range(header["Nr vertices"]):
+            data = mesh_data["vertex normals"][i, 1]
+            f.write(struct.pack('<f', data))
+
+        for i in range(header["Nr vertices"]):
+            data = mesh_data["vertex normals"][i, 2]
+            f.write(struct.pack('<f', data))
+
+        if header["File version"] >= 1.0:
+            # Expected binary data: float (4 bytes)
+            data = header["Vertex convex curvature R"]
+            f.write(struct.pack('<f', data))
+            data = header["Vertex convex curvature G"]
+            f.write(struct.pack('<f', data))
+            data = header["Vertex convex curvature B"]
+            f.write(struct.pack('<f', data))
+            data = header["Vertex convex curvature A"]
+            f.write(struct.pack('<f', data))
+
+            data = header["Vertex concave curvature R"]
+            f.write(struct.pack('<f', data))
+            data = header["Vertex concave curvature G"]
+            f.write(struct.pack('<f', data))
+            data = header["Vertex concave curvature B"]
+            f.write(struct.pack('<f', data))
+            data = header["Vertex concave curvature A"]
+            f.write(struct.pack('<f', data))
+
+        # ---------------------------------------------------------------------
+        # Write vertex coloring data
+        # NOTE[Faruk]: Give constant color to all vertices for now. The
+        # vertex color structure is a bit complicated (see read_srf above).
+        for i in range(header["Nr vertices"]):
+            data = 127
+            f.write(struct.pack('<i', data))
+
+        # ---------------------------------------------------------------------
+        # Write nearest neighbour data for each vertex
+        for i in mesh_data["vertex neighbors"]:
+            for j in i:
+                # Expected binary data: int (4 bytes)
+                f.write(struct.pack('<i', j))
+
+        # ---------------------------------------------------------------------
+        # Write sequence of three indices to constituting triangles
+        for i in range(header["Nr triangles"]):
+            # Expected binary data: int (4 bytes)
+            data = mesh_data["faces"][i, 0]
+            f.write(struct.pack('<i', data))
+            data = mesh_data["faces"][i, 1]
+            f.write(struct.pack('<i', data))
+            data = mesh_data["faces"][i, 2]
+            f.write(struct.pack('<i', data))
+
+        # ---------------------------------------------------------------------
+        # # Expected binary data: int (4 bytes)
+        # data, = struct.unpack('<i', f.read(4))
+        # header["Nr triangle strip elements"] = data
+        # if header["Nr triangle strip elements"] > 0:
+        #     temp = np.zeros(header["Nr triangle strip elements"], dtype=np.int32)
+        #     for i in range(header["Nr triangle strip elements"]):
+        #         data, = struct.unpack('<i', f.read(4))
+        #         temp[i] = data
+        # mesh_data["Strip sequence"] = temp
+        #
+        # # Expected binary data: variable-length string
+        # data = read_variable_length_string(f)
+        # header["MTC name"] = data
+
+    return print("SRF saved.")
