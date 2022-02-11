@@ -2,7 +2,7 @@
 
 import struct
 import numpy as np
-from bvbabel.utils import read_variable_length_string
+from bvbabel.utils import read_variable_length_string, write_variable_length_string
 
 
 # =============================================================================
@@ -328,8 +328,8 @@ def write_srf(filename, header, mesh_data):
 
         # ---------------------------------------------------------------------
         # # Expected binary data: int (4 bytes)
-        # data, = struct.unpack('<i', f.read(4))
-        # header["Nr triangle strip elements"] = data
+        data = header["Nr triangle strip elements"]
+        f.write(struct.pack('<i', data))
         # if header["Nr triangle strip elements"] > 0:
         #     temp = np.zeros(header["Nr triangle strip elements"], dtype=np.int32)
         #     for i in range(header["Nr triangle strip elements"]):
@@ -337,8 +337,8 @@ def write_srf(filename, header, mesh_data):
         #         temp[i] = data
         # mesh_data["Strip sequence"] = temp
         #
-        # # Expected binary data: variable-length string
-        # data = read_variable_length_string(f)
-        # header["MTC name"] = data
+        # Expected binary data: variable-length string
+        data = header["MTC name"]
+        write_variable_length_string(f, data)
 
     return print("SRF saved.")
