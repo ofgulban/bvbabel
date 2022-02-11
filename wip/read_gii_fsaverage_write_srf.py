@@ -60,8 +60,6 @@ def compute_vertex_normals(verts, faces):
 # Extract vertices and faces
 verts = gii.darrays[0].data
 faces = gii.darrays[1].data
-faces = faces[:, [0, 2, 1]]  # change winding (BV normals point inward)
-norms = compute_vertex_normals(verts, faces)
 nr_verts = verts.shape[0]
 nr_faces = faces.shape[0]
 
@@ -79,7 +77,7 @@ norms = compute_vertex_normals(verts, faces)
 # verts[:, 2] = verts[:, 2] + center - mid[2];
 
 # -----------------------------------------------------------------------------
-# Compute_vertex_neighbours
+# Compute_vertex neighbours
 # TODO: Convert this inta a function.
 start_time = timeit.default_timer()
 nn = []
@@ -88,13 +86,18 @@ for i in range(nr_verts):  # loop over each vertex
     # Find faces that contain a given vertex id
     idx_faces = np.argwhere(temp == i)//3
     # Reduce to unique vertex ids
-    idx_verts = np.unique(faces[idx_faces])
-    # Remove the reference vertex id
-    idx_verts = idx_verts[idx_verts != i]
+    temp_faces = faces[idx_faces]
+    _, idx = np.unique(temp_faces, return_index=True)
+    idx_verts = []
+    for j in sorted(idx):
+        k = temp_faces.flatten()[j]
+        if k == i:  # Remove the reference vertex id
+            pass
+        else:
+            idx_verts.append(k)
     # Construct nearest neighbour array that starts with nr of neighbours
-    nn_array = list(idx_verts)
-    nn_array.insert(0, idx_verts.size)
-    nn.append(nn_array)
+    idx_verts.insert(0, len(idx_verts))
+    nn.append(idx_verts)
 elapsed = timeit.default_timer() - start_time
 print(elapsed)
 
@@ -129,5 +132,7 @@ mesh_data["vertex neighbors"] = nn
 
 outname = "{}_bvbabel.srf".format(basename)
 bvbabel.srf.write_srf(outname, header, mesh_data)
+
+mesh_data["vertex neighbors"]
 
 print("Finished.")
