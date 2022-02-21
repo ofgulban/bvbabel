@@ -111,11 +111,11 @@ for i in range(nr_verts):  # loop over each vertex
     idx_verts = []
     idx_verts.append(edges[0, 0])
     idx_verts.append(edges[0, 1])
-    n = 0
     edges_0 = edges[:, 0]
     edges_1 = edges[:, 1]
-    while n < nr_neighbors:
-        j = edges_1[edges_0 == idx_verts[-1]]
+    n = 0
+    while n < nr_neighbors-2:
+        j = edges_1[edges_0 == idx_verts[-1]][0]
         idx_verts.append(j)
         n += 1
 
