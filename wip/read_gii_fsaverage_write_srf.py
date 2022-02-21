@@ -58,6 +58,8 @@ def compute_vertex_normals(verts, faces):
 
 # =============================================================================
 # Extract vertices and faces
+print("Converting vertices and faces...")
+
 verts = gii.darrays[0].data
 faces = gii.darrays[1].data
 nr_verts = verts.shape[0]
@@ -78,6 +80,7 @@ norms = compute_vertex_normals(verts, faces)
 
 # -----------------------------------------------------------------------------
 # Compute_vertex neighbours
+print("Finding vertex neighbors...")
 # TODO: Convert this inta a function.
 start_time = timeit.default_timer()
 nn = []
@@ -85,18 +88,39 @@ temp = faces.flatten()  # This is done for speeding up argwhere
 for i in range(nr_verts):  # loop over each vertex
     # Find faces that contain a given vertex id
     idx_faces = np.argwhere(temp == i)//3
-    # Reduce to unique vertex ids
-    temp_faces = faces[idx_faces]
-    _, idx = np.unique(temp_faces, return_index=True)
+
+    # Reduce to unique vertex ids with consistent winding
+    # NOTE: If this part is wrong black triangles will appear when Brainvoyager
+    # updates the vertex normals.
+    temp_faces = np.squeeze(faces[idx_faces])
+    nr_neighbors = temp_faces.shape[0]
+
+    # Derive ordered edges
+    ord_edges = np.zeros((nr_neighbors, 3, 2), dtype=int)
+    for j, t in enumerate(temp_faces):
+        ord_edges[j, 0, :] = t[0:2]
+        ord_edges[j, 1, :] = t[1:3]
+        ord_edges[j, 2, :] = t[2], t[0]
+
+    # Remove edges that include the reference
+    x = ord_edges != i
+    x = x * x[:, :, ::-1]  # Boolean cast
+    edges = ord_edges[x].reshape((nr_neighbors, 2))
+
+    # Step through ordered edges in order
     idx_verts = []
-    for j in sorted(idx):
-        k = temp_faces.flatten()[j]
-        if k == i:  # Remove the reference vertex id
-            pass
-        else:
-            idx_verts.append(k)
+    idx_verts.append(edges[0, 0])
+    idx_verts.append(edges[0, 1])
+    n = 0
+    edges_0 = edges[:, 0]
+    edges_1 = edges[:, 1]
+    while n < nr_neighbors:
+        j = edges_1[edges_0 == idx_verts[-1]]
+        idx_verts.append(j)
+        n += 1
+
     # Construct nearest neighbour array that starts with nr of neighbours
-    idx_verts.insert(0, len(idx_verts))
+    idx_verts.insert(0, nr_neighbors)
     nn.append(idx_verts)
 elapsed = timeit.default_timer() - start_time
 print(elapsed)
