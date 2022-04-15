@@ -1,9 +1,15 @@
 """Read BrainVoyager FMR file format."""
 
+import time
+import os
+import numpy as np
+import nibabel as nb
+
 FILE = "/home/faruk/Documents/test_bvbabel/fmr/nifti_converted.fmr"
 OUT_NII = "/home/faruk/Documents/test_bvbabel/fmr/nifti_converted_bvbabel.nii.gz"
 
 # =============================================================================
+start = time.time()
 info_fmr = dict()
 info_pos = dict()
 info_tra = dict()
@@ -28,16 +34,15 @@ with open(FILE, 'r') as f:
         elif content[0] == "FileVersion":
             info_fmr[content[0]] = content[1]
         elif content[0] == "NrOfVolumes":
-            info_fmr[content[0]] = content[1]
+            info_fmr[content[0]] = int(content[1])
         elif content[0] == "NrOfSlices":
-            info_fmr[content[0]] = content[1]
+            info_fmr[content[0]] = int(content[1])
         elif content[0] == "NrOfSkippedVolumes":
             info_fmr[content[0]] = content[1]
         elif content[0] == "Prefix":
-            # info_fmr[content[0]] = content[1]  # May not need
-            info_fmr[content[0]] = content[1]
+            info_fmr[content[0]] = content[1].strip("\"")
         elif content[0] == "DataStorageFormat":
-            info_fmr[content[0]] = content[1]
+            info_fmr[content[0]] = int(content[1])
         elif content[0] == "DataType":
             info_fmr[content[0]] = content[1]
         elif content[0] == "TR":
@@ -53,9 +58,9 @@ with open(FILE, 'r') as f:
         elif content[0] == "SliceAcquisitionOrderVerified":
             info_fmr[content[0]] = content[1]
         elif content[0] == "ResolutionX":
-            info_fmr[content[0]] = content[1]
+            info_fmr[content[0]] = int(content[1])
         elif content[0] == "ResolutionY":
-            info_fmr[content[0]] = content[1]
+            info_fmr[content[0]] = int(content[1])
         elif content[0] == "LoadAMRFile":
             info_fmr[content[0]] = content[1]
             info_fmr[content[0]] = content[1]
@@ -160,6 +165,7 @@ with open(FILE, 'r') as f:
                     affine.append(float(val))
                 v += len(content)  # Count values
                 n += 1  # Iterate line
+            affine = np.reshape(np.asarray(affine), (4, 4))
             info_tra["Transformation matrix"] = affine
 
         # ---------------------------------------------------------------------
@@ -193,23 +199,96 @@ with open(FILE, 'r') as f:
 
 
 # =============================================================================
-# Print header information
-print("\nFMR information")
-for key, value in info_fmr.items():
-    print("  ", key, ":", value)
+def read_stc(filename, nr_slices, nr_volumes, res_x, res_y, data_format=2):
+    """Read Brainvoyager STC file.
 
-print("\nPosition information")
-for key, value in info_pos.items():
-    print("  ", key, ":", value)
+    Parameters
+    ----------
+    filename : string
+        Path to file.
+    nr_slices: integer
+        Number of slices in each measurement. Referred to as "NrOfSlices"
+        within the FMR text file.
+    nr_volumes: integer
+        Number of measurements (also called volumes or TRs). Referred to as
+        "NrOfVolumes" within the FMR text file.
+    res_x: integer
+        Number of voxels along each row in each slice. Referred to as
+        "ResolutionX" within the FMR text file.
+    res_y: integer
+        Number of voxels along each column in each slice. Referred to as
+        "ResolutionY" within the FMR text file.
+    data_format: integer, 1 or 2
+        Each data element (intensity value) is represented either in 2 bytes
+        (unsigned short) or in 4 bytes (float, default) as determined by the
+        "DataStorageFormat" entry in the FMR file.
 
-print("\nTransformation information")
-for key, value in info_tra.items():
-    print("  ", key, ":", value)
+    Returns
+    -------
+    data : 3D numpy.array
+        Image data.
 
-print("\nMultiband information")
-for key, value in info_multiband.items():
-    print("  ", key, ":", value)
+    """
+    if data_format == 1:
+        data_img = np.fromfile(filename_stc, dtype="<H", count=-1, sep="",
+                               offset=0)
+    elif data_format == 2:
+        data_img = np.fromfile(filename_stc, dtype="<f", count=-1, sep="",
+                               offset=0)
 
-# Test output data
-# img_nii = nb.Nifti1Image(data, affine=np.eye(4))
-# nb.save(img_nii, OUT_NII)
+    data_img = np.reshape(data_img, (nr_slices, nr_volumes, res_x, res_y))
+    data_img = np.transpose(data_img, (3, 2, 0, 1))
+    data_img = data_img[:, ::-1, ::, :]  # Flip BV axes
+
+    return data_img
+
+
+# Read STC data
+dirname = os.path.dirname(FILE)
+filename_stc = os.path.join(dirname, "{}.stc".format(info_fmr["Prefix"]))
+
+data_img = read_stc(filename_stc, nr_slices=info_fmr["NrOfSlices"],
+                    nr_volumes=info_fmr["NrOfVolumes"],
+                    res_x=info_fmr["ResolutionX"],
+                    res_y=info_fmr["ResolutionY"],
+                    data_format=info_fmr["DataStorageFormat"])
+
+# =============================================================================
+# # Print header information
+# print("\nFMR information")
+# for key, value in info_fmr.items():
+#     print("  ", key, ":", value)
+#
+# print("\nPosition information")
+# for key, value in info_pos.items():
+#     print("  ", key, ":", value)
+#
+# print("\nTransformation information")
+# for key, value in info_tra.items():
+#     print("  ", key, ":", value)
+#
+# print("\nMultiband information")
+# for key, value in info_multiband.items():
+#     print("  ", key, ":", value)
+
+end = time.time()
+print("  FMR and STC read in: {:.2f} seconds".format(end - start))
+
+# =============================================================================
+start = time.time()
+
+# Save nifti for testing
+basename = FILE.split(os.extsep, 1)[0]
+outname = "{}_bvbabel.nii.gz".format(basename)
+# img = nb.Nifti1Image(data_img, affine=np.eye(4))
+img = nb.Nifti1Image(data_img, affine=info_tra["Transformation matrix"])
+nb.save(img, outname)
+
+end = time.time()
+print("  Nifti saved in: {:.2f} seconds".format(end - start))
+
+print("  Data dimensions: {} {} {} {}".format(info_fmr["ResolutionX"],
+      info_fmr["ResolutionY"], info_fmr["NrOfSlices"], info_fmr["NrOfVolumes"])
+      )
+
+print("Finished.")
