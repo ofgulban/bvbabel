@@ -1,7 +1,7 @@
 """Read BrainVoyager FMR file format."""
 
 import time
-ssimport bvbabel
+import bvbabel
 
 FILE = "/home/faruk/Documents/test_bvbabel/fmr/nifti_converted.fmr"
 
