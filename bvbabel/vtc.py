@@ -129,7 +129,7 @@ def write_vtc(filename, header, data_img):
         Path to file.
     header : dictionary
         Pre-data and post-data headers.
-    data : 3D numpy.array
+    data_img : 3D numpy.array
         Image data.
 
     """
