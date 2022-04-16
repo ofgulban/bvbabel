@@ -8,7 +8,7 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 
 | File format | Read  | Write | Create |
 | ------------|-------|-------|--------|
-| FMR & STC   | No    | No    | No     |
+| FMR & STC   | Yes   | No    | No     |
 | GLM         | No    | No    | No     |
 | GTC         | Yes   | Yes   | No     |
 | MTC         | No    | No    | No     |
