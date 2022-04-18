@@ -211,8 +211,10 @@ def read_vmr(filename):
         # Expected binary data: char (1 byte)
         data, = struct.unpack('<B', f.read(1))
         header["LeftRightConvention"] = data  # modified in v4
-        data, = struct.unpack('<B', f.read(1))
-        header["ReferenceSpaceVMR"] = data  # new in v4
+
+        if header["File version"] >= 4:
+            data, = struct.unpack('<B', f.read(1))
+            header["ReferenceSpaceVMR"] = data  # new in v4
 
         # Expected binary data: float (4 bytes)
         data, = struct.unpack('<f', f.read(4))
@@ -372,8 +374,10 @@ def write_vmr(filename, header, data_img):
         # Expected binary data: char (1 byte)
         data = header["LeftRightConvention"]
         f.write(struct.pack('<B', data))
-        data = header["ReferenceSpaceVMR"]
-        f.write(struct.pack('<B', data))
+
+        if header["File version"] >= 4:
+            data = header["ReferenceSpaceVMR"]
+            f.write(struct.pack('<B', data))
 
         # Expected binary data: float (4 bytes)
         data = header["VoxelSizeX"]
