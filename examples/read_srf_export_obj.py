@@ -1,8 +1,6 @@
 """Read Brainvoyager srf and export Wavefront obj file."""
 
 import os
-import numpy as np
-import nibabel as nb
 import bvbabel
 from pprint import pprint
 
