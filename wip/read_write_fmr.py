@@ -13,4 +13,5 @@ header, data = bvbabel.fmr.read_fmr(FILE)
 basename = FILE.split(os.extsep, 1)[0]
 outname = "{}_bvbabel.fmr".format(basename)
 bvbabel.fmr.write_fmr(outname, header, data)
+
 print("Finished.")
