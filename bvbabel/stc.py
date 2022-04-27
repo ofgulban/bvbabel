@@ -5,7 +5,7 @@ import numpy as np
 
 
 # =============================================================================
-def read_stc(filename, nr_slices, nr_volumes, res_x, res_y, data_format=2):
+def read_stc(filename, nr_slices, nr_volumes, res_x, res_y, data_type=2):
     """Read Brainvoyager STC file.
 
     Parameters
@@ -24,10 +24,10 @@ def read_stc(filename, nr_slices, nr_volumes, res_x, res_y, data_format=2):
     res_y: integer
         Number of voxels along each column in each slice. Referred to as
         "ResolutionY" within the FMR text file.
-    data_format: integer, 1 or 2
+    data_type: integer, 1 or 2
         Each data element (intensity value) is represented either in 2 bytes
         (unsigned short) or in 4 bytes (float, default) as determined by the
-        "DataStorageFormat" entry in the FMR file.
+        "DataType" entry in the FMR file.
 
     Returns
     -------
@@ -35,10 +35,10 @@ def read_stc(filename, nr_slices, nr_volumes, res_x, res_y, data_format=2):
         Image data.
 
     """
-    if data_format == 1:
+    if data_type == 1:
         data_img = np.fromfile(filename, dtype="<H", count=-1, sep="",
                                offset=0)
-    elif data_format == 2:
+    elif data_type == 2:
         data_img = np.fromfile(filename, dtype="<f", count=-1, sep="",
                                offset=0)
 
@@ -50,7 +50,7 @@ def read_stc(filename, nr_slices, nr_volumes, res_x, res_y, data_format=2):
 
 
 # =============================================================================
-def write_stc(filename, data_img, data_format=2):
+def write_stc(filename, data_img, data_type=2):
     """Protocol to write Brainvoyager STC file.
 
     Parameters
@@ -59,10 +59,10 @@ def write_stc(filename, data_img, data_format=2):
         Path to file.
     data_img : 4D numpy.array, (x, y, slices, time)
         Image data.
-    data_format: integer, 1 or 2
+    data_type: integer, 1 or 2
         Each data element (intensity value) is represented either in 2 bytes
         (unsigned short) or in 4 bytes (float, default) as determined by the
-        "DataStorageFormat" entry in the FMR file.
+        "DataType" entry in the FMR file.
 
     """
     data_img = data_img[:, ::-1, :, :]  # Flip BV axes
@@ -70,10 +70,10 @@ def write_stc(filename, data_img, data_format=2):
     data_img = np.flatten(data_img)
 
     with open(filename, 'wb') as f:
-        if data_format == 1:
+        if data_type == 1:
             for i in range(data_img.size):
                 f.write(struct.pack('<H', data_img[i]))
-        elif data_format == 2:
+        elif data_type == 2:
             for i in range(data_img.size):
                 f.write(struct.pack('<f', data_img[i]))
         else:

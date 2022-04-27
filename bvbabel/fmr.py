@@ -54,7 +54,7 @@ def read_fmr(filename):
             elif content[0] == "DataStorageFormat":
                 header[content[0]] = int(content[1])
             elif content[0] == "DataType":
-                header[content[0]] = content[1]
+                header[content[0]] = int(content[1])
             elif content[0] == "TR":
                 header[content[0]] = content[1]
             elif content[0] == "InterSliceTime":
@@ -219,7 +219,7 @@ def read_fmr(filename):
                         nr_volumes=header["NrOfVolumes"],
                         res_x=header["ResolutionX"],
                         res_y=header["ResolutionY"],
-                        data_format=header["DataStorageFormat"])
+                        data_format=header["DataType"])
 
     return header, data_img
 
