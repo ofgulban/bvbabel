@@ -19,7 +19,7 @@ pprint(header)
 # Invert voxel intensities
 data = (data * -1) + np.max(data)
 
-# Export nifti
+# Save VTC
 bvbabel.vtc.write_vtc(OUTNAME, header, data)
 
 print("Finished.")
