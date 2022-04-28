@@ -6,23 +6,23 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 
 ### File format support overview
 
-| File format | Read  | Write | Create |
-| ------------|-------|-------|--------|
-| FMR & STC   | Yes   | No    | No     |
-| GLM         | No    | No    | No     |
-| GTC         | Yes   | Yes   | No     |
-| MTC         | No    | No    | No     |
-| OBJ         | No    | Yes   | No     |
-| POI         | No    | No    | No     |
-| PRT         | No    | No    | No     |
-| SMP         | Yes   | Yes   | Yes    |
-| SRF         | Yes   | No    | No     |
-| SSM         | Yes   | No    | No     |
-| SDM         | No    | No    | No     |
-| VMP         | Yes   | Yes   | No     |
-| VMR         | Yes   | Yes   | No     |
-| VOI         | Yes   | No    | No     |
-| VTC         | Yes   | Yes   | Yes    |
+| File format | Read  | Write | Create |Test data|
+| ------------|-------|-------|--------|---------|
+| FMR & STC   | Yes   | No    | No     |       No|
+| GLM         | No    | No    | No     |       No|
+| GTC         | Yes   | Yes   | No     |       No|
+| MTC         | No    | No    | No     |       No|
+| OBJ         | No    | Yes   | No     |       No|
+| POI         | No    | No    | No     |       No|
+| PRT         | No    | No    | No     |       No|
+| SRF         | Yes   | No    | No     |      Yes|
+| SMP         | Yes   | Yes   | Yes    |      Yes|
+| SSM         | Yes   | No    | No     |       No|
+| SDM         | No    | No    | No     |       No|
+| VMP         | Yes   | Yes   | No     |       No|
+| VMR         | Yes   | Yes   | No     |      Yes|
+| VOI         | Yes   | No    | No     |       No|
+| VTC         | Yes   | Yes   | Yes    |       No|
 
 ## Dependencies
 
