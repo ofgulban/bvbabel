@@ -8,14 +8,14 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 
 | File format | Read  | Write | Create |Test data|
 | ------------|-------|-------|--------|---------|
-| FMR & STC   | Yes   | No    | No     |       No|
+| FMR & STC   | Yes   | wip...| No     |       No|
 | GLM         | No    | No    | No     |       No|
 | GTC         | Yes   | Yes   | No     |       No|
 | MTC         | No    | No    | No     |       No|
 | OBJ         | No    | Yes   | No     |       No|
 | POI         | No    | No    | No     |       No|
 | PRT         | No    | No    | No     |       No|
-| SRF         | Yes   | No    | No     |      Yes|
+| SRF         | Yes   | wip...| No     |      Yes|
 | SMP         | Yes   | Yes   | Yes    |      Yes|
 | SSM         | Yes   | No    | No     |       No|
 | SDM         | No    | No    | No     |       No|
