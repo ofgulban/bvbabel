@@ -219,7 +219,7 @@ def read_fmr(filename):
                         nr_volumes=header["NrOfVolumes"],
                         res_x=header["ResolutionX"],
                         res_y=header["ResolutionY"],
-                        data_format=header["DataType"])
+                        data_type=header["DataType"])
 
     return header, data_img
 
