@@ -67,7 +67,7 @@ def write_stc(filename, data_img, data_type=2):
     """
     data_img = data_img[:, ::-1, :, :]  # Flip BV axes
     data_img = np.transpose(data_img, (2, 3, 1, 0))
-    data_img = np.flatten(data_img)
+    data_img = data_img.flatten()
 
     with open(filename, 'wb') as f:
         if data_type == 1:
