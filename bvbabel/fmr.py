@@ -2,7 +2,7 @@
 
 import os
 import numpy as np
-from bvbabel.stc import read_stc
+from bvbabel.stc import read_stc, write_stc
 
 
 # =============================================================================
@@ -97,6 +97,12 @@ def read_fmr(filename):
                 header[content[0]] = content[1]
             elif content[0] == "SliceThickness":
                 header[content[0]] = content[1]
+                # NOTE[Faruk]: This is duplicate entry that appears in position
+                # information header too. I decided to use the last occurance
+                # as the true value for both header entries. These two entries
+                # should always match if the source file is not manipulated in
+                # some way.
+                info_pos[content[0]] = content[1]
             elif content[0] == "SliceGap":
                 header[content[0]] = content[1]
             elif content[0] == "VoxelResolutionVerified":
@@ -143,14 +149,16 @@ def read_fmr(filename):
             elif content[0] == "FoVCols":
                 info_pos[content[0]] = content[1]
             elif content[0] == "SliceThickness":
-                info_pos[content[0]] = content[1]
+                # NOTE[Faruk]: This is duplicate entry that appears twice.
+                # ee header['SliceThickness'] section above.
+                pass
             elif content[0] == "GapThickness":
                 info_pos[content[0]] = content[1]
 
             # -----------------------------------------------------------------
             # Transformations section
             elif content[0] == "NrOfPastSpatialTransformations":
-                info_tra[content[0]] = content[1]
+                info_tra[content[0]] = int(content[1])
             elif content[0] == "NameOfSpatialTransformation":
                 info_tra[content[0]] = content[1]
             elif content[0] == "TypeOfSpatialTransformation":
@@ -191,7 +199,7 @@ def read_fmr(filename):
             elif content[0] == "MultibandFactor":
                 info_multiband[content[0]] = content[1]
             elif content[0] == "SliceTimingTableSize":
-                info_multiband[content[0]] = content[1]
+                info_multiband[content[0]] = int(content[1])
 
                 # NOTE(Faruk): I dont like this matrix reader but I don't see a
                 # more elegant way for now.
@@ -241,6 +249,8 @@ def write_fmr(filename, header, data_img):
     info_pos = header["Position information"]
     info_tra = header["Transformation information"]
     info_multiband = header["Multiband information"]
+    basepath = filename.split(os.extsep, 1)[0]
+    basename = os.path.basename(basepath)
 
     with open(filename, 'w') as f:
         f.write("\n")
@@ -253,7 +263,7 @@ def write_fmr(filename, header, data_img):
         f.write("NrOfSlices:                    {}\n".format(data))
         data = header["NrOfSkippedVolumes"]
         f.write("NrOfSkippedVolumes:            {}\n".format(data))
-        data = header["Prefix"]
+        data = basename  # NOTE: This is updated to new filename.
         f.write("Prefix:                        \"{}\"\n".format(data))
         data = header["DataStorageFormat"]
         f.write("DataStorageFormat:             {}\n".format(data))
@@ -348,8 +358,71 @@ def write_fmr(filename, header, data_img):
         f.write("FoVRows:          {}\n".format(data))
         data = info_pos["FoVCols"]
         f.write("FoVCols:          {}\n".format(data))
-        # data = info_pos["SliceThickness"]
-        # f.write("SliceThickness:   {}\n".format(data))
-        # data = info_pos["GapThickness"]
-        # f.write("GapThickness:     {}\n".format(data))
-        # f.write("\n")
+        data = info_pos["SliceThickness"]
+        f.write("SliceThickness:   {}\n".format(data))
+        data = info_pos["GapThickness"]
+        f.write("GapThickness:     {}\n".format(data))
+        f.write("\n")
+
+        # ---------------------------------------------------------------------
+        # Transformations section
+        if info_tra["NrOfPastSpatialTransformations"] > 0:
+            f.write("\n")
+            data = info_tra["NrOfPastSpatialTransformations"]
+            f.write("NrOfPastSpatialTransformations: {}\n".format(data))
+
+            f.write("\n")
+            data = info_tra["NameOfSpatialTransformation"]
+            f.write("NameOfSpatialTransformation: {}\n".format(data))
+            data = info_tra["TypeOfSpatialTransformation"]
+            f.write("TypeOfSpatialTransformation: {}\n".format(data))
+            data = info_tra["AppliedToFileName"]
+            f.write("AppliedToFileName:           {}\n".format(data))
+            data = info_tra["NrOfTransformationValues"]
+            f.write("NrOfTransformationValues:    {}\n".format(data))
+
+            affine = info_tra["Transformation matrix"]
+            for i in range(4):
+                f.write(" {:8.5f}  ".format(affine[i, 0]))
+                f.write(" {:8.5f}  ".format(affine[i, 1]))
+                f.write(" {:8.5f}  ".format(affine[i, 2]))
+                f.write(" {:8.5f}  \n".format(affine[i, 3]))
+            f.write("\n")
+
+        # -----------------------------------------------------------------
+        # This part only contains a single information
+        f.write("\n")
+        data = header["LeftRightConvention"]
+        f.write("LeftRightConvention: {}\n".format(data))
+        f.write("\n")
+
+        # -----------------------------------------------------------------
+        # Multiband section
+        if len(info_multiband.keys()) > 0:
+            f.write("\n")
+            data = info_multiband["FirstDataSourceFile"]
+            f.write("FirstDataSourceFile: {}\n".format(data))
+
+            f.write("\n")
+            data = info_multiband["MultibandSequence"]
+            f.write("MultibandSequence: {}\n".format(data))
+            data = info_multiband["MultibandFactor"]
+            f.write("MultibandFactor:   {}\n".format(data))
+
+            f.write("\n")
+            data = info_multiband["SliceTimingTableSize"]
+            f.write("SliceTimingTableSize: {}\n".format(data))
+            slice_timings = info_multiband["Slice timings"]
+            for i in range(info_multiband["SliceTimingTableSize"]):
+                f.write("{}\n".format(slice_timings[i]))
+
+            f.write("\n")
+            data = info_multiband["AcqusitionTime"]
+            f.write("AcqusitionTime: {}\n".format(data))
+            f.write("\n")
+
+    # -------------------------------------------------------------------------
+    # Write voxel data as a separate STC file
+    dirname = os.path.dirname(filename)
+    filename_stc = os.path.join(dirname, "{}.stc".format(basename))
+    write_stc(filename_stc, data_img, data_type=header["DataType"])
