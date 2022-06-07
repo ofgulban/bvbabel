@@ -426,3 +426,67 @@ def write_fmr(filename, header, data_img):
     dirname = os.path.dirname(filename)
     filename_stc = os.path.join(dirname, "{}.stc".format(basename))
     write_stc(filename_stc, data_img, data_type=header["DataType"])
+
+
+def generate_fmr():
+    """Generate Brainvoyager FMR file with default values."""
+    header = dict()
+    info_pos = dict()
+
+    header["FileVersion"] = 7
+    header["NrOfVolumes"] = 10
+    header["NrOfSlices"] = 64
+    header["NrOfSkippedVolumes"] = 0
+    header["Prefix"] = "bvbabel_default_fmr"
+    header["DataStorageFormat"] = 2
+    header["DataType"] = 2
+    header["TR"] = 2000
+    header["InterSliceTime"] = 31
+    header["TimeResolutionVerified"] = 1
+    header["TE"] = 30
+    header["SliceAcquisitionOrder"] = 5
+    header["SliceAcquisitionOrderVerified"] = 1
+    header["ResolutionX"] = 100
+    header["ResolutionY"] = 100
+    header["LoadAMRFile"] = ""
+    header["ShowAMRFile"] = 1
+    header["ImageIndex"] = 0
+    header["LayoutNColumns"] = 8
+    header["LayoutNRows"] = 8
+    header["LayoutZoomLevel"] = 1
+    header["SegmentSize"] = 10
+    header["SegmentOffset"] = 0
+    header["NrOfLinkedProtocols"] = 0
+    header["ProtocolFile"] = ""
+    header["InplaneResolutionX"] = 2
+    header["InplaneResolutionY"] = 2
+    header["SliceThickness"] = 2
+    header["SliceGap"] = 0
+    header["VoxelResolutionVerified"] = 1
+
+    # -------------------------------------------------------------------------
+    # Position information
+    info_pos["PosInfosVerified"] = 1
+    info_pos["CoordinateSystem"] = 1
+    info_pos["Slice1CenterX"] = -8.34283
+    info_pos["Slice1CenterY"] = -13.0168
+    info_pos["Slice1CenterZ"] = -12.9074
+    info_pos["SliceNCenterX"] = -8.34283
+    info_pos["SliceNCenterY"] = 23.4012
+    info_pos["SliceNCenterZ"] = 107.715
+    info_pos["RowDirX"] = 1
+    info_pos["RowDirY"] = 0
+    info_pos["RowDirZ"] = 0
+    info_pos["ColDirX"] = 0
+    info_pos["ColDirY"] = 0.957319
+    info_pos["ColDirZ"] = -0.289032
+    info_pos["NRows"] = 100
+    info_pos["NCols"] = 100
+    info_pos["FoVRows"] = 200
+    info_pos["FoVCols"] = 200
+    info_pos["SliceThickness"] = 2
+    info_pos["GapThickness"] = 0
+
+    header["Position information"] = info_pos
+    # -------------------------------------------------------------------------
+    # Transformations section
