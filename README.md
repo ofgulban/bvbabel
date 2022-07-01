@@ -23,6 +23,7 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 | VMR         | Yes   | Yes   | No     |      Yes|
 | VOI         | Yes   | No    | No     |       No|
 | VTC         | Yes   | Yes   | Yes    |       No|
+| MSK         | Yes   | Yes   | No     |       No|
 
 ## Dependencies
 
