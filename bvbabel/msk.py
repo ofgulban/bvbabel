@@ -64,7 +64,7 @@ def read_msk(filename):
 
 
 # =============================================================================
-def write_vtc(filename, header, data_img):
+def write_msk(filename, header, data_img):
     """Protocol to write Brainvoyager MSK file.
 
     Parameters
