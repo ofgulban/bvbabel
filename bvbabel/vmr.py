@@ -50,12 +50,8 @@ def read_vmr(filename):
         # coregistration routines as well as for proper visualization.
 
         # Expected binary data: unsigned short int (2 bytes)
-        if filename[-3:] == 'vmr':   # check file format used
-            data, = struct.unpack('<H', f.read(2))
-            header["File version"] = data
-            fformat = '<B'
-        else:   # asume 2 byte storage & no (post)header info for other filetypes
-            fformat = '<H'
+        data, = struct.unpack('<H', f.read(2))
+        header["File version"] = data
         data, = struct.unpack('<H', f.read(2))
         header["DimX"] = data
         data, = struct.unpack('<H', f.read(2))
@@ -78,10 +74,10 @@ def read_vmr(filename):
         #   BV (Y top -> bottom) [axis 1 after np.reshape] = Z in Tal space
         #   BV (Z left -> right) [axis 0 after np.reshape] = X in Tal space
 
-        # Expected binary data: unsigned char (1 or 2 byte(s), depending on fformat)
+        # Expected binary data: unsigned char (1 byte)
         data_img = np.zeros((header["DimZ"] * header["DimY"] * header["DimX"]),
-                            dtype=fformat)
-        data_img = np.fromfile(f, dtype=fformat, count=data_img.size, sep="", 
+                            dtype='<B')
+        data_img = np.fromfile(f, dtype='<B', count=data_img.size, sep="", 
                                offset=0)
         data_img = np.reshape(
             data_img, (header["DimZ"], header["DimY"], header["DimX"]))
@@ -107,9 +103,6 @@ def read_vmr(filename):
         # information further descries the data set, including the assumed
         # left-right convention, the reference space (e.g. Talairach after
         # normalization) and voxel resolution.
-
-        # Early return for headerless data (e.g. for v16 files)
-        if 'File version' not in header: return header, data_img
 
         if header["File version"] >= 3:
             # NOTE(Developer Guide 2.6): These four entries have been added in
@@ -267,12 +260,8 @@ def write_vmr(filename, header, data_img):
         # VMR Pre-Data Header
         # ---------------------------------------------------------------------
         # Expected binary data: unsigned short int (2 bytes)
-        if filename[-3:] == 'vmr':   # check file format used
-            data = header["File version"]
-            f.write(struct.pack('<H', data))
-            fformat = '<B'
-        else:   # asume 2 byte storage & no (post)header info for other filetypes
-            fformat = '<H'
+        data = header["File version"]
+        f.write(struct.pack('<H', data))
         data = header["DimX"]
         f.write(struct.pack('<H', data))
         data = header["DimY"]
@@ -287,13 +276,10 @@ def write_vmr(filename, header, data_img):
         data_img = data_img[::-1, ::-1, ::-1]  # Flip BV axes
         data_img = np.transpose(data_img, (0, 2, 1))  # BV to Tal
 
-        # Expected binary data: unsigned char (1 or 2 byte(s) depending on fformat)
+        # Expected binary data: unsigned char (1 or 2 byte)
         data_img = data_img.flatten()
         for i in range(data_img.size):
-            f.write(struct.pack(fformat, data_img[i]))
-
-        # Early return for (Post)headerless data (e.g. for v16 files)
-        if 'File version' not in header: return print("VMR saved.")
+            f.write(struct.pack('<B', data_img[i]))
 
         # ---------------------------------------------------------------------
         # VMR Post-Data Header
