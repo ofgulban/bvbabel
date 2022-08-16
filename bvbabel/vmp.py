@@ -221,8 +221,8 @@ def read_vmp(filename):
         DimZ = (header["ZEnd"] - header["ZStart"]) // VMP_resolution
         DimT = header["NrOfSubMaps"]
         data_img = np.zeros(DimT * DimZ * DimY * DimX)
-        data_img = np.fromfile(f, dtype='<f', count=data_img.size, sep="", 
-                                   offset=0)
+        data_img = np.fromfile(f, dtype='<f', count=data_img.size, sep="",
+                               offset=0)
         data_img = np.reshape(data_img, (DimT, DimZ, DimY, DimX))
         data_img = np.transpose(data_img, (1, 3, 2, 0))  # BV to Tal
         data_img = data_img[::-1, ::-1, ::-1, :]  # Flip BV axes

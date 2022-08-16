@@ -104,10 +104,10 @@ def read_vtc(filename):
         data_img = np.zeros(DimZ * DimY * DimX * DimT)
 
         if header["Data type (1:short int, 2:float)"] == 1:
-            data_img = np.fromfile(f, dtype='<h', count=data_img.size, sep="", 
+            data_img = np.fromfile(f, dtype='<h', count=data_img.size, sep="",
                                    offset=0)
         elif header["Data type (1:short int, 2:float)"] == 2:
-            data_img = np.fromfile(f, dtype='<f', count=data_img.size, sep="", 
+            data_img = np.fromfile(f, dtype='<f', count=data_img.size, sep="",
                                    offset=0)
         else:
             raise("Unrecognized VTC data_img type.")

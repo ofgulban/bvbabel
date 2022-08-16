@@ -231,7 +231,6 @@ def write_srf(filename, header, mesh_data):
             TODO.
 
     """
-
     with open(filename, 'wb') as f:
         # Expected binary data: float (4 bytes)
         data = header["File version"]

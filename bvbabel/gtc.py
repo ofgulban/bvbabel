@@ -46,7 +46,7 @@ def read_gtc(filename):
         #               DimT
         data_img = np.zeros(header["DimD"] * header["DimY"] * header["DimX"]
                             * header["DimT"], dtype=np.int32)
-        data_img = np.fromfile(f, dtype='<i', count=data_img.size, sep="", 
+        data_img = np.fromfile(f, dtype='<i', count=data_img.size, sep="",
                                offset=0)
 
         # Rearrange data

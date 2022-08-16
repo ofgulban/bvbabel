@@ -3,27 +3,31 @@
 import struct
 import numpy as np
 
+
 # =============================================================================
 def read_msk(filename):
     """Read Brainvoyager MSK file.
+
     Parameters
     ----------
     filename : string
         Path to file.
+
     Returns
     -------
     header : dictionary
         Pre-data header.
     data : 3D numpy.array
         Image data.
+
     """
     header = dict()
     with open(filename, 'rb') as f:
-        
+
         # Expected binary data: short int (2 bytes)
         data, = struct.unpack('<h', f.read(2))
         header["VTC resolution relative to VMR (1, 2, or 3)"] = data
-        
+
         # Expected binary data: short int (2 bytes)
         data, = struct.unpack('<h', f.read(2))
         header["XStart"] = data
@@ -43,13 +47,13 @@ def read_msk(filename):
         DimX = (header["XEnd"] - header["XStart"]) // VTC_resolution
         DimY = (header["YEnd"] - header["YStart"]) // VTC_resolution
         DimZ = (header["ZEnd"] - header["ZStart"]) // VTC_resolution
-        
+
         # ---------------------------------------------------------------------
         # Read MSK data
         # ---------------------------------------------------------------------
-        
+
         data_img = np.zeros(DimZ * DimY * DimX)
-        data_img = np.fromfile(f, dtype='<B', count=data_img.size, sep="", 
+        data_img = np.fromfile(f, dtype='<B', count=data_img.size, sep="",
                                offset=0)
         data_img = np.reshape(data_img, (DimZ, DimY, DimX))
         data_img = np.transpose(data_img, (0, 2, 1))  # BV to Tal
@@ -61,6 +65,7 @@ def read_msk(filename):
 # =============================================================================
 def write_msk(filename, header, data_img):
     """Protocol to write Brainvoyager MSK file.
+
     Parameters
     ----------
     filename : string
@@ -69,6 +74,7 @@ def write_msk(filename, header, data_img):
         Pre-data header.
     data_img : 3D numpy.array
         Image data.
+
     """
     with open(filename, 'wb') as f:
 

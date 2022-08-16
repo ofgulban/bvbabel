@@ -9,16 +9,19 @@ from bvbabel.utils import (read_variable_length_string,
 # =============================================================================
 def read_v16(filename):
     """Read Brainvoyager V16 file.
+
     Parameters
     ----------
     filename : string
         Path to file.
+
     Returns
     -------
     header : dictionary
         Pre-data and post-data headers.
     data : 3D numpy.array
         Image data.
+
     """
     header = dict()
     with open(filename, 'rb') as f:
@@ -28,7 +31,7 @@ def read_v16(filename):
         # NOTE: V16 files contain anatomical 3D data sets,
         # typically containing the whole brain (head) of subjects. The
         # intensity values are stored as a series of bytes. The V16 format
-        # stores each intensity value with two bytes (short integers). The V16 
+        # stores each intensity value with two bytes (short integers). The V16
         # format contains a small header followed by the actual data. V16
         # files do not contain a post-data header and have no file version
 
@@ -55,10 +58,10 @@ def read_v16(filename):
         #   BV (Y top -> bottom) [axis 1 after np.reshape] = Z in Tal space
         #   BV (Z left -> right) [axis 0 after np.reshape] = X in Tal space
 
-        # Expected binary data: unsigned short (1 or 2 byte(s), depending on fformat)
+        # Expected binary data: unsigned short (2 bytes)
         data_img = np.zeros((header["DimZ"] * header["DimY"] * header["DimX"]),
                             dtype='<H')
-        data_img = np.fromfile(f, dtype='<H', count=data_img.size, sep="", 
+        data_img = np.fromfile(f, dtype='<H', count=data_img.size, sep="",
                                offset=0)
         data_img = np.reshape(
             data_img, (header["DimZ"], header["DimY"], header["DimX"]))
@@ -72,6 +75,7 @@ def read_v16(filename):
 # =============================================================================
 def write_v16(filename, header, data_img):
     """Protocol to write Brainvoyager V16 file.
+
     Parameters
     ----------
     filename : string
@@ -80,6 +84,7 @@ def write_v16(filename, header, data_img):
         Header of V16 file (vmr headers are also accepted).
     data_img : numpy.array, 3D
         Image.
+
     """
     with open(filename, 'wb') as f:
         # ---------------------------------------------------------------------

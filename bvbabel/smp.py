@@ -265,7 +265,6 @@ def write_smp(filename, header, data_smp):
 
 def generate_smp(nr_maps=1, nr_vertices=64000):
     """Generate Brainvoyager SMP file with default values."""
-
     nr_vertices = int(nr_vertices)
     nr_maps = int(nr_maps)
 

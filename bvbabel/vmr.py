@@ -77,7 +77,7 @@ def read_vmr(filename):
         # Expected binary data: unsigned char (1 byte)
         data_img = np.zeros((header["DimZ"] * header["DimY"] * header["DimX"]),
                             dtype='<B')
-        data_img = np.fromfile(f, dtype='<B', count=data_img.size, sep="", 
+        data_img = np.fromfile(f, dtype='<B', count=data_img.size, sep="",
                                offset=0)
         data_img = np.reshape(
             data_img, (header["DimZ"], header["DimY"], header["DimX"]))
