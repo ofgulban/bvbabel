@@ -46,9 +46,8 @@ def read_gtc(filename):
         #               DimT
         data_img = np.zeros(header["DimD"] * header["DimY"] * header["DimX"]
                             * header["DimT"], dtype=np.int32)
-        for i in range(data_img.size):
-            data, = struct.unpack('<i', f.read(4))
-            data_img[i] = data
+        data_img = np.fromfile(f, dtype='<i', count=data_img.size, sep="", 
+                               offset=0)
 
         # Rearrange data
         data_img = np.reshape(data_img, (header["DimD"], header["DimY"],

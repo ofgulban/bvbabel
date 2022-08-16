@@ -76,9 +76,9 @@ def read_vmr(filename):
 
         # Expected binary data: unsigned char (1 byte)
         data_img = np.zeros((header["DimZ"] * header["DimY"] * header["DimX"]),
-                            dtype="<B")
-        for i in range(data_img.size):
-            data_img[i], = struct.unpack('<B', f.read(1))
+                            dtype='<B')
+        data_img = np.fromfile(f, dtype='<B', count=data_img.size, sep="", 
+                               offset=0)
         data_img = np.reshape(
             data_img, (header["DimZ"], header["DimY"], header["DimX"]))
 
@@ -276,7 +276,7 @@ def write_vmr(filename, header, data_img):
         data_img = data_img[::-1, ::-1, ::-1]  # Flip BV axes
         data_img = np.transpose(data_img, (0, 2, 1))  # BV to Tal
 
-        # Expected binary data: unsigned char (1 byte)
+        # Expected binary data: unsigned char (1 or 2 byte)
         data_img = data_img.flatten()
         for i in range(data_img.size):
             f.write(struct.pack('<B', data_img[i]))

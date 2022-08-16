@@ -11,6 +11,7 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 | FMR & STC   | Yes   | Yes   | No     |       No|
 | GLM         | No    | No    | No     |       No|
 | GTC         | Yes   | Yes   | No     |       No|
+| MSK         | Yes   | Yes   | No     |       No|
 | MTC         | No    | No    | No     |       No|
 | OBJ         | No    | Yes   | No     |       No|
 | POI         | No    | No    | No     |       No|
