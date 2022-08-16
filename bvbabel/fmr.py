@@ -285,7 +285,10 @@ def write_fmr(filename, header, data_img):
         f.write("ResolutionX:                   {}\n".format(data))
         data = header["ResolutionY"]
         f.write("ResolutionY:                   {}\n".format(data))
-        data = header["LoadAMRFile"]
+        if "LoadAMRFile" in header:
+            data = header["LoadAMRFile"]
+        else:
+            data = ""
         f.write("LoadAMRFile:                   \"{}\"\n".format(data))
         data = header["ShowAMRFile"]
         f.write("ShowAMRFile:                   {}\n".format(data))
@@ -303,7 +306,10 @@ def write_fmr(filename, header, data_img):
         f.write("SegmentOffset:                 {}\n".format(data))
         data = header["NrOfLinkedProtocols"]
         f.write("NrOfLinkedProtocols:           {}\n".format(data))
-        data = header["ProtocolFile"]
+        if "ProtocolFile" in header:
+            data = header["ProtocolFile"]
+        else:
+            data = ""
         f.write("ProtocolFile:                  \"{}\"\n".format(data))
         data = header["InplaneResolutionX"]
         f.write("InplaneResolutionX:            {}\n".format(data))
