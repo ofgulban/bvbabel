@@ -111,3 +111,20 @@ def write_v16(filename, header, data_img):
             f.write(struct.pack('<H', data_img[i]))
 
     return print("V16 saved.")
+
+
+def create_v16():
+    """Generate Brainvoyager V16 file with default values."""
+    header = dict()
+    # Expected binary data: unsigned short int (2 bytes)
+    header["DimX"] = 256
+    header["DimY"] = 256
+    header["DimZ"] = 256
+
+    # -------------------------------------------------------------------------
+    # Create data
+    dims = [header["DimX"], header["DimY"], header["DimZ"]]
+    data = np.random.randint(0, high=65535, size=dims, dtype=np.uint16)
+    data = data.reshape(dims)
+
+    return header, data
