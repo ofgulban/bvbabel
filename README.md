@@ -1,4 +1,4 @@
-# <img src="visuals/bvbabel_logo.svg" width=256 /> [work in progress...]
+# <img src="visuals/bvbabel_logo.svg" width=256 /> *[work in progress...]*
 
 A lightweight Python library for reading & writing [BrainVoyager](https://www.brainvoyager.com/products/brainvoyager.html) file formats.
 
