@@ -58,4 +58,5 @@ python setup.py install
 This project is licensed under [MIT](./LICENSE).
 
 ## Acknowledgments
+<img src="visuals/brain_innovation_logo.png" width=420 align="right" />
 Development and maintenance of this project is actively supported by [Brain Innovation](https://www.brainvoyager.com/) as the main developer ([Omer Faruk Gulban](https://github.com/ofgulban)) works there.
