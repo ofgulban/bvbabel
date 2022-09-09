@@ -1,6 +1,4 @@
-# bvbabel (work in progress)
-
-<img src="visuals/bvbabel_logo.svg" width=420 align="right" />
+<img src="visuals/bvbabel_logo.svg" width=220 />
 
 A lightweight Python library for reading & writing [BrainVoyager](https://www.brainvoyager.com/products/brainvoyager.html) file formats.
 
