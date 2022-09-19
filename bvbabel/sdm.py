@@ -30,10 +30,6 @@ def read_sdm(filename):
     saved as header["PredictorNames"].
 
     """
-    __version__ = "0.1"
-    __date__ = "2022-09-12"
-    __author__ = "HB"
-
     # Read non-empty lines of the input text file
     with open(filename, 'r') as f:
         lines = [r for r in (line.strip() for line in f) if r]
