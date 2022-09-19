@@ -1,12 +1,8 @@
 """Read Brainvoyager sdm (single subject design matrix / motion estimates)."""
 
 import bvbabel
-import numpy
-import sys
 
-
-#FILE = '/Volumes/ELEMENTS/Data/Data_PluginsTesting_New/Data_Python_bvbabel/SDM/FacesHousesDesignMatrix.sdm'
-FILE = '/Volumes/ELEMENTS/Data/Data_PluginsTesting_New/Data_Python_bvbabel/SDM/sub-01_ses-04_task-blocked_run-1_bold_3DMC.sdm'
+FILE = '/home/faruk/Documents/test_bvbabel/sdm/faces_houses_design_matrix.sdm'
 
 # =============================================================================
 
@@ -19,11 +15,11 @@ for key, value in header.items():
     print("  ", key, ":", value)
 
 print("\nSDM data")
-txt = ''     
+txt = ''
 for datapoint in range(header["NrOfDataPoints"]):
     for predno in range(header["NrOfPredictors"]):
         txt += ' ' + "{:>10.6f}".format(data[datapoint][predno])
     txt += '\n'
-print(txt)        
-    
+print(txt)
+
 print("Finished.")
