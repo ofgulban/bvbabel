@@ -5,7 +5,7 @@ import bvbabel
 import numpy as np
 
 FILE = "/home/faruk/Documents/test_bvbabel/vtc2/anatomy_tmean.vmr"
-PAD = 10  # x, y, z axes will be zero padded this many times
+PAD = 1  # x, y, z axes will be zero padded this many times
 
 # =============================================================================
 # Load vmr
@@ -15,7 +15,7 @@ header, data_img = bvbabel.vmr.read_vmr(FILE)
 dims = data_img.shape
 data_new = np.zeros([dims[0]+PAD, dims[1]+PAD, dims[2]+PAD],
                     dtype=data_img.dtype)
-data_new[:dims[0], :dims[1], :dims[2]] = data_img
+data_new[PAD:dims[0]+PAD, PAD:dims[1]+PAD, PAD:dims[2]+PAD] = data_img
 
 # Update header
 header["DimX"] += PAD
