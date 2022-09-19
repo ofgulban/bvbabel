@@ -434,8 +434,8 @@ def write_fmr(filename, header, data_img):
     write_stc(filename_stc, data_img, data_type=header["DataType"])
 
 
-def generate_fmr():
-    """Generate Brainvoyager FMR file with default values."""
+def create_fmr():
+    """Create Brainvoyager FMR file with default values."""
     header = dict()
     info_pos = dict()
 

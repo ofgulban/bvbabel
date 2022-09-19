@@ -263,8 +263,8 @@ def write_smp(filename, header, data_smp):
                 f.write(struct.pack('<f', data_smp[v, m]))
 
 
-def generate_smp(nr_maps=1, nr_vertices=64000):
-    """Generate Brainvoyager SMP file with default values."""
+def create_smp(nr_maps=1, nr_vertices=64000):
+    """Create Brainvoyager SMP file with default values."""
     nr_vertices = int(nr_vertices)
     nr_maps = int(nr_maps)
 
@@ -307,7 +307,7 @@ def generate_smp(nr_maps=1, nr_vertices=64000):
         # Expected binary data: variable length string
         header["Map"][m]["Name"] = "Map {}".format(nr_maps)
 
-        # Generate data
+        # Create data
         data = np.ones((nr_vertices, nr_maps), dtype=np.float32)
         data[0:nr_vertices//2] = 0.5
 

@@ -201,8 +201,8 @@ def write_vtc(filename, header, data_img):
             raise("Unrecognized VTC data_img type.")
 
 
-def generate_vtc():
-    """Generate Brainvoyager VTC file with default values."""
+def create_vtc():
+    """Create Brainvoyager VTC file with default values."""
     header = dict()
     # Expected binary data: short int (2 bytes)
     header["File version"] = 3

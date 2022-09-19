@@ -114,7 +114,7 @@ def write_v16(filename, header, data_img):
 
 
 def create_v16():
-    """Generate Brainvoyager V16 file with default values."""
+    """Create Brainvoyager V16 file with default values."""
     header = dict()
     # Expected binary data: unsigned short int (2 bytes)
     header["DimX"] = 256
