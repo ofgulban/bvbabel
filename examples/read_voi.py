@@ -13,10 +13,10 @@ print("\nVOI header")
 for key, value in header.items():
     print("  ", key, ":", value)
 
+# Print data
 print("\nVOI data")
 for d in data:
     for key, value in d.items():
-
         print("  ", key, ":", value)
 
 print("Finished.")
