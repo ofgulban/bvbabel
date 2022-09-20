@@ -1,11 +1,12 @@
-"""Read Brainvoyager voi."""
+"""Read and write BrainVoyager VOI (voxels of interest) file."""
 
+import os
 import bvbabel
 
-FILE = "/home/faruk/Documents/test_bvbabel/voi/sub-07_leftMT_Sphere16radius.voi"
+FILE = "/home/faruk/Git/bvbabel/test_data/sub-test03.voi"
 
 # =============================================================================
-# Load voi
+# Load VOI
 header, data = bvbabel.voi.read_voi(FILE)
 
 # Print header information
@@ -18,5 +19,10 @@ print("\nVOI data")
 for d in data:
     for key, value in d.items():
         print("  ", key, ":", value)
+
+# Save VOI
+basename = FILE.split(os.extsep, 1)[0]
+outname = "{}_bvbabel.voi".format(basename)
+bvbabel.voi.write_voi(outname, header, data)
 
 print("Finished.")

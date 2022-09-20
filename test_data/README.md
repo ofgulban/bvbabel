@@ -6,8 +6,9 @@
 - [x] Add VMR file version 4 example with transformations in header.
 - [x] Add SRF example
 - [x] Add SMP example
-- [x] Add VTC example
 - [x] Add SDM example
+- [x] Add VTC example
+- [x] Add VOI example
 - [ ] Add FMR example
 - [ ] Add TRF example
 - [ ] Write test scripts which uses these data
