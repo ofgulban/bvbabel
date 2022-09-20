@@ -20,13 +20,13 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 | SRF         | Yes   | wip...| No     |      Yes|
 | SMP         | Yes   | Yes   | Yes    |      Yes|
 | SSM         | Yes   | No    | No     |       No|
-| SDM         | No    | No    | No     |       No|
+| SDM         | Yes   | No    | No     |       No|
 | TRF         | No    | No    | No     |       No|
 | V16         | Yes   | Yes   | Yes    |       No|
 | VMP         | Yes   | Yes   | No     |       No|
 | VMR         | Yes   | Yes   | No     |      Yes|
 | VOI         | Yes   | No    | No     |       No|
-| VTC         | Yes   | Yes   | Yes    |       No|
+| VTC         | Yes   | Yes   | Yes    |      Yes|
 
 ## Dependencies
 
