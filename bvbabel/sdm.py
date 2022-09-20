@@ -59,7 +59,7 @@ def read_sdm(filename):
 
     # Parse column names
     col_name_row = 6
-    col_name = [i.strip("\"") for i in lines[col_name_row].split(" ") if i]
+    col_name = [i.strip("\"") for i in lines[col_name_row].split("\" \"") if i]
 
     # Parse column data
     col_values_row = 7

@@ -3,7 +3,7 @@
 import bvbabel
 import numpy as np
 
-FILE = '/home/faruk/Documents/test_bvbabel/sdm/motion_parameters.sdm'
+FILE = '/home/faruk/Git/bvbabel/test_data/sub-test04.sdm'
 
 # =============================================================================
 
