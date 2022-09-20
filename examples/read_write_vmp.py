@@ -1,13 +1,10 @@
-"""Read Brainvoyager vmr and export nifti."""
+"""Read and write BrainVoyager VMP (volume map) file."""
 
 import os
-import numpy as np
-import nibabel as nb
 import bvbabel
 import pprint
 
 FILE = "/home/faruk/Documents/test_bvbabel/sub-01_ses-01_RightHand.vmp"
-OUTNAME = "/home/faruk/Documents/test_bvbabel/sub-01_ses-01_RightHand_bvbabel.vmp"
 
 # =============================================================================
 # Load vmr
@@ -20,6 +17,8 @@ pprint.pprint(header)
 data[..., 0] *= -1
 
 # Write VMP
-bvbabel.vmp.write_vmp(OUTNAME, header, data)
+basename = FILE.split(os.extsep, 1)[0]
+outname = "{}_bvbabel.vmp".format(basename)
+bvbabel.vmp.write_vmp(outname, header, data)
 
 print("Finished.")

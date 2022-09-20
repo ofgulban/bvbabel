@@ -1,4 +1,4 @@
-"""Read and write a Brainvoyager VTC file."""
+"""Read and write BrainVoyager VTC (volume time course) file."""
 
 import os
 import bvbabel
@@ -15,7 +15,7 @@ pprint(header)
 
 # Save VTC
 basename = FILE.split(os.extsep, 1)[0]
-outname = "{}_bvbabel_False.vtc".format(basename)
+outname = "{}_bvbabel.vtc".format(basename)
 bvbabel.vtc.write_vtc(outname, header, data, rearrange_data_axes=False)
 
 print("Finished.")

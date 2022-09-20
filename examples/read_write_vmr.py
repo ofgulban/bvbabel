@@ -1,4 +1,4 @@
-"""Read Brainvoyager vmr and export nifti."""
+"""Read and write BrainVoyager VMR (anatomical MRI) file."""
 
 import os
 import bvbabel

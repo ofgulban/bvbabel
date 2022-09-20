@@ -1,11 +1,11 @@
-"""Read Brainvoyager vtc and export nifti."""
+"""Read and write BrainVoyager GTC (grid time course) file."""
 
+import os
 import numpy as np
 import bvbabel
 from pprint import pprint
 
 FILE = "/home/faruk/Documents/test_bvbabel/gtc/gtc_test.gtc"
-OUTNAME = "/home/faruk/Documents/test_bvbabel/gtc/gtc_test_bvbabel.gtc"
 
 # =============================================================================
 # Load vmr
@@ -18,6 +18,8 @@ pprint(header)
 data = (data * -1) + np.max(data)
 
 # Export nifti
-bvbabel.gtc.write_gtc(OUTNAME, header, data)
+basename = FILE.split(os.extsep, 1)[0]
+outname = "{}_bvbabel.gtc".format(basename)
+bvbabel.gtc.write_gtc(outname, header, data)
 
 print("Finished.")

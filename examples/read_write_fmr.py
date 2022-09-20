@@ -1,4 +1,4 @@
-"""Read BrainVoyager FMR file format."""
+"""Read and write BrainVoyager FMR (functional MRI data) file."""
 
 import os
 import bvbabel

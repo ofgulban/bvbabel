@@ -1,4 +1,4 @@
-"""Read Brainvoyager smp file."""
+"""Read and write BrainVoyager SMP (surface map) file."""
 
 import os
 import bvbabel
