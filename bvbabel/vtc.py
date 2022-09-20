@@ -7,13 +7,26 @@ from bvbabel.utils import write_variable_length_string
 
 
 # =============================================================================
-def read_vtc(filename):
+def read_vtc(filename, rearrange_data_axes=True):
     """Read Brainvoyager VTC file.
 
     Parameters
     ----------
     filename : string
         Path to file.
+    rearrange_data_axes : bool
+        When 'True' axes are intended to follow RAS terminology, where:
+            - 1st axis (X) is "R"ight to Left.
+            - 2nd axis (Y) is "A"nterior to Posterior.
+            - 3rd axis (Z) is "S"uperior to Inferior.
+        When 'False', axes are intended to follow ASL terminology (used
+        internally in BrainVoyager), where:
+            - 1st axis (Z) is "A"nterior to Posterior.
+            - 2nd axis (Y) is "S"uperior to Inferior.
+            - 3rd axis (X) is "L"eft to Right.
+        Note that `ZStart - ZEnd` indicates the 1st data axis in the internal
+        Brainvoyager terminology. However `ZStart - ZEnd` indicates the 3rd
+        axis in RAS terminology. Time is in the 4th axis in both cases.
 
     Returns
     -------
@@ -113,14 +126,16 @@ def read_vtc(filename):
             raise("Unrecognized VTC data_img type.")
 
         data_img = np.reshape(data_img, (DimZ, DimY, DimX, DimT))
-        data_img = np.transpose(data_img, (0, 2, 1, 3))  # BV to Tal
-        data_img = data_img[::-1, ::-1, ::-1, :]  # Flip BV axes
+
+        if rearrange_data_axes is True:
+            data_img = np.transpose(data_img, (2, 1, 0, 3))  # BV to Tal
+            data_img = data_img[::-1, :, :, :]  # Flip BV axes
 
     return header, data_img
 
 
 # =============================================================================
-def write_vtc(filename, header, data_img):
+def write_vtc(filename, header, data_img, rearrange_data_axes=True):
     """Protocol to write Brainvoyager VTC file.
 
     Parameters
@@ -131,6 +146,19 @@ def write_vtc(filename, header, data_img):
         Pre-data and post-data headers.
     data_img : 3D numpy.array
         Image data.
+    rearrange_data_axes : bool
+        When 'True' axes are intended to follow RAS terminology, where:
+            - 1st axis (X) is "R"ight to Left.
+            - 2nd axis (Y) is "A"nterior to Posterior.
+            - 3rd axis (Z) is "S"uperior to Inferior.
+        When 'False', axes are intended to follow ASL terminology (used
+        internally in BrainVoyager), where:
+            - 1st axis (Z) is "A"nterior to Posterior.
+            - 2nd axis (Y) is "S"uperior to Inferior.
+            - 3rd axis (X) is "L"eft to Right.
+        Note that `ZStart - ZEnd` indicates the 1st data axis in the internal
+        Brainvoyager terminology. However `ZStart - ZEnd` indicates the 3rd
+        axis in RAS terminology. Time is in the 4th axis in both cases.
 
     """
     with open(filename, 'wb') as f:
@@ -187,8 +215,10 @@ def write_vtc(filename, header, data_img):
         # ---------------------------------------------------------------------
         # Write VTC data
         # ---------------------------------------------------------------------
-        data_img = data_img[::-1, ::-1, ::-1, :]  # Flip BV axes
-        data_img = np.transpose(data_img, (0, 2, 1, 3))  # Tal to BV
+        if rearrange_data_axes is True:
+            data_img = data_img[::-1, :, :, :]  # RAS to LAS
+            data_img = np.transpose(data_img, (2, 1, 0, 3))  # RAS to SAL (BV)
+
         data_img = np.reshape(data_img, data_img.size)
 
         if header["Data type (1:short int, 2:float)"] == 1:
@@ -201,8 +231,26 @@ def write_vtc(filename, header, data_img):
             raise("Unrecognized VTC data_img type.")
 
 
-def create_vtc():
-    """Create Brainvoyager VTC file with default values."""
+def create_vtc(rearrange_data_axes=True):
+    """Create Brainvoyager VTC file with default values.
+
+    Parameters
+    ----------
+    rearrange_data_axes : bool
+        When 'True' axes are intended to follow RAS terminology, where:
+            - 1st axis (X) is "R"ight to Left.
+            - 2nd axis (Y) is "A"nterior to Posterior.
+            - 3rd axis (Z) is "S"uperior to Inferior.
+        When 'False', axes are intended to follow ASL terminology (used
+        internally in BrainVoyager), where:
+            - 1st axis (Z) is "A"nterior to Posterior.
+            - 2nd axis (Y) is "S"uperior to Inferior.
+            - 3rd axis (X) is "L"eft to Right.
+        Note that `ZStart - ZEnd` indicates the 1st data axis in the internal
+        Brainvoyager terminology. However `ZStart - ZEnd` indicates the 3rd
+        axis in RAS terminology. Time is in the 4th axis in both cases.
+
+    """
     header = dict()
     # Expected binary data: short int (2 bytes)
     header["File version"] = 3
@@ -226,12 +274,12 @@ def create_vtc():
     header["Nr time points"] = 10
     header["VTC resolution relative to VMR (1, 2, or 3)"] = 1
 
-    header["XStart"] = 100
-    header["XEnd"] = 200
+    header["XStart"] = 90
+    header["XEnd"] = 210
     header["YStart"] = 100
     header["YEnd"] = 200
-    header["ZStart"] = 100
-    header["ZEnd"] = 200
+    header["ZStart"] = 110
+    header["ZEnd"] = 190
 
     # Expected binary data: char (1 byte)
     header["L-R convention (0:unknown, 1:radiological, 2:neurological)"] = 1
@@ -242,7 +290,14 @@ def create_vtc():
 
     # -------------------------------------------------------------------------
     # Create data
-    dims = [100, 100, 100, 10]
+    DimX = header["XEnd"] - header["XStart"]
+    DimY = header["YEnd"] - header["YStart"]
+    DimZ = header["ZEnd"] - header["ZStart"]
+    DimT = header["Nr time points"]
+    if rearrange_data_axes is True:
+        dims = [DimX, DimY, DimZ, DimT]
+    else:
+        dims = [DimZ, DimY, DimX, DimT]
     data = np.random.random(np.prod(dims)) * 225  # 225 for BV visualization
     data = data.reshape(dims)
     data = data.astype(np.short)  # NOTE: float vtc does not seem to work in BV
