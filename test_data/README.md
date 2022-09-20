@@ -3,9 +3,10 @@
 
 # TODO
 - [x] Add VMR file version 2 example
-- [ ] Add VMR file version 4 example with multiple transformations in header.
-- [ ] Add FMR example
+- [x] Add VMR file version 4 example with transformations in header.
+- [x] Add VTC example
 - [x] Add SRF example 
 - [x] Add SMP example 
-- [ ] Write test scripts
+- [ ] Add FMR example
+- [ ] Write test scripts which uses these data
 - [ ] Make sure to cover example data at: <https://brainvoyager.com/tbv/sampledata/index.html>
