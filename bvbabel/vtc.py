@@ -286,7 +286,7 @@ def create_vtc(rearrange_data_axes=True):
     header["Reference space (0:unknown, 1:native, 2:ACPC, 3:Tal)"] = 1
 
     # Expected binary data: char (4 bytes)
-    header["TR (ms)"] = 1
+    header["TR (ms)"] = 1000
 
     # -------------------------------------------------------------------------
     # Create data
