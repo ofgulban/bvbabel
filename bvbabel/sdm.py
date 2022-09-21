@@ -21,15 +21,6 @@ def read_sdm(filename):
         Each element contains a dictionary that contains the information of
         a single predictor.
 
-    Description
-    -------
-    An SDM file consists of the following header fields: 'FileVersion',
-    'NrOfPredictors', 'NrOfDataPoints', 'IncludesConstant',
-    'FirstConfoundPredictor'. Data are columns: NrOfDataPoints x NrOfPredictors
-    weights (float); each predictor/regressor column is preceded by a triple of
-    RGB color values, each between 0-255, saved as header["Colors"], and names,
-    saved as header["PredictorNames"].
-
     """
     # Read non-empty lines of the input text file
     with open(filename, 'r') as f:
