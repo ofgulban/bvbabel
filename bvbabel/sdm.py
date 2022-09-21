@@ -5,7 +5,7 @@ import numpy as np
 
 # =============================================================================
 def read_sdm(filename):
-    """Read Brainvoyager SDM file.
+    """Read BrainVoyager SDM file.
 
     Parameters
     ----------
@@ -17,8 +17,9 @@ def read_sdm(filename):
     header : dictionary
         Single subjects design matrix (SDM) header. Also used for storing
         motion estimates (*_3DMC.sdm).
-    data : list of dictionaries
-        One dictionary containing NrOfPredictors x NrOfDataPoints
+    data : list
+        Each element contains a dictionary that contains the information of
+        a single predictor.
 
     Description
     -------
@@ -82,3 +83,67 @@ def read_sdm(filename):
         data.append(temp)
 
     return header, data
+
+
+def write_sdm(filename, header, data_sdm):
+    """Protocol to write BrainVoyager SDM file.
+
+    Parameters
+    ----------
+    filename : string
+        Path to file.
+    header : dictionary
+        Single subjects design matrix (SDM) header. Also used for storing
+        motion estimates (*_3DMC.sdm).
+    data_sdm : list
+        Each element contains a dictionary that contains the information of
+        a single predictor.
+
+    """
+    with open(filename, 'w') as f:
+        data = header["FileVersion"]
+        f.write("FileVersion:                   {}\n".format(data))
+        f.write("\n")
+
+        data = header["NrOfPredictors"]
+        f.write("NrOfPredictors:                {}\n".format(data))
+        data = header["NrOfDataPoints"]
+        f.write("NrOfDataPoints:                {}\n".format(data))
+        data = header["IncludesConstant"]
+        f.write("IncludesConstant:              {}\n".format(data))
+        data = header["FirstConfoundPredictor"]
+        f.write("FirstConfoundPredictor:        {}\n".format(data))
+        f.write("\n")
+
+        # ---------------------------------------------------------------------
+        # Write column colors
+        nr_cols = header["NrOfPredictors"]
+        for i in range(nr_cols):
+            f.write("{} {} {}".format(data_sdm[i]["ColorOfPredictor"][0],
+                                      data_sdm[i]["ColorOfPredictor"][1],
+                                      data_sdm[i]["ColorOfPredictor"][2]))
+            if i < nr_cols-1:
+                f.write("   ")
+            else:
+                f.write("\n")
+
+        # ---------------------------------------------------------------------
+        # Write column names
+        for i in range(nr_cols):
+            f.write("\"{}\"".format(data_sdm[i]["NameOfPredictor"]))
+            if i < nr_cols-1:
+                f.write(" ")
+            else:
+                f.write("\n")
+
+        # ---------------------------------------------------------------------
+        # Write column values
+        nr_rows = header["NrOfDataPoints"]
+        for i in range(nr_rows):
+            for j in range(nr_cols):
+                value = data_sdm[j]["ValuesOfPredictor"][i]
+                f.write("{:.9f}".format(value).rjust(12))
+                if j < nr_cols-1:
+                    f.write(" ")
+                else:
+                    f.write("\n")
