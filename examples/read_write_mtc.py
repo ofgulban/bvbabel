@@ -8,7 +8,7 @@ FILE = "/home/faruk/Documents/test_bvbabel/mtc/sub-test03.mtc"
 
 # =============================================================================
 # Load vmr
-header, data = bvbabel.mtc.read_mtc(FILE1)
+header, data = bvbabel.mtc.read_mtc(FILE)
 
 # See header information
 pprint(header)
