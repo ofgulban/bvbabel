@@ -1,4 +1,4 @@
-"""Read, write, create Brainvoyager GTC file format."""
+"""Read, write, create BrainVoyager GTC file format."""
 
 import struct
 import numpy as np
@@ -6,7 +6,7 @@ import numpy as np
 
 # =============================================================================
 def read_gtc(filename):
-    """Read Brainvoyager GTC file.
+    """Read BrainVoyager GTC file.
 
     Parameters
     ----------
@@ -59,7 +59,7 @@ def read_gtc(filename):
 
 # =============================================================================
 def write_gtc(filename, header, data_img):
-    """Protocol to write Brainvoyager GTC file.
+    """Protocol to write BrainVoyager GTC file.
 
     Parameters
     ----------

@@ -1,4 +1,4 @@
-"""Read, write, create Brainvoyager MSK file format."""
+"""Read, write, create BrainVoyager MSK file format."""
 
 import struct
 import numpy as np
@@ -6,7 +6,7 @@ import numpy as np
 
 # =============================================================================
 def read_msk(filename):
-    """Read Brainvoyager MSK file.
+    """Read BrainVoyager MSK file.
 
     Parameters
     ----------
@@ -64,7 +64,7 @@ def read_msk(filename):
 
 # =============================================================================
 def write_msk(filename, header, data_img):
-    """Protocol to write Brainvoyager MSK file.
+    """Protocol to write BrainVoyager MSK file.
 
     Parameters
     ----------

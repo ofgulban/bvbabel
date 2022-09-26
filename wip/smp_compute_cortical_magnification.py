@@ -1,4 +1,4 @@
-"""Read Brainvoyager srf & smp files to compute cortical magnification."""
+"""Read BrainVoyager srf & smp files to compute cortical magnification."""
 
 import os
 import numpy as np

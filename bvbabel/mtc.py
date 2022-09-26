@@ -1,4 +1,4 @@
-"""Read, write, create Brainvoyager MTC file format."""
+"""Read, write, create BrainVoyager MTC file format."""
 
 import struct
 import numpy as np

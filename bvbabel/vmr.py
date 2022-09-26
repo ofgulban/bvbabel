@@ -1,4 +1,4 @@
-"""Read, write, create Brainvoyager VMR file format."""
+"""Read, write, create BrainVoyager VMR file format."""
 
 import struct
 import numpy as np
@@ -8,7 +8,7 @@ from bvbabel.utils import (read_variable_length_string,
 
 # =============================================================================
 def read_vmr(filename):
-    """Read Brainvoyager VMR file.
+    """Read BrainVoyager VMR file.
 
     Parameters
     ----------
@@ -243,7 +243,7 @@ def read_vmr(filename):
 
 # =============================================================================
 def write_vmr(filename, header, data_img):
-    """Protocol to write Brainvoyager VMR file.
+    """Protocol to write BrainVoyager VMR file.
 
     Parameters
     ----------

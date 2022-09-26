@@ -1,4 +1,4 @@
-"""Read, write, create Brainvoyager SRF file format."""
+"""Read, write, create BrainVoyager SRF file format."""
 
 import struct
 import numpy as np
@@ -7,7 +7,7 @@ from bvbabel.utils import read_variable_length_string, write_variable_length_str
 
 # =============================================================================
 def read_srf(filename):
-    """Read Brainvoyager SRF file.
+    """Read BrainVoyager SRF file.
 
     Parameters
     ----------
@@ -206,7 +206,7 @@ def read_srf(filename):
 
 # =============================================================================
 def write_srf(filename, header, mesh_data):
-    """Protocol to write Brainvoyager SRF file.
+    """Protocol to write BrainVoyager SRF file.
 
     Parameters
     ----------

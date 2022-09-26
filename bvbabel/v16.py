@@ -1,4 +1,4 @@
-"""Read, write, create Brainvoyager V16 file format."""
+"""Read, write, create BrainVoyager V16 file format."""
 
 import struct
 import numpy as np
@@ -8,7 +8,7 @@ from bvbabel.utils import (read_variable_length_string,
 
 # =============================================================================
 def read_v16(filename):
-    """Read Brainvoyager V16 file.
+    """Read BrainVoyager V16 file.
 
     Parameters
     ----------
@@ -74,7 +74,7 @@ def read_v16(filename):
 
 # =============================================================================
 def write_v16(filename, header, data_img):
-    """Protocol to write Brainvoyager V16 file.
+    """Protocol to write BrainVoyager V16 file.
 
     Parameters
     ----------
@@ -114,7 +114,7 @@ def write_v16(filename, header, data_img):
 
 
 def create_v16():
-    """Create Brainvoyager V16 file with default values."""
+    """Create BrainVoyager V16 file with default values."""
     header = dict()
     # Expected binary data: unsigned short int (2 bytes)
     header["DimX"] = 256

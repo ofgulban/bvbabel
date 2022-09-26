@@ -1,4 +1,4 @@
-"""Read, write, create Brainvoyager VTC file format."""
+"""Read, write, create BrainVoyager VTC file format."""
 
 import struct
 import numpy as np
@@ -8,7 +8,7 @@ from bvbabel.utils import write_variable_length_string
 
 # =============================================================================
 def read_vtc(filename, rearrange_data_axes=True):
-    """Read Brainvoyager VTC file.
+    """Read BrainVoyager VTC file.
 
     Parameters
     ----------
@@ -25,7 +25,7 @@ def read_vtc(filename, rearrange_data_axes=True):
             - 2nd axis (Y) is "S"uperior to Inferior.
             - 3rd axis (X) is "L"eft to Right.
         Note that `ZStart - ZEnd` indicates the 1st data axis in the internal
-        Brainvoyager terminology. However `ZStart - ZEnd` indicates the 3rd
+        BrainVoyager terminology. However `ZStart - ZEnd` indicates the 3rd
         axis in RAS terminology. Time is in the 4th axis in both cases.
 
     Returns
@@ -136,7 +136,7 @@ def read_vtc(filename, rearrange_data_axes=True):
 
 # =============================================================================
 def write_vtc(filename, header, data_img, rearrange_data_axes=True):
-    """Protocol to write Brainvoyager VTC file.
+    """Protocol to write BrainVoyager VTC file.
 
     Parameters
     ----------
@@ -157,7 +157,7 @@ def write_vtc(filename, header, data_img, rearrange_data_axes=True):
             - 2nd axis (Y) is "S"uperior to Inferior.
             - 3rd axis (X) is "L"eft to Right.
         Note that `ZStart - ZEnd` indicates the 1st data axis in the internal
-        Brainvoyager terminology. However `ZStart - ZEnd` indicates the 3rd
+        BrainVoyager terminology. However `ZStart - ZEnd` indicates the 3rd
         axis in RAS terminology. Time is in the 4th axis in both cases.
 
     """
@@ -232,7 +232,7 @@ def write_vtc(filename, header, data_img, rearrange_data_axes=True):
 
 
 def create_vtc(rearrange_data_axes=True):
-    """Create Brainvoyager VTC file with default values.
+    """Create BrainVoyager VTC file with default values.
 
     Parameters
     ----------
@@ -247,7 +247,7 @@ def create_vtc(rearrange_data_axes=True):
             - 2nd axis (Y) is "S"uperior to Inferior.
             - 3rd axis (X) is "L"eft to Right.
         Note that `ZStart - ZEnd` indicates the 1st data axis in the internal
-        Brainvoyager terminology. However `ZStart - ZEnd` indicates the 3rd
+        BrainVoyager terminology. However `ZStart - ZEnd` indicates the 3rd
         axis in RAS terminology. Time is in the 4th axis in both cases.
 
     """

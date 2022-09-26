@@ -1,4 +1,4 @@
-"""Read, write, create Brainvoyager STC file format."""
+"""Read, write, create BrainVoyager STC file format."""
 
 import struct
 import numpy as np
@@ -6,7 +6,7 @@ import numpy as np
 
 # =============================================================================
 def read_stc(filename, nr_slices, nr_volumes, res_x, res_y, data_type=2):
-    """Read Brainvoyager STC file.
+    """Read BrainVoyager STC file.
 
     Parameters
     ----------
@@ -51,7 +51,7 @@ def read_stc(filename, nr_slices, nr_volumes, res_x, res_y, data_type=2):
 
 # =============================================================================
 def write_stc(filename, data_img, data_type=2):
-    """Protocol to write Brainvoyager STC file.
+    """Protocol to write BrainVoyager STC file.
 
     Parameters
     ----------

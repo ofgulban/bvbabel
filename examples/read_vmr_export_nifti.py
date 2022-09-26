@@ -1,4 +1,4 @@
-"""Read Brainvoyager vmr and export nifti."""
+"""Read BrainVoyager vmr and export nifti."""
 
 import os
 import numpy as np

@@ -1,4 +1,4 @@
-"""Create Brainvoyager VTC file."""
+"""Create BrainVoyager VTC file."""
 
 import bvbabel
 

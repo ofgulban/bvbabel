@@ -1,4 +1,4 @@
-"""Read, write, create Brainvoyager FMR file format."""
+"""Read, write, create BrainVoyager FMR file format."""
 
 import os
 import numpy as np
@@ -7,7 +7,7 @@ from bvbabel.stc import read_stc, write_stc
 
 # =============================================================================
 def read_fmr(filename):
-    """Read Brainvoyager FMR (and the paired STC) file.
+    """Read BrainVoyager FMR (and the paired STC) file.
 
     Parameters
     ----------
@@ -234,7 +234,7 @@ def read_fmr(filename):
 
 # =============================================================================
 def write_fmr(filename, header, data_img):
-    """Protocol to write Brainvoyager FMR (and the paired STC) file.
+    """Protocol to write BrainVoyager FMR (and the paired STC) file.
 
     Parameters
     ----------
@@ -435,7 +435,7 @@ def write_fmr(filename, header, data_img):
 
 
 def create_fmr():
-    """Create Brainvoyager FMR file with default values."""
+    """Create BrainVoyager FMR file with default values."""
     header = dict()
     info_pos = dict()
 

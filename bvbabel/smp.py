@@ -1,4 +1,4 @@
-"""Read, write, create Brainvoyager SMP file format."""
+"""Read, write, create BrainVoyager SMP file format."""
 
 import struct
 import numpy as np
@@ -8,7 +8,7 @@ from bvbabel.utils import write_variable_length_string, write_RGB_bytes
 
 # =============================================================================
 def read_smp(filename):
-    """Read Brainvoyager SMP file.
+    """Read BrainVoyager SMP file.
 
     Parameters
     ----------
@@ -152,7 +152,7 @@ def read_smp(filename):
 
 
 def write_smp(filename, header, data_smp):
-    """Procecure to write Brainvoyager SMP file.
+    """Procecure to write BrainVoyager SMP file.
 
     Parameters
     ----------
@@ -264,7 +264,7 @@ def write_smp(filename, header, data_smp):
 
 
 def create_smp(nr_maps=1, nr_vertices=64000):
-    """Create Brainvoyager SMP file with default values."""
+    """Create BrainVoyager SMP file with default values."""
     nr_vertices = int(nr_vertices)
     nr_maps = int(nr_maps)
 

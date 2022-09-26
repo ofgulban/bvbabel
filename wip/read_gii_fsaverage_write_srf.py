@@ -90,7 +90,7 @@ for i in range(nr_verts):  # loop over each vertex
     idx_faces = np.argwhere(temp == i)//3
 
     # Reduce to unique vertex ids with consistent winding
-    # NOTE: If this part is wrong black triangles will appear when Brainvoyager
+    # NOTE: If this part is wrong black triangles will appear when BrainVoyager
     # updates the vertex normals.
     temp_faces = np.squeeze(faces[idx_faces])
     nr_neighbors = temp_faces.shape[0]

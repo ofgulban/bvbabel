@@ -9,7 +9,7 @@ def check_extension():
 
 
 def read_variable_length_string(f):
-    r"""Read Brainvoyager variable length strings terminate with b'\x00'."""
+    r"""Read BrainVoyager variable length strings terminate with b'\x00'."""
     text = ""
     data, = struct.unpack('<s', f.read(1))
     while data != b'\x00':
@@ -19,7 +19,7 @@ def read_variable_length_string(f):
 
 
 def write_variable_length_string(f, in_string):
-    r"""Write Brainvoyager variable length strings terminate with b'\x00'."""
+    r"""Write BrainVoyager variable length strings terminate with b'\x00'."""
     for i in range(len(in_string)):
         data = bytes(in_string[i], 'utf-8')
         f.write(struct.pack('<s', data))
@@ -27,7 +27,7 @@ def write_variable_length_string(f, in_string):
 
 
 def read_RGB_bytes(f):
-    r"""Brainvoyager RGB bytes (unsigned char)."""
+    r"""BrainVoyager RGB bytes (unsigned char)."""
     RGB = np.zeros(3, dtype=np.ubyte)
     for i in range(3):
         data, = struct.unpack('<B', f.read(1))
@@ -36,7 +36,7 @@ def read_RGB_bytes(f):
 
 
 def write_RGB_bytes(f, RGB):
-    r"""Write Brainvoyager RGB bytes (unsigned char)."""
+    r"""Write BrainVoyager RGB bytes (unsigned char)."""
     for i in range(3):
         f.write(struct.pack('<B', RGB[i]))
 

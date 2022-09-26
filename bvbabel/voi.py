@@ -5,7 +5,7 @@ import numpy as np
 
 # =============================================================================
 def read_voi(filename):
-    """Read Brainvoyager VOI file.
+    """Read BrainVoyager VOI file.
 
     Parameters
     ----------
@@ -87,7 +87,7 @@ def read_voi(filename):
 
 
 def write_voi(filename, header, data_voi):
-    """Protocol to write Brainvoyager VOI file.
+    """Protocol to write BrainVoyager VOI file.
 
     Parameters
     ----------

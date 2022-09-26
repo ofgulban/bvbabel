@@ -1,4 +1,4 @@
-"""Read, write, create Brainvoyager SSM file format."""
+"""Read, write, create BrainVoyager SSM file format."""
 
 import struct
 import numpy as np
@@ -6,7 +6,7 @@ import numpy as np
 
 # =============================================================================
 def read_ssm(filename):
-    """Read Brainvoyager SSM (surface to surface mapping) file.
+    """Read BrainVoyager SSM (surface to surface mapping) file.
 
     Parameters
     ----------

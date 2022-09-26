@@ -1,4 +1,4 @@
-"""Create Brainvoyager v16 and save."""
+"""Create BrainVoyager v16 and save."""
 
 import bvbabel
 

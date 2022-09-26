@@ -1,4 +1,4 @@
-"""Read Brainvoyager vmr, perform zero padding and write."""
+"""Read BrainVoyager vmr, perform zero padding and write."""
 
 import os
 import bvbabel

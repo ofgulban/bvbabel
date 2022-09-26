@@ -1,4 +1,4 @@
-"""Read Brainvoyager voi."""
+"""Read BrainVoyager voi."""
 
 import os
 import bvbabel

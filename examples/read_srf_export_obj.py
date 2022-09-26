@@ -1,4 +1,4 @@
-"""Read Brainvoyager srf and export Wavefront obj file."""
+"""Read BrainVoyager srf and export Wavefront obj file."""
 
 import os
 import bvbabel
