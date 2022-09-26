@@ -15,7 +15,7 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 | MSK         | Yes   | Yes   | No     |       No|
 | MTC         | Yes   | Yes   | No     |      Yes|
 | OBJ         | No    | Yes   | No     |       No|
-| POI         | No    | No    | No     |       No|
+| POI         | Yes   | Yes   | No     |      Yes|
 | PRT         | No    | No    | No     |       No|
 | SRF         | Yes   | wip...| No     |      Yes|
 | SMP         | Yes   | Yes   | Yes    |      Yes|
