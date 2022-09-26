@@ -10,6 +10,7 @@
 - [x] Add VTC example
 - [x] Add VOI example
 - [x] Add MTC example
+- [x] Add POI example
 - [ ] Add FMR example
 - [ ] Add TRF example
 - [ ] Write test scripts which uses these data
