@@ -36,7 +36,7 @@ def read_poi(filename):
         else:
             header[content[0]] = content[1]
 
-    # POI data (x, y, z coordinates of voxels)
+    # POI data
     count_poi = -1
     data_poi = list()
     for r, line in enumerate(lines[header_rows:]):
@@ -67,7 +67,7 @@ def read_poi(filename):
             data_poi[count_poi]["Vertices"].append(int(content[0]))
 
         # ---------------------------------------------------------------------
-        # Post VOI data information
+        # Post POI data information
         elif content[0] == "NrOfPOIMTCs":
             header["NrOfPOIMTCs"] = int(content[1])
 
@@ -87,7 +87,7 @@ def write_poi(filename, header, data_poi):
     filename : string
         Path to file.
     header : dictionary
-        Voxels of interest (VOI) header.
+        Patches of interest (POI) header.
     data_poi : list of dictionaries
         A list of dictionaries. Each dictionary holds properties of a voxels of
         interest.
@@ -133,7 +133,7 @@ def write_poi(filename, header, data_poi):
             f.write("\n")
 
         # ---------------------------------------------------------------------
-        # Post VOI data
+        # Post POI data
         f.write("\n")
         data = header["NrOfPOIMTCs"]
         f.write("NrOfPOIMTCs: {}\n".format(data))
