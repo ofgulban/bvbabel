@@ -15,18 +15,15 @@ def read_vtc(filename, rearrange_data_axes=True):
     filename : string
         Path to file.
     rearrange_data_axes : bool
-        When 'False', axes are intended to follow PIR+ terminology (used
-        internally in BrainVoyager), where:
-            - 1st axis (Z) is Anterior to "P"osterior.
-            - 2nd axis (Y) is Superior to "I"nferior.
-            - 3rd axis (X) is Left to "R"ight.
+        When 'False', axes are intended to follow LIP+ terminology used
+        internally in BrainVoyager (however see the notes below):
+            - 1st axis is Right to "L"eft.
+            - 2nd axis is Superior to "I"nferior.
+            - 3rd axis is Anterior to "P"osterior.
         When 'True' axes are intended to follow nibabel RAS+ terminology:
-            - 1st axis (X) is Left to "R"ight.
-            - 2nd axis (Y) is Posterior to "A"nterior.
-            - 3rd axis (Z) is Inferior to "S"uperior.
-        Note that `ZStart - ZEnd` indicates the 1st data axis in the internal
-        BrainVoyager PIR+ terminology. However `ZStart - ZEnd` indicates the
-        3rd axis in RAS terminology. Time is in the 4th axis in both cases.
+            - 1st axis is Left to "R"ight.
+            - 2nd axis is Posterior to "A"nterior.
+            - 3rd axis is Inferior to "S"uperior.
 
     Returns
     -------
@@ -34,6 +31,18 @@ def read_vtc(filename, rearrange_data_axes=True):
         Pre-data and post-data headers.
     data : 3D numpy.array
         Image data.
+
+    Notes
+    -----
+    - Based on several vtc inputs that are converted to nifti with RAS+ axes,
+    I have concluded that the internal BrainVoyager axes are LIP+. However,
+    this does not reflect the BrainVoyager VTC file documentation (Users Guide
+    v2.3), in which the axes are described to be PIR+.
+    - TODO[Faruk]: Revise the note below.
+    Note that `ZStart - ZEnd` indicates the 1st data axis in the internal
+    BrainVoyager PIR+ terminology. However `ZStart - ZEnd` indicates the
+    3rd axis in RAS terminology. Time is in the 4th axis in both cases.
+
 
     """
     header = dict()
@@ -149,18 +158,15 @@ def write_vtc(filename, header, data_img, rearrange_data_axes=True):
     data_img : 3D numpy.array
         Image data.
     rearrange_data_axes : bool
-        When 'False', axes are intended to follow PIR+ terminology (used
-        internally in BrainVoyager), where:
-            - 1st axis (Z) is Anterior to "P"osterior.
-            - 2nd axis (Y) is Superior to "I"nferior.
-            - 3rd axis (X) is Left to "R"ight.
+        When 'False', axes are intended to follow LIP+ terminology used
+        internally in BrainVoyager (however see the notes below):
+            - 1st axis is Right to "L"eft.
+            - 2nd axis is Superior to "I"nferior.
+            - 3rd axis is Anterior to "P"osterior.
         When 'True' axes are intended to follow nibabel RAS+ terminology:
-            - 1st axis (X) is Left to "R"ight.
-            - 2nd axis (Y) is Posterior to "A"nterior.
-            - 3rd axis (Z) is Inferior to "S"uperior.
-        Note that `ZStart - ZEnd` indicates the 1st data axis in the internal
-        BrainVoyager PIR+ terminology. However `ZStart - ZEnd` indicates the
-        3rd axis in RAS terminology. Time is in the 4th axis in both cases.
+            - 1st axis is Left to "R"ight.
+            - 2nd axis is Posterior to "A"nterior.
+            - 3rd axis is Inferior to "S"uperior.
 
     """
     with open(filename, 'wb') as f:
@@ -239,7 +245,15 @@ def create_vtc(rearrange_data_axes=True):
     Parameters
     ----------
     rearrange_data_axes : bool
-        TODO: Update when rearrange_data_axes=True issue is solved
+        When 'False', axes are intended to follow LIP+ terminology used
+        internally in BrainVoyager (however see the notes below):
+            - 1st axis is Right to "L"eft.
+            - 2nd axis is Superior to "I"nferior.
+            - 3rd axis is Anterior to "P"osterior.
+        When 'True' axes are intended to follow nibabel RAS+ terminology:
+            - 1st axis is Left to "R"ight.
+            - 2nd axis is Posterior to "A"nterior.
+            - 3rd axis is Inferior to "S"uperior.
 
     """
     header = dict()
