@@ -15,15 +15,15 @@ def read_vtc(filename, rearrange_data_axes=True):
     filename : string
         Path to file.
     rearrange_data_axes : bool
-        When 'True' axes are intended to follow RAS terminology, where:
-            - 1st axis (X) is "R"ight to Left.
-            - 2nd axis (Y) is "A"nterior to Posterior.
-            - 3rd axis (Z) is "S"uperior to Inferior.
-        When 'False', axes are intended to follow ASL terminology (used
+        When 'True' axes are intended to follow nibabel RAS+ terminology:
+            - 1st axis (X) is Left to "R"ight.
+            - 2nd axis (Y) is Posterior to "A"nterior.
+            - 3rd axis (Z) is Inferior to "S"uperior.
+        When 'False', axes are intended to follow PIR+ terminology (used
         internally in BrainVoyager), where:
-            - 1st axis (Z) is "A"nterior to Posterior.
-            - 2nd axis (Y) is "S"uperior to Inferior.
-            - 3rd axis (X) is "L"eft to Right.
+            - 1st axis (Z) is Anterior to "P"osterior.
+            - 2nd axis (Y) is Superior to "I"nferior.
+            - 3rd axis (X) is Left to "R"ight.
         Note that `ZStart - ZEnd` indicates the 1st data axis in the internal
         BrainVoyager terminology. However `ZStart - ZEnd` indicates the 3rd
         axis in RAS terminology. Time is in the 4th axis in both cases.
@@ -127,9 +127,11 @@ def read_vtc(filename, rearrange_data_axes=True):
 
         data_img = np.reshape(data_img, (DimZ, DimY, DimX, DimT))
 
+        # TODO[Faruk]: I need to triple check this part with various data
         if rearrange_data_axes is True:
-            data_img = np.transpose(data_img, (2, 1, 0, 3))  # BV to Tal
-            data_img = data_img[::-1, :, :, :]  # Flip BV axes
+            # PIR+ to RAS+
+            data_img = np.transpose(data_img, (2, 0, 1, 3))
+            data_img = data_img[:, ::-1, ::-1, :]
 
     return header, data_img
 
