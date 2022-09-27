@@ -239,18 +239,7 @@ def create_vtc(rearrange_data_axes=True):
     Parameters
     ----------
     rearrange_data_axes : bool
-        When 'True' axes are intended to follow RAS terminology, where:
-            - 1st axis (X) is "R"ight to Left.
-            - 2nd axis (Y) is "A"nterior to Posterior.
-            - 3rd axis (Z) is "S"uperior to Inferior.
-        When 'False', axes are intended to follow ASL terminology (used
-        internally in BrainVoyager), where:
-            - 1st axis (Z) is "A"nterior to Posterior.
-            - 2nd axis (Y) is "S"uperior to Inferior.
-            - 3rd axis (X) is "L"eft to Right.
-        Note that `ZStart - ZEnd` indicates the 1st data axis in the internal
-        BrainVoyager terminology. However `ZStart - ZEnd` indicates the 3rd
-        axis in RAS terminology. Time is in the 4th axis in both cases.
+        TODO: Update when rearrange_data_axes=True issue is solved
 
     """
     header = dict()
