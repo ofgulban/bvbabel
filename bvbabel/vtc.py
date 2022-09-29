@@ -93,7 +93,7 @@ def read_vtc(filename, rearrange_data_axes=True):
         data, = struct.unpack('<B', f.read(1))
         header["L-R convention (0:unknown, 1:radiological, 2:neurological)"] = data
         data, = struct.unpack('<B', f.read(1))
-        header["Reference space (0:unknown, 1:native, 2:ACPC, 3:Tal)"] = data
+        header["Reference space (0:unknown, 1:native, 2:ACPC, 3:Tal, 4:MNI)"] = data
 
         # Expected binary data: char (4 bytes)
         data, = struct.unpack('<f', f.read(4))
@@ -213,7 +213,7 @@ def write_vtc(filename, header, data_img, rearrange_data_axes=True):
         # Expected binary data: char (1 byte)
         data = header["L-R convention (0:unknown, 1:radiological, 2:neurological)"]
         f.write(struct.pack('<B', data))
-        data = header["Reference space (0:unknown, 1:native, 2:ACPC, 3:Tal)"]
+        data = header["Reference space (0:unknown, 1:native, 2:ACPC, 3:Tal, 4:MNI)"]
         f.write(struct.pack('<B', data))
 
         # Expected binary data: char (4 bytes)
@@ -288,7 +288,7 @@ def create_vtc(rearrange_data_axes=True):
 
     # Expected binary data: char (1 byte)
     header["L-R convention (0:unknown, 1:radiological, 2:neurological)"] = 1
-    header["Reference space (0:unknown, 1:native, 2:ACPC, 3:Tal)"] = 1
+    header["Reference space (0:unknown, 1:native, 2:ACPC, 3:Tal, 4:MNI)"] = 1
 
     # Expected binary data: char (4 bytes)
     header["TR (ms)"] = 1000
