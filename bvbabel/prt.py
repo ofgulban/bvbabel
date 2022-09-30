@@ -1,6 +1,8 @@
 """Read BrainVoyager PRT file format."""
 
+from curses.ascii import isdigit
 import numpy as np
+from copy import copy
 
 
 # =============================================================================
@@ -36,32 +38,38 @@ def read_prt(filename):
             header[content[0]] = content[1]
 
     # POI data
-    count_cond = -1
-    row_cond_name = -1
     data_prt = list()
-    for r, line in enumerate(lines[header_rows:]):
-        content = line.split(":")
-        content = [i.strip() for i in content]
+    count_cond = 0
+    i = copy(header_rows)
+    while i < len(lines):
+        print(i)
+        data_prt.append(dict())
 
-        if content[0].isdigit() is False:
-            count_cond += 1
-            row_cond_name = r
-            data_prt.append(dict())
-            data_prt[count_cond]["NameOfCondition"] = content[0]
-            data_prt[count_cond]["NrOfOccurances"] = None
-            data_prt[count_cond]["Timings"] = []
+        # Add condition name
+        data_prt[count_cond]["NameOfCondition"] = lines[i]
 
-        elif r == row_cond_name+1:
-            data_prt[count_cond]["NrOfOccurances"] = int(content[0])
+        # Add condition occurances
+        n = int(lines[i+1])
+        data_prt[count_cond]["NrOfOccurances"] = n
 
-        elif r < row_cond_name+data_prt[count_cond]("NrOfOccurances"):
-            values = content[0].split(" ")
-            values = [int(v) for v in values]
-            data_prt[count_cond]["Timings"].append(values)
+        # Add timings
+        data_prt[count_cond]["Time start"] = np.zeros(n)
+        data_prt[count_cond]["Time stop"] = np.zeros(n)
+        for j in range(n):
+            values = lines[i+1+j].split(" ")
+            for k, v in enumerate(values):
+                if v.isdigit():
+                    data_prt[count_cond]["Time start"][k] = int(v)
+                    data_prt[count_cond]["Time stop"][k] = int(v)
 
-        elif content[0] == "Color":
-            values = content[1].split(" ")
-            values = [int(v) for v in values]
-            data_prt[count_cond]["Color"] = values
+        # Add color
+        values = lines[i+1+n].split(" ")
+        data_prt[count_cond]["Color"] = list()
+        for v in values:
+            if v.isdigit():
+                data_prt[count_cond]["Color"].append(int(v))
+
+        i += n + 3
+        count_cond += 1
 
     return header, data_prt

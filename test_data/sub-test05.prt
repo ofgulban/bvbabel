@@ -1,0 +1,44 @@
+
+FileVersion:        2
+
+ResolutionOfTime:   Volumes
+
+Experiment:         Untitled
+
+BackgroundColor:    0 0 0
+TextColor:          255 255 255
+TimeCourseColor:    255 255 30
+TimeCourseThick:    2
+ReferenceFuncColor: 30 200 30
+ReferenceFuncThick: 2
+
+NrOfConditions:  3
+
+fixation
+9
+   1    8
+  33   40
+  65   72
+  97  104
+ 129  136
+ 161  168
+ 193  200
+ 225  232
+ 257  264
+Color: 195 195 195
+
+faces
+4
+   9   32
+  73   96
+ 137  160
+ 201  224
+Color: 255 0 0
+
+objects
+4
+  41   64
+ 105  128
+ 169  192
+ 233  256
+Color: 0 0 255
