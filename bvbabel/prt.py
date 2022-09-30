@@ -42,7 +42,6 @@ def read_prt(filename):
     count_cond = 0
     i = copy(header_rows)
     while i < len(lines):
-        print(i)
         data_prt.append(dict())
 
         # Add condition name
@@ -56,18 +55,17 @@ def read_prt(filename):
         data_prt[count_cond]["Time start"] = np.zeros(n)
         data_prt[count_cond]["Time stop"] = np.zeros(n)
         for j in range(n):
-            values = lines[i+1+j].split(" ")
-            for k, v in enumerate(values):
-                if v.isdigit():
-                    data_prt[count_cond]["Time start"][k] = int(v)
-                    data_prt[count_cond]["Time stop"][k] = int(v)
+            values = lines[i+2+j].split(" ")
+            data_prt[count_cond]["Time start"][j] = int(values[0])
+            data_prt[count_cond]["Time stop"][j] = int(values[-1])
 
         # Add color
-        values = lines[i+1+n].split(" ")
+        values = lines[i+2+n].split(" ")
         data_prt[count_cond]["Color"] = list()
         for v in values:
             if v.isdigit():
                 data_prt[count_cond]["Color"].append(int(v))
+        data_prt[count_cond]["Color"] = np.asarray(data_prt[count_cond]["Color"])
 
         i += n + 3
         count_cond += 1
