@@ -17,6 +17,7 @@ import bvbabel.sdm
 import bvbabel.mtc
 import bvbabel.poi
 import bvbabel.prt
+import bvbabel.trf
 
 import pkg_resources
 __version__ = pkg_resources.require("bvbabel")[0].version
