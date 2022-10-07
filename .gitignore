@@ -160,4 +160,4 @@ Temporary Items
 .vscode
 
 # Ignore files created by tests
-test_data/*_bvbabel*
+test_data/*/*_bvbabel*

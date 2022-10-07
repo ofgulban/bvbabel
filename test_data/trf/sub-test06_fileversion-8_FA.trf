@@ -1,0 +1,23 @@
+
+FileVersion:        8
+
+DataFormat:         Matrix
+
+  1.0108703374862671  -0.0026978552341461   0.0008250894607045  -0.3635005950927734
+  0.0026951730251312   1.0118453502655029   0.0063963094726205  -0.5465965270996094
+ -0.0008406968554482  -0.0063768913969398   1.0091171264648438  -0.2749409675598145
+  0.0000000000000000   0.0000000000000000   0.0000000000000000   1.0000000000000000
+
+TransformationType: 1
+CoordinateSystem:   1
+
+NSlicesFMRVMR:      64
+SlThickFMRVMR:      2
+SlGapFMRVMR:        0
+CreateFMR3DMethod:  3
+AlignmentStep:      2
+
+ExtraVMRTransf:     0
+
+SourceFile:         "/Volumes/ELEMENTS/Data/Data_PluginsTesting_New/Data_fmr2vmr_python/TRF_GSG4/GSG4_blocked_mbep2d_2mm_MB2_IPAT_THP3c.fmr"
+TargetFile:         "/Volumes/ELEMENTS/Data/Data_PluginsTesting_New/Data_fmr2vmr_python/TRF_GSG4/GSG4_IIHC.vmr"

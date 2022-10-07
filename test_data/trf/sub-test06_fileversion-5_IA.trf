@@ -1,0 +1,23 @@
+
+FileVersion:        5
+
+DataFormat:         Matrix
+
+  0.0048991590738297   0.9637671709060669  -0.2667002677917480   9.9899826049804688
+  0.0391971170902252   0.2663134336471558   0.9630892276763916 -13.0881805419921875
+  0.9992195367813110  -0.0151722133159637  -0.0364722013473511  -2.4171524047851562
+  0.0000000000000000   0.0000000000000000   0.0000000000000000   1.0000000000000000
+
+TransformationType: 1
+CoordinateSystem:   1
+
+NSlicesFMRVMR:      30
+SlThickFMRVMR:      2.5
+SlGapFMRVMR:        0.75
+CreateFMR3DMethod:  3
+AlignmentStep:      1
+
+ExtraVMRTransf:     0
+
+SourceFile:         "/Volumes/ELEMENTS/Data/Data_PluginsTesting_New/Data_Python_bvbabel/TRF/Magn_64_CopiedParameters_30slices_0006_upsampledTo104.fmr"
+TargetFile:         "/Volumes/ELEMENTS/Data/Data_PluginsTesting_New/Data_Python_bvbabel/TRF/anat_for_fieldmap.vmr"

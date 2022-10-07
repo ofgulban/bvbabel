@@ -1,0 +1,19 @@
+
+FileVersion:        8
+
+DataFormat:         Matrix
+
+  0.9681153893470764  -0.2360765486955643  -0.0260771997272968 -10.9863080978393555
+  0.2627953886985779   0.8602691888809204  -0.0220184810459614 -20.6788005828857422
+  0.0336650460958481   0.0168537218123674   0.9710388779640198   0.4369969964027405
+  0.0000000000000000   0.0000000000000000   0.0000000000000000   1.0000000000000000
+
+TransformationType: 3
+CoordinateSystem:   0
+
+xScalesMNI:          0.985816   0.99061
+yScalesMNI:           1.06452   1.26966
+zScalesMNI:                 1   1.01418
+
+SourceFile:         "/Volumes/ELEMENTS/Data/Data_PluginsTesting_New/Data_Python_bvbabel/TRF/GSG4_IIHC.vmr"
+TargetFile:         "/Volumes/ELEMENTS/Data/Data_PluginsTesting_New/Data_Python_bvbabel/TRF/GSG4_IIHC_cMNI.vmr"

@@ -1,0 +1,26 @@
+
+FileVersion:        8
+
+DataFormat:         Matrix
+
+  0.0306615084409714  -0.6034522652626038   0.7968087196350098   9.1196708679199219
+  0.0234348326921463  -0.7965310811996460  -0.6041442155838013  -2.1377334594726563
+  0.9992550611495972   0.0371958389878273  -0.0102779641747475   1.6170076131820679
+  0.0000000000000000   0.0000000000000000   0.0000000000000000   1.0000000000000000
+
+TransformationType: 1
+CoordinateSystem:   0
+
+NSlicesFMRVMR:      50
+SlThickFMRVMR:      1.1
+SlGapFMRVMR:        0
+CreateFMR3DMethod:  2
+AlignmentStep:      1
+
+ExtraVMRTransf:     0
+
+ToVMRFramingCube:   384
+ToVMRVoxelRes:      0.598958
+
+SourceFile:         "/Volumes/ELEMENTS/Data/Data_PluginsTesting_New/Data_Python_bvbabel/TRF/sub-S01_ses-SES01_func_sub-S01_ses-SES01_task-rest_bold.fmr"
+TargetFile:         "/Volumes/ELEMENTS/Data/Data_PluginsTesting_New/Data_Python_bvbabel/TRF/sub-S01_ses-SES01_anat_sub-S01_ses-SES01_run-01_T1w_IIHC.vmr"
