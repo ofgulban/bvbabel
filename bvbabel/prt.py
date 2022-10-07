@@ -71,3 +71,53 @@ def read_prt(filename):
         count_cond += 1
 
     return header, data_prt
+
+
+# =============================================================================
+def write_prt(filename, header, data_prt):
+    """Protocol to write BrainVoyager PRT file.
+
+    Parameters
+    ----------
+    filename : string
+        Path to file.
+    header : dictionary
+        Protocol (PRT) header.
+    data_prt : list of dictionaries
+        TODO
+
+    """
+    with open(filename, 'w') as f:
+        f.write("\n")
+
+        data = header["FileVersion"]
+        f.write("FileVersion:        {}\n".format(data))
+        f.write("\n")
+
+        data = header["ResolutionOfTime"]
+        f.write("ResolutionOfTime:   {}\n".format(data))
+        f.write("\n")
+
+        data = header["Experiment"]
+        f.write("Experiment:         {}\n".format(data))
+        f.write("\n")
+
+        data = header["BackgroundColor"]
+        f.write("BackgroundColor:    {}\n".format(data))
+        data = header["TextColor"]
+        f.write("TextColor:          {}\n".format(data))
+        data = header["TimeCourseColor"]
+        f.write("TimeCourseColor:    {}\n".format(data))
+        data = header["ReferenceFuncColor"]
+        f.write("ReferenceFuncColor: {}\n".format(data))
+        data = header["ReferenceFuncThick"]
+        f.write("ReferenceFuncThick: {}\n".format(data))
+        f.write("\n")
+
+        data = header["NrOfConditions"]
+        f.write("NrOfConditions:     {}\n".format(data))
+        f.write("\n")
+
+        for i in data_prt:
+            # wip
+            pass

@@ -3,7 +3,7 @@
 import os
 import bvbabel
 
-FILE = "/Users/faruk/Git/bvbabel/test_data/sub-test05.prt"
+FILE = "/home/faruk/Git/bvbabel/test_data/sub-test05.prt"
 
 # =============================================================================
 # Load VOI
@@ -21,9 +21,9 @@ for d in data:
         print("  ", key, ":", value)
     print("")
 
-# # Save PRT
-# basename = FILE.split(os.extsep, 1)[0]
-# outname = "{}_bvbabel.prt".format(basename)
-# bvbabel.prt.write_prt(outname, header, data)
+# Save PRT
+basename = FILE.split(os.extsep, 1)[0]
+outname = "{}_bvbabel.prt".format(basename)
+bvbabel.prt.write_prt(outname, header, data)
 
 print("Finished.")
