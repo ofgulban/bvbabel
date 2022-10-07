@@ -1,26 +1,35 @@
-""" Examples reading and writing BrainVoyager transformation (TRF) file format."""
+"""Read and write BrainVoyager transformation (TRF) files."""
 
 import os
 import numpy as np
 import bvbabel
 
+FILEDIR = '/home/faruk/Git/bvbabel/test_data/trf/'
+
+FILENAMES = [
+    "sub-test06_fileversion-5_IA.trf",
+    "sub-test06_fileversion-7_extravmrtrf_FA.trf",
+    "sub-test06_fileversion-7_extravmrtrf_IA.trf",
+    "sub-test06_fileversion-8_aACPC.trf",
+    "sub-test06_fileversion-8_FA.trf",
+    "sub-test06_fileversion-8_IA.trf",
+    "sub-test06_fileversion-8_ToMSP.trf",
+    "sub-test06_fileversion-8_transformationtype2_cMNI_a12.trf",
+    "sub-test06_fileversion-8_transformationtype3_cMNI_a12_adjBBX.trf"
+    ]
+
 # =============================================================================
-
-filepath = '/Users/hester 1/Progprojs/Python/2022/for_bvbabel/bvbabel-main/test_data/sub-test06_trf/'
 np.set_printoptions(suppress=True, formatter={'float_kind': '{:f}'.format})
+for f in FILENAMES:
+    file = os.path.join(FILEDIR, f)
+    header, data = bvbabel.trf.read_trf(file)
 
-filenames = ['fileversion8_IA.trf', 'fileversion8_FA.trf', 'fileversion8_transformationtype2_cMNI_a12.trf', 'fileversion8_aACPC.trf', 'fileversion8_ToMSP.trf',
-             'fileversion8_transformationtype3_cMNI_a12_adjBBX.trf', 'fileversion7_extravmrtrf_IA.trf', 'fileversion7_extravmrtrf_FA.trf', 'fileversion5_IA.trf']
-newnames = ['fileversion8_new_IA.trf', 'fileversion8_new_FA.trf', 'fileversion8_transformationtype2_new_cMNI_a12.trf', 'fileversion8_new_aACPC.trf', 'fileversion8_new_ToMSP.trf',
-            'fileversion8_transformationtype3_new_cMNI_a12_adjBBX.trf', 'fileversion7_extravmrtrf_new_IA.trf', 'fileversion7_extravmrtrf_new_FA.trf', 'fileversion5_new_IA.trf']
-
-for i, name in enumerate(filenames):
-    filename = filepath + name
-    header, data = bvbabel.trf.read_trf(filename)
-    print('\nFilename: ' + filename)
+    print('\nFilename: {}'.format(f))
     for key, value in header.items():
         print("  ", key, ":", value)
     for key, value in data.items():
         print("  ", key, ":", value)
-    newname = filepath + newnames[i]
-    bvbabel.trf.write_trf(newname, header, data)
+
+    basename = file.split(os.extsep, 1)[0]
+    outname = "{}_bvbabel.trf".format(basename)
+    bvbabel.trf.write_trf(outname, header, data)
