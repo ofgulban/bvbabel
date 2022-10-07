@@ -108,6 +108,8 @@ def write_prt(filename, header, data_prt):
         f.write("TextColor:          {}\n".format(data))
         data = header["TimeCourseColor"]
         f.write("TimeCourseColor:    {}\n".format(data))
+        data = header["TimeCourseThick"]
+        f.write("TimeCourseThick:    {}\n".format(data))
         data = header["ReferenceFuncColor"]
         f.write("ReferenceFuncColor: {}\n".format(data))
         data = header["ReferenceFuncThick"]
@@ -115,9 +117,22 @@ def write_prt(filename, header, data_prt):
         f.write("\n")
 
         data = header["NrOfConditions"]
-        f.write("NrOfConditions:     {}\n".format(data))
-        f.write("\n")
+        f.write("NrOfConditions: {}\n".format(data))
 
-        for i in data_prt:
-            # wip
-            pass
+        for i in range(len(data_prt)):
+            f.write("\n")
+            data = data_prt[i]["NameOfCondition"]
+            f.write("{}\n".format(data))
+            data = data_prt[i]["NrOfOccurances"]
+            f.write("{}\n".format(data))
+
+            for j in range(data_prt[i]["NrOfOccurances"]):
+                value1 = data_prt[i]["Time start"][j]
+                value2 = data_prt[i]["Time stop"][j]
+                if header["ResolutionOfTime"].lower() == "volumes":
+                    value1 = int(value1)
+                    value2 = int(value2)
+                f.write("{:>4} {:>4}\n".format(value1, value2))
+
+            data = data_prt[i]["Color"]
+            f.write("Color: {} {} {}\n".format(data[0], data[1], data[2]))
