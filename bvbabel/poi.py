@@ -137,3 +137,39 @@ def write_poi(filename, header, data_poi):
         f.write("\n")
         data = header["NrOfPOIMTCs"]
         f.write("NrOfPOIMTCs: {}\n".format(data))
+
+
+def create_poi():
+    """Create BrainVoyager POI.
+
+    WORK IN PROGRESS...
+
+    """
+    header = {'FileVersion': 2,
+              'FromMeshFile': '"sub-test03_cube.srf"',
+              'NrOfMeshVertices': 866,
+              'NrOfPOIs': 3,
+              'NrOfPOIMTCs': 0}
+
+    data = [{'NameOfPOI': '"POI 1"',
+             'Vertices': np.array([731, 732, 741, 742, 743, 744, 752, 753, 754, 755, 756, 757, 765,
+                                   766, 767, 768, 769, 770, 778, 779, 780, 781, 782, 783, 791, 792,
+                                   793, 794, 795, 796, 804, 805, 806, 807, 808, 809, 820]),
+             'InfoTextFile': '""',
+             'ColorOfPOI': [33, 120, 255],
+             'LabelVertex': 731,
+             'NrOfVertices': 37},
+            {'NameOfPOI': '"POI 2"',
+             'Vertices': np.array([383, 385, 387, 389, 431, 433, 435, 437, 475, 477, 479, 481, 523,
+                                   525, 527, 529, 573]),
+             'InfoTextFile': '""',
+             'ColorOfPOI': [168, 255, 115],
+             'LabelVertex': 383,
+             'NrOfVertices': 17},
+            {'NameOfPOI': '"POI 3"',
+             'Vertices': np.array([417]),
+             'InfoTextFile': '""',
+             'ColorOfPOI': [245, 219, 158],
+             'LabelVertex': 417,
+             'NrOfVertices': 1}]
+    return header, data

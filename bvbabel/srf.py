@@ -341,3 +341,34 @@ def write_srf(filename, header, mesh_data):
         write_variable_length_string(f, data)
 
     return print("SRF saved.")
+
+
+def create_srf():
+    """Create BrainVoyager SRF header with empty mesh data.
+
+    WORK IN PROGRESS...
+
+    """
+    header = {'File version': 4.0,
+              'Surface type': 0,
+              'Nr vertices': 40962,
+              'Nr triangles': 81920,
+              'Mesh center X': 128.0,
+              'Mesh center Y': 128.0,
+              'Mesh center Z': 128.0,
+              'Vertex convex curvature R': 0.501960813999176,
+              'Vertex convex curvature G': 0.501960813999176,
+              'Vertex convex curvature B': 0.501960813999176,
+              'Vertex convex curvature A': 1.0,
+              'Vertex concave curvature R': 0.250980406999588,
+              'Vertex concave curvature G': 0.250980406999588,
+              'Vertex concave curvature B': 0.250980406999588,
+              'Vertex concave curvature A': 1.0,
+              'Nr triangle strip elements': 0,
+              'MTC name': ''}
+    mesh_data = {'vertices': np.array([], dtype=np.float32),
+                 'vertex_normals': np.array([], dtype=np.float32),
+                 'vertex neighbors': list(list()),
+                 'faces': np.array([], dtype=np.int32),
+                 'strip_sequence': np.array([], dtype=np.int32)}
+    return header, mesh_data
