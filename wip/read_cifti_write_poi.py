@@ -38,7 +38,7 @@ def decompose_cifti(img):
 
 
 data_L, data_R = decompose_cifti(cifti)
-print(data_L.shape, data_R.shape)
+
 # -----------------------------------------------------------------------------
 # Find unique labels
 labels_L = np.unique(data_L).astype(np.int32)
@@ -118,7 +118,7 @@ for i, j in enumerate(labels_R):
 
 # Save
 basename = FILE.split(os.extsep, 1)[0]
-outname = "{}_L_bvbabel.poi".format(basename)
+outname = "{}_R_bvbabel.poi".format(basename)
 bv.poi.write_poi(outname, poi_header, poi_data)
 
 
