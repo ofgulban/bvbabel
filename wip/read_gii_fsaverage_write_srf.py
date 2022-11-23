@@ -1,4 +1,4 @@
-"""Convert Freesurfer *.gii triangular mesh surface to Wavefront .obj file."""
+"""Convert Freesurfer *.gii triangular meshes to BrainVoyager SRF file."""
 
 import os
 import numpy as np
@@ -6,13 +6,11 @@ import nibabel as nb
 import bvbabel
 import timeit
 
-FILE = "/home/faruk/Documents/temp_bv_fsaverage/white_left.gii"
+FILE = "/home/faruk/Documents/temp_CIFTI_conversion/null_lL_WG33/S900.R.very_inflated_MSMAll.32k_fs_LR.surf.gii"
 
 # -----------------------------------------------------------------------------
 # Load data
 gii = nb.load(FILE)
-basename = FILE.split(os.extsep, 1)[0]
-
 
 def compute_vertex_normals(verts, faces):
     """"Compute vertex normals.
@@ -154,9 +152,18 @@ mesh_data["faces"] = faces
 mesh_data["vertex colors"] = np.ones((verts.shape[0]))
 mesh_data["vertex neighbors"] = nn
 
+# -----------------------------------------------------------------------------
+# Deal with the long freesurfer file name with many periods
+temp = FILE.split(os.extsep)
+basename = ""
+for i in range(len(temp)-1):
+    basename += temp[i]
+    if i < len(temp)-2:
+        basename += "_"
+
 outname = "{}_bvbabel.srf".format(basename)
 bvbabel.srf.write_srf(outname, header, mesh_data)
 
-mesh_data["vertex neighbors"]
+# mesh_data["vertex neighbors"]
 
 print("Finished.")
