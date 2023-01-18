@@ -155,9 +155,17 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
-# =============================================================================
 
+# =============================================================================
 .vscode
 
+# =============================================================================
 # Ignore files created by tests
 test_data/*/*_bvbabel*
+
+# Ignore unzipped test data
+test_data/*.vmr
+test_data/*.srf
+test_data/*.mtc
+test_data/*.smp
+test_data/*.vtc
