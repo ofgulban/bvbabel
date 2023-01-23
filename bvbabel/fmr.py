@@ -69,7 +69,13 @@ def read_fmr(filename):
                 header[content[0]] = content[1]
             elif content[0] == "ResolutionX":
                 header[content[0]] = int(content[1])
+            elif content[0] == "NrOfColumns":
+                content[0] = "ResolutionX"
+                header[content[0]] = int(content[1])
             elif content[0] == "ResolutionY":
+                header[content[0]] = int(content[1])
+            elif content[0] == "NrOfRows":
+                content[0] = "ResolutionY"
                 header[content[0]] = int(content[1])
             elif content[0] == "LoadAMRFile":
                 header[content[0]] = content[1].strip("\"")
