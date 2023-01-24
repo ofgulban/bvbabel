@@ -17,6 +17,7 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 | OBJ         | No    | Yes   | No     |       No|
 | POI         | Yes   | Yes   | No     |      Yes|
 | PRT         | Yes   | Yes   | No     |       No|
+| ROI         | Yes   | No    | No     |       No|
 | SRF         | Yes   | wip...| No     |      Yes|
 | SMP         | Yes   | Yes   | Yes    |      Yes|
 | SSM         | Yes   | No    | No     |       No|
@@ -59,8 +60,15 @@ python setup.py install
 This project is licensed under [MIT](./LICENSE).
 
 ## Acknowledgments
-This project is fully supported by [Brain Innovation (Maastricht, NL)](https://www.brainvoyager.com/) as the main developer ([Omer Faruk Gulban](https://github.com/ofgulban)) works there.
+This project is fully supported by [Brain Innovation (Maastricht, NL)](https://www.brainvoyager.com/).
 
 <p align="center">
   <img width="420" src="visuals/brain_innovation_logo.png">
 </p>
+
+### Contributors
+Omer Faruk Gulban @ofgulban
+Jorie van Haren @jorievanharen
+Hester Breman @nausikaa8
+Judith Eck @ju-ec
+Caroline Brockhaus @carbrock
