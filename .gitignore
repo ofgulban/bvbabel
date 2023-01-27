@@ -169,3 +169,4 @@ test_data/*.srf
 test_data/*.mtc
 test_data/*.smp
 test_data/*.vtc
+test_data/temp*
