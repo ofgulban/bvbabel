@@ -25,49 +25,84 @@ def read_prt(filename):
     with open(filename, 'r') as f:
         lines = [r for r in (line.strip() for line in f) if r]
 
-    # POI header
+    # PRT header
     header = dict()
-    header_rows = 10  # NOTE: Only counting non empty rows
-    for line in lines[0:header_rows]:
-        content = line.split(":")
+
+    for j in range(0, len(lines)):
+        line = lines[j]
+        content = line.strip()
+        content = content.split(":", 1)
         content = [i.strip() for i in content]
-        if content[1].isdigit():
-            header[content[0]] = int(content[1])
-        else:
+
+        if content[0].isdigit():
+            pass
+        elif content[0] == "FileVersion":
+            header[content[0]] = content[1]
+        elif content[0] == "ResolutionOfTime":
+            header[content[0]] = content[1]
+        elif content[0] == "Experiment":
+            header[content[0]] = content[1]
+        elif content[0] == "BackgroundColor":
+            header[content[0]] = content[1]
+        elif content[0] == "TextColor":
+            header[content[0]] = content[1]
+        elif content[0] == "TimeCourseColor":
+            header[content[0]] = content[1]
+        elif content[0] == "TimeCourseThick":
+            header[content[0]] = content[1]
+        elif content[0] == "ReferenceFuncColor":
+            header[content[0]] = content[1]
+        elif content[0] == "ReferenceFuncThick":
             header[content[0]] = content[1]
 
-    # POI data
+        # NOTE: The "ParametricWeights" seems to appear with "FileVersion: 3"
+        elif content[0] == "ParametricWeights":
+            header[content[0]] = int(content[1])
+
+        elif content[0] == "NrOfConditions":
+            header[content[0]] = content[1]
+            header_rows = copy(j+1)
+
+    # -------------------------------------------------------------------------
+    # PRT data
     data_prt = list()
-    count_cond = 0
+    count_c = 0  # Count condition
     i = copy(header_rows)
     while i < len(lines):
         data_prt.append(dict())
 
         # Add condition name
-        data_prt[count_cond]["NameOfCondition"] = lines[i]
+        data_prt[count_c]["NameOfCondition"] = lines[i]
 
         # Add condition occurances
         n = int(lines[i+1])
-        data_prt[count_cond]["NrOfOccurances"] = n
+        data_prt[count_c]["NrOfOccurances"] = n
 
         # Add timings
-        data_prt[count_cond]["Time start"] = np.zeros(n, dtype=int)
-        data_prt[count_cond]["Time stop"] = np.zeros(n, dtype=int)
+        data_prt[count_c]["Time start"] = np.zeros(n, dtype=int)
+        data_prt[count_c]["Time stop"] = np.zeros(n, dtype=int)
         for j in range(n):
-            values = lines[i+2+j].split(" ")
-            data_prt[count_cond]["Time start"][j] = int(values[0])
-            data_prt[count_cond]["Time stop"][j] = int(values[-1])
+            values = lines[i+2+j].split()
+            data_prt[count_c]["Time start"][j] = int(values[0])
+            data_prt[count_c]["Time stop"][j] = int(values[1])
+
+        # Add parametric weights
+        if "ParametricWeights" in header and header["ParametricWeights"] > 0:
+            data_prt[count_c]["Parametric weight"] = np.zeros(n, dtype=float)
+            for j in range(n):
+                values = lines[i+2+j].split()
+                data_prt[count_c]["Parametric weight"][j] = float(values[2])
 
         # Add color
         values = lines[i+2+n].split(" ")
-        data_prt[count_cond]["Color"] = list()
+        data_prt[count_c]["Color"] = list()
         for v in values:
             if v.isdigit():
-                data_prt[count_cond]["Color"].append(int(v))
-        data_prt[count_cond]["Color"] = np.asarray(data_prt[count_cond]["Color"])
+                data_prt[count_c]["Color"].append(int(v))
+        data_prt[count_c]["Color"] = np.asarray(data_prt[count_c]["Color"])
 
         i += n + 3
-        count_cond += 1
+        count_c += 1
 
     return header, data_prt
 
@@ -115,6 +150,11 @@ def write_prt(filename, header, data_prt):
         f.write("ReferenceFuncThick: {}\n".format(data))
         f.write("\n")
 
+        if "ParametricWeights" in header:
+            data = header["ParametricWeights"]
+            f.write("ParametricWeights: {}\n".format(data))
+            f.write("\n")
+
         data = header["NrOfConditions"]
         f.write("NrOfConditions: {}\n".format(data))
 
@@ -131,7 +171,12 @@ def write_prt(filename, header, data_prt):
                 if header["ResolutionOfTime"].lower() == "volumes":
                     value1 = int(value1)
                     value2 = int(value2)
-                f.write("{:>4} {:>4}\n".format(value1, value2))
+
+                if "ParametricWeights" in header and header["ParametricWeights"] > 0:
+                    value3 = data_prt[i]["Parametric weight"][j]
+                    f.write(f"{value1:>4} {value2:>4} {value3}\n")
+                else:
+                    f.write(f"{value1:>4} {value2:>4}\n")
 
             data = data_prt[i]["Color"]
             f.write("Color: {} {} {}\n".format(data[0], data[1], data[2]))
