@@ -162,6 +162,7 @@ Temporary Items
 # =============================================================================
 # Ignore files created by tests
 test_data/*/*_bvbabel*
+test_data/*_bvbabel*
 
 # Ignore unzipped test data
 test_data/*.vmr
