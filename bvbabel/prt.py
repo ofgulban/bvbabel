@@ -51,8 +51,8 @@ def read_prt(filename):
         data_prt[count_cond]["NrOfOccurances"] = n
 
         # Add timings
-        data_prt[count_cond]["Time start"] = np.zeros(n)
-        data_prt[count_cond]["Time stop"] = np.zeros(n)
+        data_prt[count_cond]["Time start"] = np.zeros(n, dtype=int)
+        data_prt[count_cond]["Time stop"] = np.zeros(n, dtype=int)
         for j in range(n):
             values = lines[i+2+j].split(" ")
             data_prt[count_cond]["Time start"][j] = int(values[0])
