@@ -59,16 +59,17 @@ python setup.py install
 ## License
 This project is licensed under [MIT](./LICENSE).
 
-## Acknowledgments
+## Contributors
+Omer Faruk Gulban [@ofgulban](https://github.com/ofgulban)  
+Hester Breman [@nausikaa8](https://github.com/nausikaa8)  
+Jorie van Haren [@jorievanharen](https://github.com/jorievanharen)  
+Judith Eck [@ju-ec](https://github.com/ju-ec)  
+Caroline Brockhaus [@carbrock](https://github.com/carbrock)
+
+# Acknowledgments
 This project is fully supported by [Brain Innovation (Maastricht, NL)](https://www.brainvoyager.com/).
 
 <p align="center">
   <img width="420" src="visuals/brain_innovation_logo.png">
 </p>
 
-### Contributors
-Omer Faruk Gulban @ofgulban
-Jorie van Haren @jorievanharen
-Hester Breman @nausikaa8
-Judith Eck @ju-ec
-Caroline Brockhaus @carbrock
