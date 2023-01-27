@@ -1,0 +1,59 @@
+
+FileVersion:        3
+
+ResolutionOfTime:   Volumes
+
+Experiment:         Faces Houses in LVF, CVF, RVF
+
+BackgroundColor:    0 0 0
+TextColor:          255 255 255
+TimeCourseColor:    255 255 255
+TimeCourseThick:    3
+ReferenceFuncColor: 0 0 80
+ReferenceFuncThick: 3
+
+ParametricWeights:  0
+
+NrOfConditions:  6
+
+Faces_LVF
+3
+4	11
+100	107
+196	203
+Color: 200 43 43
+
+Faces_CVF
+3
+ 36	43
+132	139
+228	235
+Color: 43 200 43
+
+Faces_RVF
+3
+68	75
+164	171
+260	267
+Color: 43 43 200
+
+Houses_LVF
+3
+52	59
+148	155
+244	251
+Color: 43 200 200
+
+Houses_CVF
+3
+84	91
+180	187
+276	283
+Color: 200 43 200
+
+Houses_RVF
+3
+20	27
+116	123
+212	219
+Color: 200 200 43
