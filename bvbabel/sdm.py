@@ -138,3 +138,44 @@ def write_sdm(filename, header, data_sdm):
                     f.write(" ")
                 else:
                     f.write("\n")
+
+def create_sdm():
+    """Create BrainVoyager SDM file with default values.
+
+    Returns
+    -------
+    header : dictionary
+        Single subjects design matrix (SDM) header. Also used for storing
+        motion estimates (*_3DMC.sdm).
+    data : list
+        Each element contains a dictionary that contains the information of
+        a single predictor.
+
+    """
+    header = dict()
+    header["FileVersion"] = 1
+    header["NrOfPredictors"] = 3
+    header["NrOfDataPoints"] = 50
+    header["IncludesConstant"] = 0
+    header["FirstConfoundPredictor"] = 1
+
+    # -------------------------------------------------------------------------
+    # Create random predictors as data
+    data = list()
+    temp = dict()
+    temp["NameOfPredictor"] = "Predictor 1"
+    temp["ColorOfPredictor"] = [255, 0, 0]
+    temp["ValuesOfPredictor"] = np.random.random(header["NrOfDataPoints"])
+    data.append(temp)
+
+    temp["NameOfPredictor"] = "Predictor 2"
+    temp["ColorOfPredictor"] = [0, 255, 0]
+    temp["ValuesOfPredictor"] = np.random.random(header["NrOfDataPoints"])
+    data.append(temp)
+
+    temp["NameOfPredictor"] = "Predictor 3"
+    temp["ColorOfPredictor"] = [0, 0, 255]
+    temp["ValuesOfPredictor"] = np.random.random(header["NrOfDataPoints"])
+    data.append(temp)
+
+    return header, data
