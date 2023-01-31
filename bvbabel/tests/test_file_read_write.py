@@ -1,4 +1,10 @@
-"""Test bvbabel file read write functions."""
+"""Test bvbabel file read write functions.
+
+NOTES
+-----
+In the command line, navigate to bvbabel directory and run `pytest`.
+
+"""
 
 import os
 import pytest
