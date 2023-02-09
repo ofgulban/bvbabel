@@ -19,3 +19,4 @@ import bvbabel.poi
 import bvbabel.prt
 import bvbabel.trf
 import bvbabel.roi
+import bvbabel.glm
