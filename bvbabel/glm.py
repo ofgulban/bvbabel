@@ -124,8 +124,29 @@ def read_glm(filename):
         data, = struct.unpack('<i', f.read(4))
         header["Nr voxels in mask"] = data
 
-        # Expected binary data: char (1 byte)
-        data, = struct.unpack('<B', f.read(1))
+        # Expected binary data: variable-length string
+        data = read_variable_length_string(f)
+        header["Name of cortex-based mask"] = data
 
+        header["Study info"] = []
+        for j in range(header["Nr studies"]):
+            header["Study info"].append(dict())
+            # Expected binary data: int (4 bytes)
+            data, = struct.unpack('<i', f.read(4))
+            header["Study info"][j]["Nr time points (volumes) in study"] = data
+
+            # Expected binary data: variable-length string
+            data = read_variable_length_string(f)
+            header["Study info"][j]["Name of study data"] = data
+
+            if header["Type (0: FMR-STC, 1:VMR-VTC, 2:SRF-MTC"] == 2:
+                data = read_variable_length_string(f)
+                header["Study info"][j]["Name of SSM"] = data
+
+            data = read_variable_length_string(f)
+            header["Study info"][j]["Name of SDM"] = data
+
+    if header["RFX-GLM (0:std, 1:RFX)"] == 0:
+        pass
 
     return header
