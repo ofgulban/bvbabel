@@ -25,7 +25,7 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 | TRF         | No    | No    | No     |       No|
 | V16         | Yes   | Yes   | Yes    |       No|
 | VMP         | Yes   | Yes   | No     |       No|
-| VMR         | Yes   | Yes   | No     |      Yes|
+| VMR         | Yes   | Yes   | Yes    |      Yes|
 | VOI         | Yes   | Yes   | No     |      Yes|
 | VTC         | Yes   | Yes   | Yes    |      Yes|
 
@@ -72,4 +72,3 @@ This project is fully supported by [Brain Innovation (Maastricht, NL)](https://w
 <p align="center">
   <img width="420" src="visuals/brain_innovation_logo.png">
 </p>
-

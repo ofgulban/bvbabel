@@ -402,3 +402,63 @@ def write_vmr(filename, header, data_img):
         f.write(struct.pack('<i', data))
 
     return print("VMR saved.")
+
+
+def create_vmr():
+    """Create BrainVoyager VMR file with default values."""
+    header = dict()
+
+    # Pre data header
+    header["File version"] = 4
+    header["DimX"] = 256
+    header["DimY"] = 256
+    header["DimZ"] = 256
+
+    # Post data header
+    header["OffsetX"] = 0
+    header["OffsetY"] = 0
+    header["OffsetZ"] = 0
+    header["FramingCubeDim"] = 256
+    header["PosInfosVerified"] = 1
+    header["CoordinateSystem"] = 0
+    header["Slice1CenterX"] = -87.5
+    header["Slice1CenterY"] = 0
+    header["Slice1CenterZ"] = 0
+    header["SliceNCenterX"] = 87.5
+    header["SliceNCenterY"] = 0
+    header["SliceNCenterZ"] = 0
+    header["RowDirX"] = 0.0
+    header["RowDirY"] = 1.0
+    header["RowDirZ"] = 0.0
+    header["ColDirX"] = 0.0
+    header["ColDirY"] = 0.0
+    header["ColDirZ"] = -1.0
+    header["NRows"] = 256
+    header["NCols"] = 256
+    header["FoVRows"] = 256.0
+    header["FoVCols"] = 256.0
+    header["SliceThickness"] = 1.0
+    header["GapThickness"] = 0.0
+    header["NrOfPastSpatialTransformations"] = 0
+    header["LeftRightConvention"] = 1
+    header["ReferenceSpaceVMR"] = 0
+    header["VoxelSizeX"] = 1.0
+    header["VoxelSizeY"] = 1.0
+    header["VoxelSizeZ"] = 1.0
+    header["VoxelResolutionVerified"] = 1
+    header["VoxelResolutionInTALmm"] = 1
+    header["VMROrigV16MinValue"] = -1
+    header["VMROrigV16MeanValue"] = -1
+    header["VMROrigV16MaxValue"] = -1
+
+    # -------------------------------------------------------------------------
+    # Create data
+    DimX = header["DimX"]
+    DimY = header["DimY"]
+    DimZ = header["DimZ"]
+    dims = [DimZ, DimY, DimX]
+    data = np.random.random(np.prod(dims)) * 225  # 225 for BV visualization
+    data = data.reshape(dims)
+    data = data.astype(np.short)
+
+    return header, data
