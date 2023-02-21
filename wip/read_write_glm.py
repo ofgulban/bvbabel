@@ -8,7 +8,7 @@ FILE = "/home/faruk/Documents/temp_bvbabel_glm/BOLD_whole_brain_GLM.glm"
 
 # =============================================================================
 # Load vmr
-header, data = bvbabel.glm.read_glm(FILE)
+header, data_R2, data_SS, data_beta, data_fitted, data_arlag = bvbabel.glm.read_glm(FILE)
 
 # See header information
 pprint(header)

@@ -26,7 +26,7 @@ nb.save(img, outname)
 
 # Sum of squares values
 outname = "{}_SS_bvbabel.nii.gz".format(basename)
-img = nb.Nifti1Image(data_SS, affine=np.eye(4))
+img = nb.Nifti1Image(data_SS.astype(np.int32), affine=np.eye(4))
 nb.save(img, outname)
 
 # Beta values
