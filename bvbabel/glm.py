@@ -19,8 +19,52 @@ def read_glm(filename):
     -------
     header : dictionary
         Pre-data headers.
-    data : 3D numpy.array
-        Image data.
+    data_R2 : 3D (if volume) OR 1D (if vertices) numpy.array
+        Multiple correlation coefficient R indicating the goodness-of-fit for
+        the respective voxel's time course and to allow to calculate the
+        proportion of explained (R^2) and unexplained (1 - R^2) variance.
+    data_SS : 3D (if volume) OR 1D (if vertices) numpy.array
+        Sum-of-squares term (SS_total) that can be used together with the R
+        value to calculate the variance of the residuals.
+    data_beta : 4D (if volume) OR 2D (if vertices) numpy.array
+        Estimated beta values. One value for each predictor of the design
+        matrix ("Nr all predictors" values).
+    data_XY = 4D (if volume) OR 2D (if vertices) numpy.array
+        Sum-of-squares indicating the covariation of each predictor with the
+        time course data (SS_XiY). These values are stored to allow easy
+        calculation of explained variance terms for restricted models (i.e. to
+        allow application of the extra-sum-of-squares principle); these values
+        may be ignored (not stored) for custom processing.
+    data_ARlag : 3D or 4D (if volume) OR 1D or 2D (if vertices) numpy.array
+        Auto-regression lag value. If "serial correlation" is 1, this will be a
+        3D numpy.array (if volume) or 1D numpy.array (if vertices). If "serial
+        correlation" is 2, this will be a 4D numpy.array (if volume) or 2D
+        numpy.array (if vertices). If "serial correlation" is zero, this will
+        be a 3D numpy.array (if volume) or 1D numpy.array (if vertices)
+        containing all zeros (can be ignored)
+
+    Notes
+    -----
+        - NOTE[Faruk]: "Developer Guide - The Format Of GLM Files (v4)" has
+    interesting details about calculating standard errors for beta and contrast
+    values. In order to retain this extra information, I am including these
+    notes below.
+        - The (non-RFX) GLM file stores enough values to allow calculation of
+    standard errors for beta and contrast values for each voxel. The stored
+    multiple correlation coefficient R (data_R2) together with the overall
+    sum-of-squares term (data_SS) can be used to calculate the variance of
+    the residuals as follows:
+        `VAR_residuals = data_SS * (1 - data_R2) / (header["Nr time points"]  - header["Nr all predictors"])`
+    Together with the stored inverted X'X matrix, this allows calculating the
+    standard error for any beta or contrast t value using the usual equation
+    (c is the contrast vector and b is the voxel's vector of stored beta
+    values):
+        `t = c'b / sqrt(VAR_residuals * c' * header["Inverted X'X matrix"] * c)`
+    However, note that in case of performed serial correlation correction, the
+    inverted X'X matrix needs to be recalculated for each voxel from the stored
+    design matrix X using the voxel-specific autocorrelation function term(s);
+    furthermore the number of time points (NTimePoints) needs to be corrected
+    [subtraction of 1 for AR(1) model, subtraction of 2 for AR(2) model].
 
     """
     header = dict()
@@ -131,6 +175,7 @@ def read_glm(filename):
         header["Study info"] = []
         for i in range(header["Nr studies"]):
             header["Study info"].append(dict())
+
             # Expected binary data: int (4 bytes)
             data, = struct.unpack('<i', f.read(4))
             header["Study info"][i]["Nr time points (volumes) in study"] = data
@@ -143,129 +188,28 @@ def read_glm(filename):
                 data = read_variable_length_string(f)
                 header["Study info"][i]["Name of SSM"] = data
 
+            # NOTE[Faruk]: Conflicting information in the documents. This might
+            # be called RTC filename
             data = read_variable_length_string(f)
             header["Study info"][i]["Name of SDM"] = data
 
-        data = read_variable_length_string(f)
-        header["DEBUG field 00"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 01"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 02"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 03"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 04"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 05"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 06"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 07"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 08"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 09"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 11"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 12"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 13"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 14"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 15"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 16"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 17"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 18"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 19"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 20"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 21"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 22"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 23"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 24"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 25"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 26"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 27"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 28"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 29"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 30"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 31"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 32"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 33"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 34"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 35"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 36"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 37"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 38"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 39"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 40"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 41"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 42"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 43"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 44"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 45"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 46"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 47"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 48"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 49"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 50"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 51"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 52"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 53"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 54"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 55"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 56"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 57"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 58"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 59"] = data
-        data = read_variable_length_string(f)
-        header["DEBUG field 60"] = data
+        # ---------------------------------------------------------------------
+        header["Predictor info"] = list()
+        for i in range(header["Nr all predictors"]):
+                header["Predictor info"].append(dict())
+
+                # Expected binary data: variable-length string
+                data = read_variable_length_string(f)
+                header["Predictor info"][i]["Name (internal)"] = data
+                data = read_variable_length_string(f)
+                header["Predictor info"][i]["Name (custom)"] = data
+
+                # Expected binary data: char (1 byte) x 3
+                data = read_RGB_bytes(f)
+                header["Predictor info"][i]["Color"] = data
+
+                # TODO: Unknown bytes, ask to senior dev. for documentation
+                f.read(9)
 
         if header["RFX-GLM (0:std, 1:RFX)"] == 0:
             # NOTE[Developer Guide - The Format Of GLM Files (v4)]: N x M float,
@@ -362,15 +306,13 @@ def read_glm(filename):
         # has been used, the two estimated ACF terms are stored, i.e. the data
         # contains one value more than in the case of the AR(1) model.
         data_length = nr_data_point_values * nr_data_points
-
-        data_img = np.zeros(data_length)
-
-        data_img = np.fromfile(f, dtype='<f', count=data_img.size, sep="",
+        data_all = np.zeros(data_length, dtype=np.float32)
+        data_all = np.fromfile(f, dtype='<f', count=data_all.size, sep="",
                                offset=0)
 
         if header["Type (0: FMR-STC, 1:VMR-VTC, 2:SRF-MTC"] == 0:
             dims = (nr_data_point_values,
-                    header["DimX"], header["DimY"], header["DimZ"])
+                    header["DimZ"], header["DimY"], header["DimX"])
 
         elif header["Type (0: FMR-STC, 1:VMR-VTC, 2:SRF-MTC"] == 1:
             r = header["Resolution multiplier (1, 2, 3 times VMR resolution)"]
@@ -382,12 +324,32 @@ def read_glm(filename):
         elif header["Type (0: FMR-STC, 1:VMR-VTC, 2:SRF-MTC"] == 2:
             dim = (nr_data_point_values, header["Nr vertices"])
 
-        data_img = np.reshape(data_img, dims)
-        data_img = np.transpose(data_img, (1, 2, 3, 0))
+        data_all = np.reshape(data_all, dims)
+        data_all = np.transpose(data_all, (1, 3, 2, 0))
+        data_all = data_all[::-1, ::-1, ::-1, :]
 
-        # -------------------------------------------------------------------------
-        # NOTE[Faruk]: Developer Guide - The Format Of GLM Files (v4) has further
-        # interesting details about calculating standard errors for beta and
-        # contrast values. If needed, refer to the PDF in the future.
-        # -------------------------------------------------------------------------
-    return header, data_img
+        # ---------------------------------------------------------------------
+        # Parse into separate maps.
+        # ---------------------------------------------------------------------
+        # Multiple regression R values (multipleRegrR)
+        data_R2 = data_all[..., 0]
+
+        # Sum of squares values (mCorrSS)
+        data_SS = data_all[..., 1]
+
+        # Beta values (BetaMaps)
+        p = header["Nr all predictors"]
+        data_beta = data_all[..., 2:2+p]
+
+        # XY (Fitted data after regression, only present in File versions > 1)
+        data_XY = data_all[..., 2+p:2+p+p]
+
+        # arLag1 (Auto-regression lag value)
+        if header["Serial correlation(0:no, 1:AR(1), 2:AR(2))"] == 1:
+            data_ARlag = data_all[..., 2+p+p:2+p+p+1]
+        elif header["Serial correlation(0:no, 1:AR(1), 2:AR(2))"] == 2:
+            data_ARlag = data_all[..., 2+p+p:2+p+p+2]
+        else:
+            data_ARlag = np.zeros(data_R2.shape)  # placeholder array
+
+    return (header, data_R2, data_SS, data_beta, data_XY, data_ARlag)
