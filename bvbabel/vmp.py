@@ -41,9 +41,9 @@ def read_vmp(filename):
 
         # Expected binary data: int (4 bytes)
         data, = struct.unpack('<i', f.read(4))
-        header["NrOfSubMaps"] = data  # number of sub-maps/component maps
+        header["NrOfSubMaps"] = int(data)  # number of sub-maps/component maps
         data, = struct.unpack('<i', f.read(4))
-        header["NrOfTimePoints"] = data
+        header["NrOfTimePoints"] = int(data)
         data, = struct.unpack('<i', f.read(4))
         header["NrOfComponentParams"] = data
         data, = struct.unpack('<i', f.read(4))
