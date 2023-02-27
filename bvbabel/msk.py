@@ -102,5 +102,4 @@ def write_msk(filename, header, data_img):
         data_img = np.transpose(data_img, (0, 2, 1))  # Tal to BV
         data_img = np.reshape(data_img, data_img.size)
 
-        for i in range(data_img.size):
-            f.write(struct.pack('<B', int(data_img[i])))
+        f.write(data_img.astype("<B").tobytes(order="C"))

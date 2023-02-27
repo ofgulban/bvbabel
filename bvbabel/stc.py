@@ -67,15 +67,14 @@ def write_stc(filename, data_img, data_type=2):
     """
     data_img = data_img[:, ::-1, :, :]  # Flip BV axes
     data_img = np.transpose(data_img, (2, 3, 1, 0))
-    data_img = data_img.flatten()
 
     with open(filename, 'wb') as f:
         if data_type == 1:
-            for i in range(data_img.size):
-                f.write(struct.pack('<H', data_img[i]))
+            f.write(data_img.astype("<H").tobytes(order="C"))
+
         elif data_type == 2:
-            for i in range(data_img.size):
-                f.write(struct.pack('<f', data_img[i]))
+            f.write(data_img.astype("<f").tobytes(order="C"))
+
         else:
             raise("Unrecognized VTC data_img type.")
 

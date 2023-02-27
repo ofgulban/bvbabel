@@ -277,9 +277,7 @@ def write_vmr(filename, header, data_img):
         data_img = np.transpose(data_img, (0, 2, 1))  # BV to Tal
 
         # Expected binary data: unsigned char (1 or 2 byte)
-        data_img = data_img.flatten()
-        for i in range(data_img.size):
-            f.write(struct.pack('<B', data_img[i]))
+        f.write(data_img.astype("<B").tobytes(order="C"))
 
         # ---------------------------------------------------------------------
         # VMR Post-Data Header

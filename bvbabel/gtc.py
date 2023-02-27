@@ -90,5 +90,4 @@ def write_gtc(filename, header, data_img):
         # ---------------------------------------------------------------------
         data_img = np.transpose(data_img, (2, 1, 0, 3))
         data_img = np.reshape(data_img, data_img.size)
-        for i in range(data_img.size):
-            f.write(struct.pack('<i', data_img[i]))
+        f.write(data_img.astype("<i").tobytes(order="C"))

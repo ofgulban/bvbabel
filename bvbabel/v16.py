@@ -106,9 +106,7 @@ def write_v16(filename, header, data_img):
         data_img = np.transpose(data_img, (0, 2, 1))  # BV to Tal
 
         # Expected binary data: unsigned short (2 bytes)
-        data_img = data_img.flatten()
-        for i in range(data_img.size):
-            f.write(struct.pack('<H', data_img[i]))
+        f.write(data_img.astype("<H").tobytes(order="C"))
 
     return print("V16 saved.")
 

@@ -413,6 +413,4 @@ def write_vmp(filename, header, data_img):
         data_img = data_img[::-1, ::-1, ::-1, :]  # Flip BV axes
         data_img = np.transpose(data_img, (3, 0, 2, 1))  # TAL to BV
         data_img = np.reshape(data_img, data_img.size)
-
-        for i in range(data_img.size):
-            f.write(struct.pack('<f', data_img[i]))
+        f.write(data_img.astype("<f").tobytes(order="C"))
