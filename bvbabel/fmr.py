@@ -412,26 +412,30 @@ def write_fmr(filename, header, data_img):
         # Multiband section
         if len(info_multiband.keys()) > 0:
             f.write("\n")
-            data = info_multiband["FirstDataSourceFile"]
-            f.write("FirstDataSourceFile: {}\n".format(data))
+            if "FirstDataSourceFile" in info_multiband:
+                data = info_multiband["FirstDataSourceFile"]
+                f.write("FirstDataSourceFile: {}\n".format(data))
 
-            f.write("\n")
-            data = info_multiband["MultibandSequence"]
-            f.write("MultibandSequence: {}\n".format(data))
-            data = info_multiband["MultibandFactor"]
-            f.write("MultibandFactor:   {}\n".format(data))
+            if "MultibandSequence" in info_multiband:
+                data = info_multiband["MultibandSequence"]
+                f.write("MultibandSequence: {}\n".format(data))
 
-            f.write("\n")
-            data = info_multiband["SliceTimingTableSize"]
-            f.write("SliceTimingTableSize: {}\n".format(data))
-            slice_timings = info_multiband["Slice timings"]
-            for i in range(info_multiband["SliceTimingTableSize"]):
-                f.write("{}\n".format(slice_timings[i]))
+            if "MultibandFactor" in info_multiband:
+                data = info_multiband["MultibandFactor"]
+                f.write("MultibandFactor:   {}\n".format(data))
 
-            f.write("\n")
-            data = info_multiband["AcqusitionTime"]
-            f.write("AcqusitionTime: {}\n".format(data))
-            f.write("\n")
+            if "SliceTimingTableSize" in info_multiband:
+                data = info_multiband["SliceTimingTableSize"]
+                f.write("SliceTimingTableSize: {}\n".format(data))
+                slice_timings = info_multiband["Slice timings"]
+                for i in range(info_multiband["SliceTimingTableSize"]):
+                    f.write("{}\n".format(slice_timings[i]))
+
+            if "AcqusitionTime" in info_multiband:
+                f.write("\n")
+                data = info_multiband["AcqusitionTime"]
+                f.write("AcqusitionTime: {}\n".format(data))
+                f.write("\n")
 
     # -------------------------------------------------------------------------
     # Write voxel data as a separate STC file
