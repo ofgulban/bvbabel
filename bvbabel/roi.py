@@ -2,6 +2,7 @@
 
 import numpy as np
 
+
 # =============================================================================
 def read_roi(filename):
     """Read BrainVoyager ROI file, FileVersion = 6.
@@ -32,7 +33,7 @@ def read_roi(filename):
             header[content[0]] = int(content[1])
         else:
             header[content[0]] = content[1]
-            
+
     # ROI data (x, y, z coordinates of voxels)
     count_roi = -1
     data_roi = list()
@@ -48,16 +49,16 @@ def read_roi(filename):
 
         elif content[0] == "FromSlice":
             data_roi[count_roi]["FromSlice"] = int(content[1])
-            
+
         elif content[0] == "Left":
             data_roi[count_roi]["Left"] = int(content[1])
-            
+
         elif content[0] == "Right":
             data_roi[count_roi]["Right"] = int(content[1])
-            
+
         elif content[0] == "Top":
             data_roi[count_roi]["Top"] = int(content[1])
-            
+
         elif content[0] == "Bottom":
             data_roi[count_roi]["Bottom"] = int(content[1])
 

@@ -139,6 +139,7 @@ def write_sdm(filename, header, data_sdm):
                 else:
                     f.write("\n")
 
+
 def create_sdm():
     """Create BrainVoyager SDM file with default values.
 
