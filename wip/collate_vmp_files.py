@@ -7,8 +7,10 @@ import pprint
 
 
 FILES = [
-    "/path/to/sub-control01_run-01_facefix.vmp",
-    "/path/to/sub-control02_run-01_facefix.vmp",
+    "/path/to/sub-control03_run-01_facefix_beta.vmp",
+    "/path/to/sub-control03_run-02_facefix_beta.vmp",
+    "/path/to/sub-control03_run-03_facefix_beta.vmp",
+    "/path/to/sub-control03_run-04_facefix_beta.vmp",
 ]
 
 SUFFIX = "collated_bvbabel"
@@ -40,7 +42,7 @@ for i in range(len(FILES)):
             # Append new VMP map from another subject
             header_main["NrOfSubMaps"] += 1
             header_main["Map"].append(header_temp["Map"][0])
-            data_main = np.squeeze(np.stack([data_main, data_temp], axis=3))
+            data_main = np.concatenate([data_main, data_temp], axis=3)
 
     # Write VMP
     outname = f"{basename}_{SUFFIX}.vmp"
