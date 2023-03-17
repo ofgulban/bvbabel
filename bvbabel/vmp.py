@@ -221,11 +221,18 @@ def read_vmp(filename):
         DimZ = (header["ZEnd"] - header["ZStart"]) // VMP_resolution
         DimT = header["NrOfSubMaps"]
         data_img = np.zeros(DimT * DimZ * DimY * DimX)
+
         data_img = np.fromfile(f, dtype='<f', count=data_img.size, sep="",
                                offset=0)
-        data_img = np.reshape(data_img, (DimT, DimZ, DimY, DimX))
-        data_img = np.transpose(data_img, (1, 3, 2, 0))  # BV to Tal
-        data_img = data_img[::-1, ::-1, ::-1, :]  # Flip BV axes
+
+        if DimT > 1:  # Multiple maps
+            data_img = np.reshape(data_img, (DimT, DimZ, DimY, DimX))
+            data_img = np.transpose(data_img, (1, 3, 2, 0))  # BV to Tal
+            data_img = data_img[::-1, ::-1, ::-1, :]  # Flip BV axes
+        else:  # Single map
+            data_img = np.reshape(data_img, (DimZ, DimY, DimX))
+            data_img = np.transpose(data_img, (0, 2, 1))  # BV to Tal
+            data_img = data_img[::-1, ::-1, ::-1]  # Flip BV axes
 
     return header, data_img
 
@@ -410,7 +417,12 @@ def write_vmp(filename, header, data_img):
         # ---------------------------------------------------------------------
         # Write VMP image data
         # ---------------------------------------------------------------------
-        data_img = data_img[::-1, ::-1, ::-1, :]  # Flip BV axes
-        data_img = np.transpose(data_img, (3, 0, 2, 1))  # TAL to BV
-        data_img = np.reshape(data_img, data_img.size)
+        if header["NrOfSubMaps"] > 1:  # Multiple maps
+            data_img = data_img[::-1, ::-1, ::-1, :]  # Flip BV axes
+            data_img = np.transpose(data_img, (3, 0, 2, 1))  # TAL to BV
+            data_img = np.reshape(data_img, data_img.size)
+        else:
+            data_img = data_img[::-1, ::-1, ::-1]  # Flip BV axes
+            data_img = np.transpose(data_img, (0, 2, 1))  # TAL to BV
+            data_img = np.reshape(data_img, data_img.size)
         f.write(data_img.astype("<f").tobytes(order="C"))
