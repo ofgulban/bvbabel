@@ -132,7 +132,7 @@ def read_vtc(filename, rearrange_data_axes=True):
             data_img = np.fromfile(f, dtype='<f', count=data_img.size, sep="",
                                    offset=0)
         else:
-            raise("Unrecognized VTC data_img type.")
+            raise ("Unrecognized VTC data_img type.")
 
         data_img = np.reshape(data_img, (DimZ, DimY, DimX, DimT))
 
