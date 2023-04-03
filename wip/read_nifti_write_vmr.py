@@ -6,16 +6,17 @@ import nibabel as nb
 import numpy as np
 import pprint
 
-FILE = "/home/faruk/data2/DATA-AHEAD/MNI_templates/mni_icbm152_nlin_asym_09b/mni_icbm152_t2_tal_nlin_asym_09b_hires.nii.gz"
+FILE = "/home/faruk/data2/DATA-AHEAD/MNI_coregistrations/Ahead_brain_122017_Bielschowsky-mni2009b.nii.gz"
 
 # =============================================================================
 # Load Nifti
 nii = nb.load(FILE)
-nii_data = nii.get_fdata()
+nii_data = np.nan_to_num(nii.get_fdata(), nan=0.)
 dims = nii_data.shape
 
 print("\n" + "="*79 + "\nNIFTI HEADER\n" + "="*79)
 print(nii.header)
+print(np.percentile(nii_data[nii_data != 0], [0, 100]))
 
 # -----------------------------------------------------------------------------
 # Create V16
@@ -23,7 +24,7 @@ v16_header, v16_data = bvbabel.v16.create_v16()
 
 # Create V16 data (type cast nifti data to uint16 after range normalization)
 v16_data = np.copy(nii_data)
-thr_min, thr_max = np.percentile(v16_data, [0, 100])
+thr_min, thr_max = np.percentile(v16_data[v16_data != 0], [0, 100])
 v16_data[v16_data > thr_max] = thr_max
 v16_data[v16_data < thr_min] = thr_min
 v16_data = v16_data - thr_min
@@ -49,7 +50,7 @@ vmr_header, vmr_data = bvbabel.vmr.create_vmr()
 
 # Update VMR data (type cast nifti data to uint8 after range normalization)
 vmr_data = np.copy(nii_data)
-thr_min, thr_max = np.percentile(vmr_data, [1, 99])
+thr_min, thr_max = np.percentile(vmr_data[vmr_data != 0], [1, 99])
 vmr_data[vmr_data > thr_max] = thr_max
 vmr_data[vmr_data < thr_min] = thr_min
 vmr_data = vmr_data - thr_min
