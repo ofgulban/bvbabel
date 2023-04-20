@@ -4,9 +4,6 @@ If the PRT contains parametric weights, a parametric SDM can be created.
 
 """
 
-__date__ = "20-04-2023"
-
-
 import numpy as np
 from scipy.stats import gamma
 import scipy.interpolate as interpolate
@@ -29,10 +26,10 @@ def create_weights(a, b):
     return(weights)
 
 
-# in case the PRTs contain parametric weights, choose whether you would like to add parametric predictors to the SDM
+# choose whether you would like to add parametric predictors to the SDM, if the PRT contains weighted condition intervals
 define_para_sdm = True
-# only has to be defined for parametric PRTs
-standardize_weights = 1 # choose whether you would like to use the parametric weights as defined (0) or subtract mean of weights (1) or z-score weights (2)
+# to be defined for parametric SDMs: use parametric weights as defined in PRT (0) or subtract mean of weights (1) or z-score weights (2)
+standardize_weights = 1
 
 
 # read all necessary files (PRT, FMR)
@@ -46,11 +43,8 @@ prt_header, prt_data = bvbabel.prt.read_prt(prt_file)
 sdm_data = list() # create empty design
 
 
-### Define HRF used for convolution
+###  Define HRF as specified in BrainVoyager's Two-Gamma HRF Notebook
 
-##  Define HRF as specified in BrainVoyager's Two-Gamma HRF notebook
-#   a = shape parameter of gamma distribution, sc = amplitude scale
-#   Note: mean = a, peak (mode) = a - 1
 a1 =  6.0; sc1 =  6.0 
 a2 = 16.0; sc2 = -1.0
 if prt_header['ResolutionOfTime'] != 'Volumes':
@@ -59,9 +53,9 @@ else:
     hz = 1/int(fmr_header['TR'])*1000
     
 x = np.linspace(0, 30, int(hz*30+1)) # input range: 0 - 30 seconds
-y1 = sc1 * gamma.pdf(x, a1)     # first gamma distribution
-y2 = sc2 * gamma.pdf(x, a2)     # second gamma distribution
-hrf = y1 + y2                     # sum of both -> canonic two-gamma HRF
+y1 = sc1 * gamma.pdf(x, a1)
+y2 = sc2 * gamma.pdf(x, a2)
+hrf = y1 + y2
 hrf = hrf/max(hrf)
 
 ### Check whether there are parametric weights in the current PRT condition         
@@ -72,8 +66,8 @@ for cond in range(len(prt_data)):
     if "ParametricWeights" in prt_header:
         if prt_header['ParametricWeights'] == 1:
             if define_para_sdm:
-                # if the parametric weights in this condition are not constant, or if the parametric weights are constant but bigger than 1, create a parametric predictor
-                if len(np.unique(prt_data[cond]['Parametric weight'])) > 1 or (len(np.unique(prt_data[cond]['Parametric weight'])) == 1 and np.unique(prt_data[cond]['Parametric weight']) > 1):
+                # if the parametric weights in this condition are not constant create a parametric predictor
+                if len(np.unique(prt_data[cond]['Parametric weight'])) > 1:
                     add_parametric_predictor = True
                     weights = create_weights(prt_data[cond]['Parametric weight'], standardize_weights)
                 
@@ -137,7 +131,7 @@ for cond in range(len(prt_data)):
             pred_weights_conv = np.convolve(pred_weights, hrf, 'valid')
 
             
-### Define Single Study Design Matrix based on the convolved predictors
+### Define Single Study Design Matrix based on the created predictors
     
     ## Add main predictor to model
     # scale predictor to 1    
