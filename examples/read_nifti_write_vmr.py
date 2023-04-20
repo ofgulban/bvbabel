@@ -5,7 +5,7 @@ import nibabel as nb
 import numpy as np
 import pprint
 
-FILE = "/home/faruk/data2/DATA-AHEAD/3D_reconstructions/Ahead_brain_122017_Bieloschowsky-interpolated.nii.gz"
+FILE = "/home/faruk/data2/DATA-AHEAD/temp/Ahead_brain_122017_blockface-image_ISO.nii.gz"
 
 SUFFIX = "bvbabel"
 
@@ -20,6 +20,10 @@ nii_data = np.nan_to_num(nii.get_fdata(), nan=0.)
 
 # # (Optional - Use with caution!) Flip directions
 # nii_data = nii_data[::-1, ::-1, ::-1]
+
+# voxdims = [nii.header["pixdim"][1],
+#            nii.header["pixdim"][2],
+#            nii.header["pixdim"][3]]
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 dims = nii_data.shape
@@ -103,9 +107,9 @@ vmr_header["VMROrigV16MeanValue"] = int(np.mean(v16_data))
 vmr_header["VMROrigV16MinValue"] = int(np.min(v16_data))
 vmr_header["VoxelResolutionInTALmm"] = 1
 vmr_header["VoxelResolutionVerified"] = 1
-vmr_header["VoxelSizeX"] = nii.header["pixdim"][1]
-vmr_header["VoxelSizeY"] = nii.header["pixdim"][2]
-vmr_header["VoxelSizeZ"] = nii.header["pixdim"][3]
+vmr_header["VoxelSizeX"] = voxdims[0]
+vmr_header["VoxelSizeY"] = voxdims[1]
+vmr_header["VoxelSizeZ"] = voxdims[2]
 
 print("\n" + "="*79 + "\nVMR HEADER\n" + "="*79)
 pprint.pprint(vmr_header)
