@@ -20,13 +20,12 @@ nii_data = np.nan_to_num(nii.get_fdata(), nan=0.)
 
 # # (Optional - Use with caution!) Flip directions
 # nii_data = nii_data[::-1, ::-1, ::-1]
-
-# voxdims = [nii.header["pixdim"][1],
-#            nii.header["pixdim"][2],
-#            nii.header["pixdim"][3]]
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 dims = nii_data.shape
+voxdims = [nii.header["pixdim"][1],
+           nii.header["pixdim"][2],
+           nii.header["pixdim"][3]]
 
 print("\n" + "="*79 + "\nNIFTI HEADER\n" + "="*79)
 print(nii.header)
