@@ -6,6 +6,7 @@ If the PRT contains parametric weights, a parametric SDM can be created.
 
 import numpy as np
 from scipy.stats import gamma
+from scipy import signal
 import scipy.interpolate as interpolate
 import bvbabel
 
@@ -85,7 +86,7 @@ for cond in range(len(prt_data)):
     
         # create convolved predictor
         pred_block = np.concatenate((np.zeros(len(hrf)-1), pred_block)) # pad predictor with zeros
-        pred_conv = np.convolve(pred_block, hrf, 'valid')
+        pred_conv = signal.convolve(pred_block, hrf, mode='valid', method='auto')
                 
         # downsample predictor to TR
         # create time vectors
@@ -101,7 +102,7 @@ for cond in range(len(prt_data)):
         
             # create convolved parametric predictor
             pred_weights = np.concatenate((np.zeros(len(hrf)-1), pred_weights)) # pad predictor with zeros
-            pred_weights_conv = np.convolve(pred_weights, hrf, 'valid')
+            pred_weights_conv = signal.convolve(pred_weights, hrf, mode ='valid', method ='auto')
             # downsample parametric predictor to TR
             f2 = interpolate.interp1d(time_msec, pred_weights_conv)
             pred_weights_conv = f2(time_TR)
@@ -119,7 +120,7 @@ for cond in range(len(prt_data)):
         
         # create convolved predictor
         pred_block = np.concatenate((np.zeros(len(hrf)-1), pred_block)) # pad predictor with zeros
-        pred_conv = np.convolve(pred_block, hrf, 'valid')
+        pred_conv = signal.convolve(pred_block, hrf, mode='valid', method='auto')
 
         if add_parametric_predictor:
             pred_weights = np.zeros(fmr_header['NrOfVolumes']).astype(float)
@@ -128,7 +129,7 @@ for cond in range(len(prt_data)):
             
             # create convolved parametric predictor
             pred_weights = np.concatenate((np.zeros(len(hrf)-1), pred_weights)) # pad predictor with zeros
-            pred_weights_conv = np.convolve(pred_weights, hrf, 'valid')
+            pred_weights_conv = signal.convolve(pred_weights, hrf, mode='valid', method='auto')
 
             
 ### Define Single Study Design Matrix based on the created predictors
@@ -163,7 +164,7 @@ sdm_data[-1]['ValuesOfPredictor'] = np.ones(fmr_header['NrOfVolumes']).astype(fl
 
 # Define SDM header
 sdm_header = {'FileVersion': 1, 'NrOfPredictors': len(sdm_data), 'NrOfDataPoints': int(fmr_header['NrOfVolumes']),
-              'IncludesConstant': 1, 'FirstConfoundPredictor': len(sdm_data)+1}
+              'IncludesConstant': 1, 'FirstConfoundPredictor': len(sdm_data)}
 
 # Save SDM
 bvbabel.sdm.write_sdm((prt_file[:-4] + '.sdm'), sdm_header, sdm_data)
