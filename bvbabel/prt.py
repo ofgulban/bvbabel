@@ -23,7 +23,7 @@ def read_prt(filename):
     """
     # Read non-empty lines of the input text file
     with open(filename, 'r') as f:
-        lines = [r for r in (line.strip() for line in f) if r]
+        lines = [r for r in (line.strip().replace('\t',' ') for line in f) if r]
 
     # PRT header
     header = dict()
