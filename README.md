@@ -24,7 +24,7 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 | SDM         | Yes   | Yes   | No     |      Yes|
 | TRF         | No    | No    | No     |       No|
 | V16         | Yes   | Yes   | Yes    |       No|
-| VMP         | Yes   | Yes   | No     |      Yes|
+| VMP         | Yes   | Yes   | Yes    |      Yes|
 | VMR         | Yes   | Yes   | Yes    |      Yes|
 | VOI         | Yes   | Yes   | No     |      Yes|
 | VTC         | Yes   | Yes   | Yes    |      Yes|

@@ -426,3 +426,111 @@ def write_vmp(filename, header, data_img):
             data_img = np.transpose(data_img, (0, 2, 1))  # TAL to BV
             data_img = np.reshape(data_img, data_img.size)
         f.write(data_img.astype("<f").tobytes(order="C"))
+
+
+# =============================================================================
+def create_vmp():
+    """Create BrainVoyager VMP file with default values."""
+
+    header = dict()
+    # -------------------------------------------------------------------------
+    # NR-VMP Header (Version 6)
+    # -------------------------------------------------------------------------
+
+    # Expected binary data: int (4 bytes)
+    header["NR-VMP identifier"] = np.int32(-1582119980)
+
+    # Expected binary data: short int (2 bytes)
+    header["VersionNumber"] = np.int16(6)
+    header["DocumentType"] = np.int16(1)
+
+    # Expected binary data: int (4 bytes)
+    header["NrOfSubMaps"] = np.int32(1)
+    header["NrOfTimePoints"] = np.int32(0)
+    header["NrOfComponentParams"] = np.int32(0)
+    header["ShowParamsRangeFrom"] = np.int32(0)
+    header["ShowParamsRangeTo"] = np.int32(0)
+    header["UseForFingerprintParamsRangeFrom"] = np.int32(0)
+    header["UseForFingerprintParamsRangeTo"] = np.int32(0)
+    header["XStart"] = np.int32(0)
+    header["XEnd"] = np.int32(256)
+    header["YStart"] = np.int32(0)
+    header["YEnd"] = np.int32(256)
+    header["ZStart"] = np.int32(0)
+    header["ZEnd"] = np.int32(256)
+    header["Resolution"] = np.int32(1)
+    header["DimX"] = np.int32(256)
+    header["DimY"] = np.int32(256)
+    header["DimZ"] = np.int32(256)
+
+    # Expected binary data: variable-length string
+    header["NameOfVTCFile"] = ""
+    header["NameOfProtocolFile"] = ""
+    header["NameOfVOIFile"] = ""
+
+    # -------------------------------------------------------------------------
+    # Map information
+    # -------------------------------------------------------------------------
+    header["Map"] = list()
+    header["Map"].append(dict())
+
+    # Expected binary data: int (4 bytes)
+    header["Map"][0]["TypeOfMap"] = np.int32(1)
+
+    # Expected binary data: float (4 bytes)
+    header["Map"][0]["MapThreshold"] = np.float32(0.5)
+    header["Map"][0]["UpperThreshold"] = np.float32(1)
+
+    # Expected binary data: variable-length string
+    header["Map"][0]["MapName"] = "bvbabel default random numbers"
+
+    # Expected binary data: char (1 byte) x 3
+    header["Map"][0]["RGB positive min"] = np.array([224, 243, 248], dtype=np.ubyte)
+    header["Map"][0]["RGB positive max"] = np.array([ 40,  51, 144], dtype=np.ubyte)
+    header["Map"][0]["RGB negative min"] = np.array([254, 236, 153], dtype=np.ubyte)
+    header["Map"][0]["RGB negative max"] = np.array([145,   0,  37], dtype=np.ubyte)
+
+    # Expected binary data: char (1 byte)
+    header["Map"][0]["UseVMPColor"] = np.byte(0)
+
+    # Expected binary data: variable-length string
+    header["Map"][0]["LUTFileName"] = "<default>"
+
+    # Expected binary data: float (4 bytes)
+    header["Map"][0]["TransparentColorFactor"] = np.float32(1.0)
+
+    # Expected binary data: int (4 bytes)
+    header["Map"][0]["ClusterSizeThreshold"] = np.int32(1)
+
+    # Expected binary data: char (1 byte)
+    header["Map"][0]["EnableClusterSizeThreshold"] = np.byte(0)
+
+    # Expected binary data: int (4 bytes)
+    header["Map"][0]["ShowValuesAboveUpperThreshold"] = np.int32(1)
+    header["Map"][0]["DF1"] = np.int32(0)
+    header["Map"][0]["DF2"] = np.int32(0)
+
+    # Expected binary data: char (1 byte)
+    header["Map"][0]["ShowPosNegValues"] = np.byte(3)
+
+    # Expected binary data: int (4 bytes)
+    header["Map"][0]["NrOfUsedVoxels"] = np.int32(0)
+    header["Map"][0]["SizeOfFDRTable"] = np.int32(0)
+
+    # Expected binary data: float (4 bytes) x SizeOfFDRTable x 3
+    # (q, crit std, crit conservative)
+    # TODO: Check FDR Tables
+    header["Map"][0]["FDRTableInfo"] = np.int32(0)
+
+    # Expected binary data: int (4 bytes)
+    header["Map"][0]["UseFDRTableIndex"] = np.int32(0)
+
+    # -------------------------------------------------------------------------
+    # Create random data
+    # -------------------------------------------------------------------------
+    dims = [header["DimZ"], header["DimY"], header["DimX"]]
+    data = np.random.random(np.prod(dims)) * 2 - 1
+    data = data.reshape(dims)
+    data = data.astype(np.float32)
+
+    return header, data

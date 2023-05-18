@@ -4,7 +4,7 @@ import os
 import bvbabel
 import pprint
 
-FILE = "/home/faruk/Documents/test_bvbabel/sub-01_ses-01_RightHand.vmp"
+FILE = "/home/faruk/biserver-faruk/data/bigbrain/03-process/whole_brain/sub-test07_partial_coverage.vmp"
 
 # =============================================================================
 # Load vmr
