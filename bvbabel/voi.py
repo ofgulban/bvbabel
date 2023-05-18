@@ -57,7 +57,7 @@ def read_voi(filename):
         elif content[0] == "NrOfVoxels":
             data_voi[count_voi]["NrOfVoxels"] = int(content[1])
 
-        elif content[0].split(" ")[0].isdigit():  # Coordinate
+        elif content[0].strip("-").split(" ")[0].isdigit():  # Coordinate
             values = content[0].split(" ")
             values = [int(v) for v in values]
             data_voi[count_voi]["Coordinates"].append(values)
