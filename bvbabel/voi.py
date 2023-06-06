@@ -68,10 +68,10 @@ def read_voi(filename):
             header["NrOfVOIVTCs"] = int(content[1])
 
         elif len(content) > 1 and len(content) < 3:  # A path containing ':'
-            header["VOIVTCs"] = "{}:{}".format(content[0], content[1])
+            header["NrOfVOIVTCs"] = "{}:{}".format(content[0], content[1])
 
         else:  # File path that does not contain ':'
-            header["VOIVTCs"] = content[0]
+            header["NrOfVOIVTCs"] = content[0]
 
         # ---------------------------------------------------------------------
         # else:
@@ -161,5 +161,5 @@ def write_voi(filename, header, data_voi):
         f.write("\n")
         data = header["NrOfVOIVTCs"]
         f.write("NrOfVOIVTCs: {}\n".format(data))
-        data = header["VOIVTCs"]
+        data = header["NrOfVOIVTCs"]
         f.write("{}".format(data))
