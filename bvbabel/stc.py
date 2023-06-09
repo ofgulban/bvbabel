@@ -5,7 +5,7 @@ import numpy as np
 
 
 # =============================================================================
-def read_stc(filename, nr_slices, nr_volumes, res_x, res_y, data_type=2):
+def read_stc(filename, nr_slices, nr_volumes, res_x, res_y, data_type=2, rearrange_data_axes=True):
     """Read BrainVoyager STC file.
 
     Parameters
@@ -28,6 +28,16 @@ def read_stc(filename, nr_slices, nr_volumes, res_x, res_y, data_type=2):
         Each data element (intensity value) is represented either in 2 bytes
         (unsigned short) or in 4 bytes (float, default) as determined by the
         "DataType" entry in the FMR file.
+    rearrange_data_axes : bool
+        When 'False', axes are intended to follow LIP+ terminology used
+        internally in BrainVoyager (however see the notes below):
+            - 1st axis is Right to "L"eft.
+            - 2nd axis is Superior to "I"nferior.
+            - 3rd axis is Anterior to "P"osterior.
+        When 'True' axes are intended to follow nibabel RAS+ terminology:
+            - 1st axis is Left to "R"ight.
+            - 2nd axis is Posterior to "A"nterior.
+            - 3rd axis is Inferior to "S"uperior.
 
     Returns
     -------
@@ -43,14 +53,17 @@ def read_stc(filename, nr_slices, nr_volumes, res_x, res_y, data_type=2):
                                offset=0)
 
     data_img = np.reshape(data_img, (nr_slices, nr_volumes, res_x, res_y))
-    data_img = np.transpose(data_img, (3, 2, 0, 1))
-    data_img = data_img[:, ::-1, :, :]  # Flip BV axes
+
+    # TODO[Faruk]: I need to double check this part with various data
+    if rearrange_data_axes is True:
+        data_img = np.transpose(data_img, (3, 2, 0, 1))
+        data_img = data_img[:, ::-1, :, :]  # Flip BV axes
 
     return data_img
 
 
 # =============================================================================
-def write_stc(filename, data_img, data_type=2):
+def write_stc(filename, data_img, data_type=2, rearrange_data_axes=True):
     """Protocol to write BrainVoyager STC file.
 
     Parameters
@@ -63,10 +76,21 @@ def write_stc(filename, data_img, data_type=2):
         Each data element (intensity value) is represented either in 2 bytes
         (unsigned short) or in 4 bytes (float, default) as determined by the
         "DataType" entry in the FMR file.
+    rearrange_data_axes : bool
+        When 'False', axes are intended to follow LIP+ terminology used
+        internally in BrainVoyager (however see the notes below):
+            - 1st axis is Right to "L"eft.
+            - 2nd axis is Superior to "I"nferior.
+            - 3rd axis is Anterior to "P"osterior.
+        When 'True' axes are intended to follow nibabel RAS+ terminology:
+            - 1st axis is Left to "R"ight.
+            - 2nd axis is Posterior to "A"nterior.
+            - 3rd axis is Inferior to "S"uperior.
 
     """
-    data_img = data_img[:, ::-1, :, :]  # Flip BV axes
-    data_img = np.transpose(data_img, (2, 3, 1, 0))
+    if rearrange_data_axes is True:
+        data_img = data_img[:, ::-1, :, :]  # Flip BV axes
+        data_img = np.transpose(data_img, (2, 3, 1, 0))
 
     with open(filename, 'wb') as f:
         if data_type == 1:

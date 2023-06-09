@@ -6,7 +6,7 @@ from bvbabel.stc import read_stc, write_stc
 
 
 # =============================================================================
-def read_fmr(filename):
+def read_fmr(filename, rearrange_data_axes=True):
     """Read BrainVoyager FMR (and the paired STC) file.
 
     Parameters
@@ -20,6 +20,16 @@ def read_fmr(filename):
         Pre-data and post-data headers.
     data : 4D numpy.array, (x, y, slices, time)
         Image data.
+    rearrange_data_axes : bool
+        When 'False', axes are intended to follow LIP+ terminology used
+        internally in BrainVoyager (however see the notes below):
+            - 1st axis is Right to "L"eft.
+            - 2nd axis is Superior to "I"nferior.
+            - 3rd axis is Anterior to "P"osterior.
+        When 'True' axes are intended to follow nibabel RAS+ terminology:
+            - 1st axis is Left to "R"ight.
+            - 2nd axis is Posterior to "A"nterior.
+            - 3rd axis is Inferior to "S"uperior.
 
     """
     header = dict()
@@ -233,13 +243,14 @@ def read_fmr(filename):
                         nr_volumes=header["NrOfVolumes"],
                         res_x=header["ResolutionX"],
                         res_y=header["ResolutionY"],
-                        data_type=header["DataType"])
+                        data_type=header["DataType"],
+                        rearrange_data_axes=rearrange_data_axes)
 
     return header, data_img
 
 
 # =============================================================================
-def write_fmr(filename, header, data_img):
+def write_fmr(filename, header, data_img, rearrange_data_axes=True):
     """Protocol to write BrainVoyager FMR (and the paired STC) file.
 
     Parameters
@@ -250,6 +261,16 @@ def write_fmr(filename, header, data_img):
         Information that will be written into FMR file.
     data_img : 4D numpy.array, (x, y, slices, time)
         Image data.
+    rearrange_data_axes : bool
+        When 'False', axes are intended to follow LIP+ terminology used
+        internally in BrainVoyager (however see the notes below):
+            - 1st axis is Right to "L"eft.
+            - 2nd axis is Superior to "I"nferior.
+            - 3rd axis is Anterior to "P"osterior.
+        When 'True' axes are intended to follow nibabel RAS+ terminology:
+            - 1st axis is Left to "R"ight.
+            - 2nd axis is Posterior to "A"nterior.
+            - 3rd axis is Inferior to "S"uperior.
 
     """
     info_pos = header["Position information"]
@@ -441,7 +462,8 @@ def write_fmr(filename, header, data_img):
     # Write voxel data as a separate STC file
     dirname = os.path.dirname(filename)
     filename_stc = os.path.join(dirname, "{}.stc".format(basename))
-    write_stc(filename_stc, data_img, data_type=header["DataType"])
+    write_stc(filename_stc, data_img, data_type=header["DataType"],
+              rearrange_data_axes=rearrange_data_axes)
 
 
 def create_fmr():
