@@ -236,13 +236,14 @@ def read_fmr(filename, rearrange_data_axes=True):
 
     # -------------------------------------------------------------------------
     # Access data from the separate STC file
+    print("***Add changes***")
     dirname = os.path.dirname(filename)
     filename_stc = os.path.join(dirname, "{}.stc".format(header["Prefix"]))
 
     data_img = read_stc(filename_stc, nr_slices=header["NrOfSlices"],
                         nr_volumes=header["NrOfVolumes"],
-                        res_x=header["ResolutionX"],
-                        res_y=header["ResolutionY"],
+                        res_x=header["ResolutionY"],
+                        res_y=header["ResolutionX"],
                         data_type=header["DataType"],
                         rearrange_data_axes=rearrange_data_axes)
 
