@@ -20,3 +20,4 @@ import bvbabel.prt
 import bvbabel.trf
 import bvbabel.roi
 import bvbabel.glm
+import bvbabel.dmr
