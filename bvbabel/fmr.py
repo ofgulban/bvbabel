@@ -61,10 +61,23 @@ def read_fmr(filename, rearrange_data_axes=True):
                 header[content[0]] = content[1]
             elif content[0] == "Prefix":
                 header[content[0]] = content[1].strip("\"")
+
+            # NOTE(Developer Guide 2.6): The "DataStorageFormat" entry was 
+            # introduced in file version "5". A value of "1" indicates that the 
+            # STC data is stored according to the old approach with one
+            # separate file per slice. A value of "2" indicates that the whole 
+            # data is stored in a single STC file; the data within the file is 
+            # stored in the same way as in the old style. Values "3" and "4" 
+            # are used at present only for DMR-DWI projects. Storage format "3" 
+            # keeps the data not as "slice time courses", but as a series of 
+            # volumes within a single file. Storage format "4" stores the data 
+            # in the form of VTCs, i.e. the time course values for a voxel are 
+            # located in neighboring memory locations (time as inner loop).
             elif content[0] == "DataStorageFormat":
                 header[content[0]] = int(content[1])
-            elif content[0] == "DataType":
+            elif content[0] == "DataType":  # 1: 2-byte int; 2:4-byte float 
                 header[content[0]] = int(content[1])
+            
             elif content[0] == "TR":
                 header[content[0]] = content[1]
             elif content[0] == "InterSliceTime":
@@ -470,10 +483,12 @@ def create_fmr():
     """Create BrainVoyager FMR file with default values."""
     header = dict()
     info_pos = dict()
+    info_tra = dict()
+    info_multiband = dict()
 
     header["FileVersion"] = 7
-    header["NrOfVolumes"] = 10
-    header["NrOfSlices"] = 64
+    header["NrOfVolumes"] = 100
+    header["NrOfSlices"] = 16
     header["NrOfSkippedVolumes"] = 0
     header["Prefix"] = "bvbabel_default_fmr"
     header["DataStorageFormat"] = 2
@@ -484,13 +499,13 @@ def create_fmr():
     header["TE"] = 30
     header["SliceAcquisitionOrder"] = 5
     header["SliceAcquisitionOrderVerified"] = 1
-    header["ResolutionX"] = 100
-    header["ResolutionY"] = 100
+    header["ResolutionX"] = 80
+    header["ResolutionY"] = 80
     header["LoadAMRFile"] = ""
     header["ShowAMRFile"] = 1
     header["ImageIndex"] = 0
-    header["LayoutNColumns"] = 8
-    header["LayoutNRows"] = 8
+    header["LayoutNColumns"] = int(np.ceil(np.sqrt(header["NrOfSlices"])))
+    header["LayoutNRows"] = int(np.ceil(np.sqrt(header["NrOfSlices"])))
     header["LayoutZoomLevel"] = 1
     header["SegmentSize"] = 10
     header["SegmentOffset"] = 0
@@ -528,3 +543,27 @@ def create_fmr():
     header["Position information"] = info_pos
     # -------------------------------------------------------------------------
     # Transformations section
+    # NOTE[Faruk]: Skip this part for now.
+    info_tra["NrOfPastSpatialTransformations"] = 0
+
+    # -------------------------------------------------------------------------
+    # This part only contains a single information
+    header["LeftRightConvention"] = 0
+
+    header["Position information"] = info_pos
+    header["Transformation information"] = info_tra
+    header["Multiband information"] = info_multiband
+
+    # =========================================================================
+    # Create random data
+    DimX = header["ResolutionX"]
+    DimY = header["ResolutionY"]
+    DimZ = header["NrOfSlices"]
+    DimT = header["NrOfVolumes"]
+    dims = [DimZ, DimT, DimY, DimX]
+    data_img = np.random.random(np.prod(dims)) * (2**16)
+    data_img = data_img.reshape(dims)
+    data_img = data_img.astype(np.uint16)
+
+    return header, data_img
+
