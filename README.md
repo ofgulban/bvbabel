@@ -10,6 +10,7 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 | File format | Read  | Write | Create |Test data|
 | ------------|-------|-------|--------|---------|
 | FMR & STC   | Yes   | Yes   | Yes    |       No|
+| DMR         | Yes   | No    | No     |       No|
 | GLM         | wip...| No    | No     |      Yes|
 | GTC         | Yes   | Yes   | No     |       No|
 | MSK         | Yes   | Yes   | No     |       No|
