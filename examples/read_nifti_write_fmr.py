@@ -5,7 +5,7 @@ import nibabel as nb
 import numpy as np
 import pprint
 
-FILE = "/Users/faruk/data/temp-renzo_phase_jolt/Smagn_bold.nii.gz"
+FILE = "/Users/faruk/data/temp-logan_phase_jolt/fine/sub-3003_ses-fine_task-fncloc_run-1_part-mag_bold.nii.gz"
 
 SUFFIX = "bvbabel"
 
@@ -14,6 +14,8 @@ SUFFIX = "bvbabel"
 nii = nb.load(FILE)
 nii_data = np.asarray(nii.dataobj, dtype=np.uint16)
 
+# -----------------------------------------------------------------------------
+# Extract nifti header information
 dims = nii_data.shape
 voxdims = [nii.header["pixdim"][1],
            nii.header["pixdim"][2],
