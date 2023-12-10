@@ -196,24 +196,8 @@ def read_fmr(filename, rearrange_data_axes=True):
                 info_tra[content[0]] = content[1]
             elif content[0] == "NrOfTransformationValues":
                 info_tra[content[0]] = content[1]
-
-                # NOTE(Faruk): I dont like this matrix reader but I don't see a
-                # more elegant way for now.
-                nr_values = int(content[1])
-                affine = []
-                v = 0  # Counter for values
-                n = 1  # Counter for lines
-                while v < nr_values:
-                    line = lines[j + n]
-                    content = line.strip()
-                    content = content.split()
-                    for val in content:
-                        affine.append(float(val))
-                    v += len(content)  # Count values
-                    n += 1  # Iterate line
-                affine = np.reshape(np.asarray(affine), (4, 4))
-                info_tra["Transformation matrix"] = affine
-
+                affine_matrix = np.fromstring(''.join(lines[j + 1 : j + 1 + (int(content[1]) + 3) // 4 ]), sep='\n').reshape(4, 4)
+                info_tra["Transformation matrix"] = affine_matrix  
             # -----------------------------------------------------------------
             # This part only contains a single information
             elif content[0] == "LeftRightConvention":
@@ -229,15 +213,7 @@ def read_fmr(filename, rearrange_data_axes=True):
                 info_multiband[content[0]] = content[1]
             elif content[0] == "SliceTimingTableSize":
                 info_multiband[content[0]] = int(content[1])
-
-                # NOTE(Faruk): I dont like this matrix reader but I don't see a
-                # more elegant way for now.
-                nr_values = int(content[1])
-                slice_timings = []
-                for n in range(1, nr_values+1):
-                    line = lines[j + n]
-                    content = line.strip()
-                    slice_timings.append(float(content))
+                slice_timings = np.ndarray.tolist(np.fromstring(''.join(lines[j + 1 : j + 1 + int(content[1])]), sep='\n'))
                 info_multiband["Slice timings"] = slice_timings
 
             elif content[0] == "AcqusitionTime":
