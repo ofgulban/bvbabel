@@ -196,7 +196,7 @@ def read_fmr(filename, rearrange_data_axes=True):
                 info_tra[content[0]] = content[1]
             elif content[0] == "NrOfTransformationValues":
                 info_tra[content[0]] = content[1]
-                affine_matrix = np.fromstring(''.join(lines[j + 1 : j + 1 + (int(content[1]) + 3) // 4 ]), sep='\n').reshape(4, 4)
+                affine_matrix = np.fromstring(' '.join(lines[j + 1 : j + 1 + (int(content[1]) + 3) // 4 ]), sep=' ').reshape(4, 4)
                 info_tra["Transformation matrix"] = affine_matrix  
             # -----------------------------------------------------------------
             # This part only contains a single information
