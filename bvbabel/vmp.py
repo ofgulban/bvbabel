@@ -233,6 +233,16 @@ def read_vmp(filename):
             data_img = np.reshape(data_img, (DimZ, DimY, DimX))
             data_img = np.transpose(data_img, (0, 2, 1))  # BV to Tal
             data_img = data_img[::-1, ::-1, ::-1]  # Flip BV axes
+            # -----------------------------------------------------------------
+            # NOTE[Faruk]: Single map solution for Kenshu. I did not encounter 
+            # VMP files of lags that has multiple maps inside for now.
+            if header["Map"][0]["TypeOfMap"] == 3:
+                # NOTE[Faruk]: It seems that lag are coded in the integers and 
+                # correlation coefficient is coded in decimals. 
+                data_lag = np.floor(data_img)
+                data_corr = data_img % 1
+                data_img = np.stack((data_lag, data_corr), axis=3)
+            # -----------------------------------------------------------------
 
     return header, data_img
 
@@ -421,7 +431,16 @@ def write_vmp(filename, header, data_img):
             data_img = data_img[::-1, ::-1, ::-1, :]  # Flip BV axes
             data_img = np.transpose(data_img, (3, 0, 2, 1))  # TAL to BV
             data_img = np.reshape(data_img, data_img.size)
-        else:
+        else:  # Single maps
+            # -----------------------------------------------------------------
+            # NOTE[Faruk]: Single map solution for Kenshu. I did not encounter 
+            # VMP files of lags that has multiple maps inside for now.
+            if header["Map"][0]["TypeOfMap"] == 3:
+                # NOTE[Faruk]: It seems that lag are coded in the integers and 
+                # correlation coefficient is coded in decimals. 
+                data_img = data_img[:, :, :, 0] + data_img[:, :, :, 1]
+            # -----------------------------------------------------------------
+
             data_img = data_img[::-1, ::-1, ::-1]  # Flip BV axes
             data_img = np.transpose(data_img, (0, 2, 1))  # TAL to BV
             data_img = np.reshape(data_img, data_img.size)
