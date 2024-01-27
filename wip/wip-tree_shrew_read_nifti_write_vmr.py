@@ -5,7 +5,7 @@ import nibabel as nb
 import numpy as np
 import pprint
 
-FILE = "/Users/faruk/data/temp-arcaro/surface_grow/wmgm.nii.gz"
+FILE = "/Users/faruk/data/temp-arcaro/video-2_tree_shrew/T2.nii.gz"
 
 SUFFIX = "bvbabel"
 
@@ -18,8 +18,8 @@ nii_data = np.nan_to_num(nii.get_fdata(), nan=0.)
 # (Optional - Use with caution!) Change the image orientation in BV
 nii_data = np.transpose(nii_data, [2, 1, 0])
 
-# # (Optional - Use with caution!) Flip directions
-# nii_data = nii_data[::-1, ::-1, ::-1]
+# (Optional - Use with caution!) Flip directions
+nii_data = nii_data[::-1, :, :]
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 dims = nii_data.shape
@@ -106,9 +106,9 @@ vmr_header["VMROrigV16MeanValue"] = int(np.mean(v16_data))
 vmr_header["VMROrigV16MinValue"] = int(np.min(v16_data))
 vmr_header["VoxelResolutionInTALmm"] = 1
 vmr_header["VoxelResolutionVerified"] = 1
-vmr_header["VoxelSizeX"] = 1
-vmr_header["VoxelSizeY"] = 1
-vmr_header["VoxelSizeZ"] = 1
+vmr_header["VoxelSizeX"] = voxdims[0]
+vmr_header["VoxelSizeY"] = voxdims[1]
+vmr_header["VoxelSizeZ"] = voxdims[2]
 
 print("\n" + "="*79 + "\nVMR HEADER\n" + "="*79)
 pprint.pprint(vmr_header)

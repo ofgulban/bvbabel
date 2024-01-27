@@ -5,7 +5,7 @@ import nibabel as nb
 import numpy as np
 import pprint
 
-FILE = "/Users/faruk/data/temp-arcaro/surface_grow/wmgm.nii.gz"
+FILE = "/Users/faruk/data/temp-arcaro/video-2_tree_shrew/rim_v14.nii.gz"
 
 SUFFIX = "bvbabel"
 
@@ -14,12 +14,17 @@ SUFFIX = "bvbabel"
 nii = nb.load(FILE)
 nii_data = np.nan_to_num(nii.get_fdata(), nan=0.)
 
+# (Optional) Adapt voxel labels to BrainVoyager
+nii_data[nii_data == 3] = 100  # Gray matter
+nii_data[nii_data == 2] = 150  # White matter
+nii_data[nii_data == 1] = 0
+
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # (Optional - Use with caution!) Change the image orientation in BV
 nii_data = np.transpose(nii_data, [2, 1, 0])
 
-# # (Optional - Use with caution!) Flip directions
-# nii_data = nii_data[::-1, ::-1, ::-1]
+# (Optional - Use with caution!) Flip directions
+nii_data = nii_data[::-1, :, :]
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 dims = nii_data.shape
