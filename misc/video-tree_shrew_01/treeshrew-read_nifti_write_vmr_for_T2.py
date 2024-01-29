@@ -1,11 +1,12 @@
-"""Read Nifti write BrainVoyager VMR and V16 (anatomical image) files."""
+"""Convert treeshrew T2 nifti file to BrainVoyager format."""
+
 import os
 import bvbabel
 import nibabel as nb
 import numpy as np
 import pprint
 
-FILE = "/Users/faruk/data/temp-arcaro/video-2_tree_shrew/rim_v03.nii.gz"
+FILE = "/Users/faruk/data/temp-arcaro/video-2_tree_shrew/treeshrew-rim_v03.nii.gz"
 
 SUFFIX = "bvbabel"
 

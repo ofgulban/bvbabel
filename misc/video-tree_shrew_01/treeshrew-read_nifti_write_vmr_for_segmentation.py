@@ -1,11 +1,12 @@
-"""Read Nifti write BrainVoyager VMR and V16 (anatomical image) files."""
+"""Convert treeshrew segmentation nifti file to BrainVoyager format."""
+
 import os
 import bvbabel
 import nibabel as nb
 import numpy as np
 import pprint
 
-FILE = "/Users/faruk/data/temp-arcaro/video-2_tree_shrew/rim_v03.nii.gz"
+FILE = "/Users/faruk/data/temp-arcaro/video-2_tree_shrew/rim_v14.nii.gz"
 
 SUFFIX = "bvbabel"
 
@@ -13,6 +14,11 @@ SUFFIX = "bvbabel"
 # Load Nifti
 nii = nb.load(FILE)
 nii_data = np.nan_to_num(nii.get_fdata(), nan=0.)
+
+# (Optional) Adapt voxel labels to BrainVoyager
+nii_data[nii_data == 3] = 100  # Gray matter
+nii_data[nii_data == 2] = 150  # White matter
+nii_data[nii_data == 1] = 0
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # (Optional - Use with caution!) Change the image orientation in BV
@@ -31,43 +37,11 @@ print("\n" + "="*79 + "\nNIFTI HEADER\n" + "="*79)
 print(nii.header)
 
 # -----------------------------------------------------------------------------
-# Create V16
-v16_header, v16_data = bvbabel.v16.create_v16()
-
-# Create V16 data (type cast nifti data to uint16 after range normalization)
-v16_data = np.copy(nii_data)
-thr_min, thr_max = np.percentile(v16_data[v16_data != 0], [0, 100])
-v16_data[v16_data > thr_max] = thr_max
-v16_data[v16_data < thr_min] = thr_min
-v16_data = v16_data - thr_min
-v16_data = v16_data / (thr_max - thr_min) * 65535
-v16_data = np.asarray(v16_data, dtype=np.ushort)
-
-# Update V16 headers
-v16_header["DimX"] = dims[1]  # nii.header["dim"][2]
-v16_header["DimY"] = dims[2]  # nii.header["dim"][3]
-v16_header["DimZ"] = dims[0]  # nii.header["dim"][1]
-
-print("\n" + "="*79 + "\nV16 HEADER\n" + "="*79)
-pprint.pprint(v16_header)
-
-# Save V16
-basename = FILE.split(os.extsep, 1)[0]
-outname = "{}_{}.v16".format(basename, SUFFIX)
-bvbabel.v16.write_v16(outname, v16_header, v16_data)
-
-# -----------------------------------------------------------------------------
 # Create VMR
 vmr_header, vmr_data = bvbabel.vmr.create_vmr()
 
 # Update VMR data (type cast nifti data to uint8 after range normalization)
-vmr_data = np.copy(nii_data)
-thr_min, thr_max = np.percentile(vmr_data[vmr_data != 0], [0, 100])
-vmr_data[vmr_data > thr_max] = thr_max
-vmr_data[vmr_data < thr_min] = thr_min
-vmr_data = vmr_data - thr_min
-vmr_data = vmr_data / (thr_max - thr_min) * 225  # Special BV range
-vmr_data = np.asarray(vmr_data, dtype=np.ubyte)
+vmr_data = np.copy(nii_data).astype(np.uint8)
 
 # Update VMR headers
 vmr_header["ColDirX"] = 0.0
@@ -101,9 +75,9 @@ vmr_header["SliceNCenterX"] = 0.0
 vmr_header["SliceNCenterY"] = 0.0
 vmr_header["SliceNCenterZ"] = 0.0
 vmr_header["SliceThickness"] = 0.0
-vmr_header["VMROrigV16MaxValue"] = int(np.max(v16_data))
-vmr_header["VMROrigV16MeanValue"] = int(np.mean(v16_data))
-vmr_header["VMROrigV16MinValue"] = int(np.min(v16_data))
+vmr_header["VMROrigV16MaxValue"] = int(np.max(vmr_data))
+vmr_header["VMROrigV16MeanValue"] = int(np.mean(vmr_data))
+vmr_header["VMROrigV16MinValue"] = int(np.min(vmr_data))
 vmr_header["VoxelResolutionInTALmm"] = 1
 vmr_header["VoxelResolutionVerified"] = 1
 vmr_header["VoxelSizeX"] = voxdims[0]
@@ -114,6 +88,7 @@ print("\n" + "="*79 + "\nVMR HEADER\n" + "="*79)
 pprint.pprint(vmr_header)
 
 # Save VMR
+basename = FILE.split(os.extsep, 1)[0]
 outname = "{}_{}.vmr".format(basename, SUFFIX)
 bvbabel.vmr.write_vmr(outname, vmr_header, vmr_data)
 
