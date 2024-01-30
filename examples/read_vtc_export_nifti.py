@@ -6,10 +6,10 @@ import nibabel as nb
 import bvbabel
 from pprint import pprint
 
-FILE = "/home/faruk/Documents/test_bvbabel_vtc/sub-test03.vtc"
+FILE = "/Users/faruk/data/temp-GLM/sub-06.vtc"
 
 # =============================================================================
-# Load vmr
+# Load vtc
 header, data = bvbabel.vtc.read_vtc(FILE, rearrange_data_axes=False)
 
 # See header information
@@ -18,7 +18,7 @@ pprint(header)
 # Transpose axes
 data = np.transpose(data, [0, 2, 1, 3])
 # Flip axes
-data = data[::-1, ::-1, ::-1]
+data = data[::-1, ::-1, ::-1, :]
 
 # Export nifti
 basename = FILE.split(os.extsep, 1)[0]
