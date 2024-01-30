@@ -6,11 +6,11 @@ import nibabel as nb
 import bvbabel
 import pprint
 
-FILE = "/home/faruk/Documents/temp_bvbabel_glm/BOLD_whole_brain_GLM.glm"
+FILE = "/Users/faruk/data/temp-GLM/test2.glm"
 
 # =============================================================================
 # Load vmr
-header, data_R2, data_SS, data_beta, data_fitted, data_arlag = bvbabel.glm.read_glm(FILE)
+header, data_R2, data_SS, data_beta, data_SS_XiY, data_meantc, data_arlag = bvbabel.glm.read_glm(FILE)
 
 # See header information
 pprint.pprint(header)
@@ -34,14 +34,20 @@ outname = "{}_beta_bvbabel.nii.gz".format(basename)
 img = nb.Nifti1Image(data_beta, affine=np.eye(4))
 nb.save(img, outname)
 
-# Fitted data after regression
-outname = "{}_fitted_bvbabel.nii.gz".format(basename)
-img = nb.Nifti1Image(data_beta, affine=np.eye(4))
+# Sum-of-squares indicating the covariation of each predictor with the time 
+# course (SS_XiY). these values may be ignored for custom processing.
+outname = "{}_XY_bvbabel.nii.gz".format(basename)
+img = nb.Nifti1Image(data_SS_XiY, affine=np.eye(4))
+nb.save(img, outname)
+
+# Mean time course
+outname = "{}_meantc_bvbabel.nii.gz".format(basename)
+img = nb.Nifti1Image(data_meantc, affine=np.eye(4))
 nb.save(img, outname)
 
 # Auto-regression lag value
 outname = "{}_atrlag_bvbabel.nii.gz".format(basename)
-img = nb.Nifti1Image(data_beta, affine=np.eye(4))
+img = nb.Nifti1Image(data_arlag, affine=np.eye(4))
 nb.save(img, outname)
 
 print("Finished.")
