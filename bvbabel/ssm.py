@@ -41,6 +41,6 @@ def read_ssm(filename):
         # ---------------------------------------------------------------------
         data_ssm = np.zeros(header["Nr vertices 1"])
         for i in range(header["Nr vertices 1"]):
-            data_ssm[i], = struct.unpack('<f', f.read(4))
+            data_ssm[i], = struct.unpack('<i', f.read(4))
 
     return header, data_ssm
