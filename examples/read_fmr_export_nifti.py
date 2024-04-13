@@ -15,7 +15,7 @@ header, data = bvbabel.fmr.read_fmr(FILE)
 basename = FILE.split(os.extsep, 1)[0]
 outname = "{}_bvbabel.nii.gz".format(basename)
 
-# Export nifti (assign an identity matrix as affine with default header)
+# Generate Nifti
 img = nb.Nifti1Image(data, affine=np.eye(4))
 
 # Carry over equivalent header information
