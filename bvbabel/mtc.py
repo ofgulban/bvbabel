@@ -41,7 +41,7 @@ def read_mtc(filename):
 
         # Expected binary data: int (4 bytes)
         data, = struct.unpack('<i', f.read(4))
-        header["Hemodynimic delay"] = data
+        header["Hemodynamic delay"] = data
 
         # Expected binary data: float (4 bytes)
         data, = struct.unpack('<f', f.read(4))
@@ -101,7 +101,7 @@ def write_mtc(filename, header, data_mtc):
         write_variable_length_string(f, data)
 
         # Expected binary data: int (4 bytes)
-        data = header["Hemodynimic delay"]
+        data = header["Hemodynamic delay"]
         f.write(struct.pack('<i', data))
 
         # Expected binary data: float (4 bytes)
@@ -135,14 +135,12 @@ def write_mtc(filename, header, data_mtc):
 
 # =============================================================================
 def create_mtc():
-
     """Create BrainVoyager MTC file with default values."""
 
     header = dict()
 
-
     # -------------------------------------------------------------------------
-    # NR-VMP Header (Version 1)
+    # MTC Header (Version 1)
     # -------------------------------------------------------------------------
 
     # Expected binary data: int (4 bytes)
@@ -155,7 +153,7 @@ def create_mtc():
     header["PRT name"] = "<none>"
 
     # Expected binary data: int (4 bytes)
-    header["Hemodynimic delay"] = np.int32(1)
+    header["Hemodynamic delay"] = np.int32(1)
 
     # Expected binary data: float (4 bytes)
     header["TR"] = np.float32(1)
@@ -174,7 +172,6 @@ def create_mtc():
     data_mtc = np.random.random(np.prod((3,3))) * 2 - 1
     data_mtc = data_mtc.reshape((3,3))
     data_mtc = data_mtc.astype(np.float32)
-
 
     return header, data_mtc
 
