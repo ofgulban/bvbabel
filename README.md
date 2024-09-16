@@ -65,6 +65,7 @@ Omer Faruk Gulban [@ofgulban](https://github.com/ofgulban)
 Hester Breman [@nausikaa8](https://github.com/nausikaa8)  
 Jorie van Haren [@jorievanharen](https://github.com/jorievanharen)  
 Judith Eck [@ju-ec](https://github.com/ju-ec)  
+Assunta Ciarlo [@assuntaciarlo](https://github.com/assuntaciarlo)  
 Caroline Brockhaus [@carbrock](https://github.com/carbrock)  
 Chengran Li [@ChengranAA](https://github.com/ChengranAA)
 
