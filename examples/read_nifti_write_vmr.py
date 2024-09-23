@@ -16,10 +16,11 @@ nii_data = np.nan_to_num(nii.get_fdata(), nan=0.)
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # # (Optional - Use with caution!) Change the image orientation in BV
-# nii_data = np.transpose(nii_data, [0, 2, 1])
-
-# # (Optional - Use with caution!) Flip directions
-# nii_data = nii_data[::-1, ::-1, ::-1]
+# change orientation, if required to RAS+
+# input_orient = nb.aff2axcodes(nii.affine)
+# output_orient = (('L','R'),('P','A'),('I','S')) # RAS+
+# ornt = nb.orientations.axcodes2ornt(input_orient, output_orient)
+# nii_data = nb.orientations.apply_orientation(nii_data, ornt)
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 dims = nii_data.shape
