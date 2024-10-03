@@ -6,7 +6,7 @@ import nibabel as nb
 import bvbabel
 from pprint import pprint
 
-FILE = "/Users/faruk/data/temp-GLM/sub-06.vtc"
+FILE = "/Users/faruk/data/test-ERA/sub-08_task-amb_acq-2depimb2_run-02_SCSTBL_3DMCTS_bvbabel_undist_fix_THPGLMF5c_sess-01_BBR_res2x.vtc"
 
 # =============================================================================
 # Load vtc

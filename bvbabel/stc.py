@@ -46,7 +46,7 @@ def read_stc(filename, nr_slices, nr_volumes, res_x, res_y, data_type=2, rearran
 
     """
     if data_type == 1:
-        data_img = np.fromfile(filename, dtype="<H", count=-1, sep="",
+        data_img = np.fromfile(filename, dtype="<h", count=-1, sep="",
                                offset=0)
     elif data_type == 2:
         data_img = np.fromfile(filename, dtype="<f", count=-1, sep="",
@@ -94,7 +94,7 @@ def write_stc(filename, data_img, data_type=2, rearrange_data_axes=True):
 
     with open(filename, 'wb') as f:
         if data_type == 1:
-            f.write(data_img.astype("<H").tobytes(order="C"))
+            f.write(data_img.astype("<h").tobytes(order="C"))
 
         elif data_type == 2:
             f.write(data_img.astype("<f").tobytes(order="C"))

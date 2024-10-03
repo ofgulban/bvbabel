@@ -29,12 +29,14 @@ def read_glm(filename):
     data_beta : 4D (if volume) OR 2D (if vertices) numpy.array
         Estimated beta values. One value for each predictor of the design
         matrix ("Nr all predictors" values).
-    data_XY = 4D (if volume) OR 2D (if vertices) numpy.array
+    data_SS_XiY = 4D (if volume) OR 2D (if vertices) numpy.array
         Sum-of-squares indicating the covariation of each predictor with the
         time course data (SS_XiY). These values are stored to allow easy
         calculation of explained variance terms for restricted models (i.e. to
         allow application of the extra-sum-of-squares principle); these values
         may be ignored (not stored) for custom processing.
+    data_meantc "" 3D (if volume) OR 1D (if vertices) numpy.array
+        Mean value of the (normalized) fMRI time course.
     data_ARlag : 3D or 4D (if volume) OR 1D or 2D (if vertices) numpy.array
         Auto-regression lag value. If "serial correlation" is 1, this will be a
         3D numpy.array (if volume) or 1D numpy.array (if vertices). If "serial
@@ -262,19 +264,19 @@ def read_glm(filename):
                                     * header["Nr predictors per subject"])
 
         if header["Serial correlation(0:no, 1:AR(1), 2:AR(2))"] == 0:
-            nr_data_point_values = 2 * header["Nr all predictors"] + 2
+            nr_data_point_values = 2 + 2 * header["Nr all predictors"] + 1
 
         # NOTE[Developer Guide - The Format Of GLM Files (v4)]: If AR(1)
         # approach (first-order autoregressive model) has been used to correct
         # serial correlations, one additional volume is stored.
         elif header["Serial correlation(0:no, 1:AR(1), 2:AR(2))"] == 1:
-            nr_data_point_values = 2 * header["Nr all predictors"] + 3
+            nr_data_point_values = 2 + 2 * header["Nr all predictors"] + 2
 
         # NOTE[Developer Guide - The Format Of GLM Files (v4)]: If AR(2)
         # approach (second-order autoregressive model) has been used, two
         # additional values are stored.
         elif header["Serial correlation(0:no, 1:AR(1), 2:AR(2))"] == 2:
-            nr_data_point_values = 2 * header["Nr all predictors"] + 4
+            nr_data_point_values = 2 + 2 * header["Nr all predictors"] + 3
 
         # NOTE[Faruk]: I am saving this value because it is handy to have. Even
         # though BrainVoyager documentation does not specify it explicitly.
@@ -299,7 +301,8 @@ def read_glm(filename):
         # the extra-sum-of-squares principle); these values may be probably
         # ignored (not stored) for custom processing.
         #     The next volume contains the mean value of the (normalized) fMRI
-        # time course. Only in case that serial correlation correction has been
+        # time course.
+        #     Only in case that serial correlation correction has been
         # performed, one or two more values are stored. In case that the AR(1)
         # model has been used the estimated order 1 autocorrelation value
         # (ACF(1) term) is stored for each voxel. In case that the AR(2) model
@@ -341,15 +344,19 @@ def read_glm(filename):
         p = header["Nr all predictors"]
         data_beta = data_all[..., 2:2+p]
 
-        # XY (Fitted data after regression, only present in File versions > 1)
-        data_XY = data_all[..., 2+p:2+p+p]
+        # Sum-of-squares indicating the covariation of each predictor with the
+        # time course (SS_XiY).
+        data_SS_XiY = data_all[..., 2+p:2+p+p]
+
+        # Mean value of the (normalized) fMRI time course
+        data_meantc = np.squeeze(data_all[..., 2+p+p:2+p+p+1])
 
         # arLag1 (Auto-regression lag value)
         if header["Serial correlation(0:no, 1:AR(1), 2:AR(2))"] == 1:
-            data_ARlag = data_all[..., 2+p+p:2+p+p+1]
+            data_ARlag = data_all[..., 2+p+p+1:2+p+p+2]
         elif header["Serial correlation(0:no, 1:AR(1), 2:AR(2))"] == 2:
-            data_ARlag = data_all[..., 2+p+p:2+p+p+2]
+            data_ARlag = data_all[..., 2+p+p+1:2+p+p+3]
         else:
             data_ARlag = np.zeros(data_R2.shape)  # placeholder array
 
-    return (header, data_R2, data_SS, data_beta, data_XY, data_ARlag)
+    return (header, data_R2, data_SS, data_beta, data_SS_XiY, data_meantc, data_ARlag)
