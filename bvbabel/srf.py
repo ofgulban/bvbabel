@@ -21,13 +21,13 @@ def read_srf(filename):
     data : dictionary
         "vertices" : 2D numpy.array, (nr_vertices, XYZ coordinates)
             Vertex coordinates (float32).
-        "vertex_normals" : 2D numpy.array, (nr_vertices, XYZ coordinates)
+        "vertex normals" : 2D numpy.array, (nr_vertices, XYZ coordinates)
             Vertex normals (float32).
         "faces" : 2D numpy.array, (nr_vertices, vertex_indices)
             Faces (triangles), as indices of vertices (int).
-        "vertex_colors" : 2D numpy.array, (nr_vertices, RGBA coordinates)
+        "vertex colors" : 2D numpy.array, (nr_vertices, RGBA coordinates)
             Vertex colors. Values are in between 0-1 (float32).
-        "vertex_neighbors" : list of lists, (nr vertices, nr neighbors)
+        "vertex neighbors" : list of lists, (nr vertices, nr neighbors)
             Other vertex members if the faces each vertex is a member of (int).
             Number of neighbors can vary but in conventional meshes they are
             often 6 and occasionaly 5.
@@ -217,13 +217,13 @@ def write_srf(filename, header, mesh_data):
     mesh_data : dictionary
         "vertices" : 2D numpy.array, (nr_vertices, XYZ coordinates)
             Vertex coordinates (float32).
-        "vertex_normals" : 2D numpy.array, (nr_vertices, XYZ coordinates)
+        "vertex normals" : 2D numpy.array, (nr_vertices, XYZ coordinates)
             Vertex normals (float32).
         "faces" : 2D numpy.array, (nr_vertices, vertex_indices)
             Faces (triangles), as indices of vertices (int).
-        "vertex_colors" : 2D numpy.array, (nr_vertices, RGBA coordinates)
+        "vertex colors" : 2D numpy.array, (nr_vertices, RGBA coordinates)
             Vertex colors. Values are in between 0-1 (float32).
-        "vertex_neighbors" : list of lists, (nr vertices, nr neighbors)
+        "vertex neighbors" : list of lists, (nr vertices, nr neighbors)
             Other vertex members if the faces each vertex is a member of (int).
             Number of neighbors can vary but in conventional meshes they are
             often 6 and occasionaly 5.
