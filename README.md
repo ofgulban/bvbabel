@@ -14,7 +14,7 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 | GLM         | wip...| No    | No     |      Yes|
 | GTC         | Yes   | Yes   | No     |       No|
 | MSK         | Yes   | Yes   | No     |       No|
-| MTC         | Yes   | Yes   | No     |      Yes|
+| MTC         | Yes   | Yes   | Yes    |      Yes|
 | OBJ         | No    | Yes   | No     |       No|
 | POI         | Yes   | Yes   | No     |      Yes|
 | PRT         | Yes   | Yes   | No     |       No|
@@ -65,7 +65,9 @@ Omer Faruk Gulban [@ofgulban](https://github.com/ofgulban)
 Hester Breman [@nausikaa8](https://github.com/nausikaa8)  
 Jorie van Haren [@jorievanharen](https://github.com/jorievanharen)  
 Judith Eck [@ju-ec](https://github.com/ju-ec)  
-Caroline Brockhaus [@carbrock](https://github.com/carbrock)
+Assunta Ciarlo [@assuntaciarlo](https://github.com/assuntaciarlo)  
+Caroline Brockhaus [@carbrock](https://github.com/carbrock)  
+Chengran Li [@ChengranAA](https://github.com/ChengranAA)
 
 # Acknowledgments
 This project is fully supported by [Brain Innovation (Maastricht, NL)](https://www.brainvoyager.com/).
