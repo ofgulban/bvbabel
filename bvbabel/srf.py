@@ -25,8 +25,8 @@ def read_srf(filename):
             Vertex normals (float32).
         "faces" : 2D numpy.array, (nr_vertices, vertex_indices)
             Faces (triangles), as indices of vertices (int).
-        "vertex colors" : 2D numpy.array, (nr_vertices, ABGR)
-            Vertex colors. Do not change Alpha in most cases. Blue, Reg, Green
+        "vertex colors" : 2D numpy.array, (nr_vertices, BGRA)
+            Vertex colors. Do not change Alpha in most cases. Blue, Green, Red
             values are in between between 0-255 (uint8).
         "vertex neighbors" : list of lists, (nr vertices, nr neighbors)
             Other vertex members if the faces each vertex is a member of (int).
@@ -146,16 +146,16 @@ def read_srf(filename):
                 vertex_colors[i, 3] = bytes[3]
 
             elif data == 0:  # convex curvature color
-                vertex_colors[i, 0] = (header["Vertex convex curvature R"] * 255).astype(np.uint8)
-                vertex_colors[i, 1] = (header["Vertex convex curvature G"] * 255).astype(np.uint8)
-                vertex_colors[i, 2] = (header["Vertex convex curvature B"] * 255).astype(np.uint8)
-                vertex_colors[i, 3] = (header["Vertex convex curvature A"] * 255).astype(np.uint8)
+                vertex_colors[i, 0] = np.uint8(header["Vertex convex curvature B"] * 255)
+                vertex_colors[i, 1] = np.uint8(header["Vertex convex curvature G"] * 255)
+                vertex_colors[i, 2] = np.uint8(header["Vertex convex curvature R"] * 255)
+                vertex_colors[i, 3] = np.uint8(header["Vertex convex curvature A"] * 255)
 
             elif data == 1:  # concave curvature color
-                vertex_colors[i, 0] = (header["Vertex concave curvature R"] * 255).astype(np.uint8)
-                vertex_colors[i, 1] = (header["Vertex concave curvature G"] * 255).astype(np.uint8)
-                vertex_colors[i, 2] = (header["Vertex concave curvature B"] * 255).astype(np.uint8)
-                vertex_colors[i, 3] = (header["Vertex concave curvature A"] * 255).astype(np.uint8)
+                vertex_colors[i, 0] = np.uint8(header["Vertex concave curvature B"] * 255)
+                vertex_colors[i, 1] = np.uint8(header["Vertex concave curvature G"] * 255)
+                vertex_colors[i, 2] = np.uint8(header["Vertex concave curvature R"] * 255)
+                vertex_colors[i, 3] = np.uint8(header["Vertex concave curvature A"] * 255)
 
             # TODO: Implement other indices too
 
@@ -224,8 +224,8 @@ def write_srf(filename, header, mesh_data):
             Vertex normals (float32).
         "faces" : 2D numpy.array, (nr_vertices, vertex_indices)
             Faces (triangles), as indices of vertices (int).
-        "vertex colors" : 2D numpy.array, (nr_vertices, ABGR)
-            Vertex colors. Do not change Alpha in most cases. Blue, Reg, Green
+        "vertex colors" : 2D numpy.array, (nr_vertices, BGRA)
+            Vertex colors. Do not change Alpha in most cases. Blue, Green, Red
             values are in between between 0-255 (uint8).
         "vertex neighbors" : list of lists, (nr vertices, nr neighbors)
             Other vertex members if the faces each vertex is a member of (int).
@@ -308,10 +308,10 @@ def write_srf(filename, header, mesh_data):
         # NOTE[Faruk]: Give constant color to all vertices for now. The
         # vertex color structure is a bit complicated (see read_srf above).
         for i in range(header["Nr vertices"]):
-            byte1 = mesh_data["vertex colors"][i, 0].astype(np.uint8)
-            byte2 = mesh_data["vertex colors"][i, 1].astype(np.uint8)
-            byte3 = mesh_data["vertex colors"][i, 2].astype(np.uint8)
-            byte4 = mesh_data["vertex colors"][i, 3].astype(np.uint8)
+            byte1 = np.uint8(mesh_data["vertex colors"][i, 0])
+            byte2 = np.uint8(mesh_data["vertex colors"][i, 1])
+            byte3 = np.uint8(mesh_data["vertex colors"][i, 2])
+            byte4 = np.uint8(63)  # NOTE: Temporary solution that forces RGB
             data = (byte4 << 24) | (byte3 << 16) | (byte2 << 8) | byte1
             f.write(struct.pack('<I', data))
 

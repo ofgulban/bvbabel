@@ -13,9 +13,12 @@ header, mesh_data = bvbabel.srf.read_srf(FILE)
 # See header information
 pprint(header)
 
-# (Example) Make all colors a shade of red
+# (Example) Make all colors red
+pprint(mesh_data["vertex colors"][:5, :])
 mesh_data["vertex colors"][:, 0] = 0  # Blue
 mesh_data["vertex colors"][:, 1] = 0  # Green
+mesh_data["vertex colors"][:, 2] = 255  # Red
+pprint(mesh_data["vertex colors"][:5, :])
 
 # Save SRF
 basename = FILE.split(os.extsep, 1)[0]
