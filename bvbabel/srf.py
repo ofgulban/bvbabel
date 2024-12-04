@@ -23,7 +23,7 @@ def read_srf(filename):
             Vertex coordinates (float32).
         "vertex normals" : 2D numpy.array, (nr_vertices, XYZ coordinates)
             Vertex normals (float32).
-        "faces" : 2D numpy.array, (nr_vertices, vertex_indices)
+        "faces" : 2D numpy.array, (nr_triangles, vertex_indices)
             Faces (triangles), as indices of vertices (int).
         "vertex colors" : 2D numpy.array, (nr_vertices, BGRA)
             Vertex colors. Do not change Alpha in most cases. Blue, Green, Red
@@ -222,7 +222,7 @@ def write_srf(filename, header, mesh_data):
             Vertex coordinates (float32).
         "vertex normals" : 2D numpy.array, (nr_vertices, XYZ coordinates)
             Vertex normals (float32).
-        "faces" : 2D numpy.array, (nr_vertices, vertex_indices)
+        "faces" : 2D numpy.array, (nr_triangles, vertex_indices)
             Faces (triangles), as indices of vertices (int).
         "vertex colors" : 2D numpy.array, (nr_vertices, BGRA)
             Vertex colors. Do not change Alpha in most cases. Blue, Green, Red
