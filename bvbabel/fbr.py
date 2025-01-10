@@ -89,7 +89,7 @@ def read_fbr(filename):
     for c in range(len(colors)):
         if colors[c].isdigit():
             colors2.append(int(colors[c]))               
-    header["Colors"] = colors2
+    header["Color"] = colors2
 
     count_fbr = -1
     data_fbr = list()
@@ -107,9 +107,69 @@ def read_fbr(filename):
             values = line.split(" ")
             points = []
             for v in values:
-                if p.match(v):    
+                if v.isdigit():
+                    points.append(int(v.strip()) ) 
+                elif p.match(v):    
                     points.append(float(v.strip()) ) 
             data_fbr[count_fbr]["Points"].append(points)
 
     return header, data_fbr            
+
+
+
+def write_fbr(filename, header, data_fbr):
+    """Function to write BrainVoyager FBR file.
+
+    Parameters
+    ----------
+    filename : string
+        Path to file.
+    header : dictionary
+        Fibers (FBR) header.
+    data_fbr : list of dictionaries
+        A list of dictionaries. Each dictionary holds coordinates of a fiber.
+
+    """
+
+    with open(filename, 'w') as f:
+
+        data = header["FileVersion"]
+        f.write("FileVersion:\t{}\n".format(data))
+        data = header["CoordsType"]
+        f.write("CoordsType:\t{}\n".format(data))
+        data = header["FibersOriginX"]
+        f.write("FibersOriginX:\t{}\n".format(data))
+        data = header["FibersOriginY"]
+        f.write("FibersOriginY:\t{}\n".format(data))
+        data = header["FibersOriginZ"]
+        f.write("FibersOriginZ:\t{}\n".format(data))      
+        f.write("\n")
+        data = header["NrOfGroups"]
+        f.write("NrOfGroups:\t{}\n".format(data))        
+        f.write("\n")
+        data = header["Name"]
+        f.write("Name:\t\t{}\n".format(data))   
+        data = header["Visible"]
+        f.write("Visible:\t{}\n".format(data))           
+        data = header["Animate"]
+        f.write("Animate:\t{}\n".format(data))   
+        data = header["Thickness"]
+        f.write("Thickness:\t{}\n".format(data))   
+        data = header["Color"]
+        f.write("Color:\t\t{} {} {}\n".format(data[0], data[1], data[2]))
+        f.write("\n")
+        data = header["NrOfFibers"]
+        f.write("NrOfFibers:\t{}\n".format(data))     
+        f.write("\n")
+
+        # ---------------------------------------------------------------------
+        # FBR data
+
+        for p in data_fbr:
+            data = p["NrOfPoints"]
+            f.write("NrOfPoints:\t{}\n".format(data))
+            data = p["Points"]
+            for d in data:
+                f.write("{:.3f} {:.3f} {:.3f}    {:n} {:n} {:n}\n".format(d[0], d[1], d[2], d[3], d[4], d[5]))
+            f.write("\n")
 
