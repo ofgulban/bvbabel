@@ -74,6 +74,7 @@ def read_glm(filename):
         # ---------------------------------------------------------------------
         # GLM Header
         # ---------------------------------------------------------------------
+
         # Expected binary data: short int (2 bytes)
         data, = struct.unpack('<h', f.read(2))
         header["File version"] = data
@@ -83,9 +84,10 @@ def read_glm(filename):
         header["Type (0: FMR-STC, 1:VMR-VTC, 2:SRF-MTC"] = int(data)
         data, = struct.unpack('<B', f.read(1))
         header["RFX-GLM (0:std, 1:RFX)"] = int(data)
-
+        
         # Random effects GLM
         if header["RFX-GLM (0:std, 1:RFX)"] == 1:
+
             # Expected binary data: int (4 bytes)
             data, = struct.unpack('<i', f.read(4))
             header["Nr subjects"] = int(data)
@@ -101,7 +103,7 @@ def read_glm(filename):
         header["Nr confound predictors"] = int(data)
         data, = struct.unpack('<i', f.read(4))
         header["Nr studies"] = int(data)
-
+        
         if header["Nr studies"] > 1:
             data, = struct.unpack('<i', f.read(4))
             header["Nr studies with confound info"] = int(data)
@@ -173,8 +175,8 @@ def read_glm(filename):
         # Expected binary data: variable-length string
         data = read_variable_length_string(f)
         header["Name of cortex-based mask"] = data
-
         header["Study info"] = []
+        
         for i in range(header["Nr studies"]):
             header["Study info"].append(dict())
 
@@ -197,6 +199,7 @@ def read_glm(filename):
 
         # ---------------------------------------------------------------------
         header["Predictor info"] = list()
+
         for i in range(header["Nr all predictors"]):
                 header["Predictor info"].append(dict())
 
@@ -262,53 +265,55 @@ def read_glm(filename):
         if header["RFX-GLM (0:std, 1:RFX)"] == 1:
             nr_data_point_values = (1 + header["Nr subjects"]
                                     * header["Nr predictors per subject"])
+        else:
 
-        if header["Serial correlation(0:no, 1:AR(1), 2:AR(2))"] == 0:
-            nr_data_point_values = 2 + 2 * header["Nr all predictors"] + 1
+            if header["Serial correlation(0:no, 1:AR(1), 2:AR(2))"] == 0:
+                nr_data_point_values = 2 + 2 * header["Nr all predictors"] + 1
 
-        # NOTE[Developer Guide - The Format Of GLM Files (v4)]: If AR(1)
-        # approach (first-order autoregressive model) has been used to correct
-        # serial correlations, one additional volume is stored.
-        elif header["Serial correlation(0:no, 1:AR(1), 2:AR(2))"] == 1:
-            nr_data_point_values = 2 + 2 * header["Nr all predictors"] + 2
+            # NOTE[Developer Guide - The Format Of GLM Files (v4)]: If AR(1)
+            # approach (first-order autoregressive model) has been used to correct
+            # serial correlations, one additional volume is stored.
+            elif header["Serial correlation(0:no, 1:AR(1), 2:AR(2))"] == 1:
+                nr_data_point_values = 2 + 2 * header["Nr all predictors"] + 2
 
-        # NOTE[Developer Guide - The Format Of GLM Files (v4)]: If AR(2)
-        # approach (second-order autoregressive model) has been used, two
-        # additional values are stored.
-        elif header["Serial correlation(0:no, 1:AR(1), 2:AR(2))"] == 2:
-            nr_data_point_values = 2 + 2 * header["Nr all predictors"] + 3
+            # NOTE[Developer Guide - The Format Of GLM Files (v4)]: If AR(2)
+            # approach (second-order autoregressive model) has been used, two
+            # additional values are stored.
+            elif header["Serial correlation(0:no, 1:AR(1), 2:AR(2))"] == 2:
+                nr_data_point_values = 2 + 2 * header["Nr all predictors"] + 3
 
-        # NOTE[Faruk]: I am saving this value because it is handy to have. Even
-        # though BrainVoyager documentation does not specify it explicitly.
-        header["Nr maps"] = nr_data_point_values
+            # NOTE[Faruk]: I am saving this value because it is handy to have. Even
+            # though BrainVoyager documentation does not specify it explicitly.
+            header["Nr maps"] = nr_data_point_values
 
-        # NOTE[Developer Guide - The Format Of GLM Files (v4)]:
-        #     The first value (volume) of the data contains multiple
-        # correlation coefficient R indicating the goodness-of-fit for the
-        # respective voxel's time course and to allow to calculate the
-        # proportion of explained (R^2) and unexplained (1 - R^2) variance.
-        #     The second stored value per voxel contains the overall
-        # sum-of-squares term (SS_total) that can be used together with the R
-        # value to calculate the variance of the residuals.
-        #     Following the first two values, the estimated beta values are
-        # stored, i.e. one value for each predictor of the design matrix
-        # ("Nr all predictors" values).
-        #     Following the beta values, another set of "Nr all predictors"
-        # values follows containing the sum-of-squares indicating the
-        # covariation of each predictor with the time course data (SS_XiY).
-        # These values are stored to allow easy calculation of explained
-        # variance terms for restricted models (i.e. to allow application of
-        # the extra-sum-of-squares principle); these values may be probably
-        # ignored (not stored) for custom processing.
-        #     The next volume contains the mean value of the (normalized) fMRI
-        # time course.
-        #     Only in case that serial correlation correction has been
-        # performed, one or two more values are stored. In case that the AR(1)
-        # model has been used the estimated order 1 autocorrelation value
-        # (ACF(1) term) is stored for each voxel. In case that the AR(2) model
-        # has been used, the two estimated ACF terms are stored, i.e. the data
-        # contains one value more than in the case of the AR(1) model.
+            # NOTE[Developer Guide - The Format Of GLM Files (v4)]:
+            #     The first value (volume) of the data contains multiple
+            # correlation coefficient R indicating the goodness-of-fit for the
+            # respective voxel's time course and to allow to calculate the
+            # proportion of explained (R^2) and unexplained (1 - R^2) variance.
+            #     The second stored value per voxel contains the overall
+            # sum-of-squares term (SS_total) that can be used together with the R
+            # value to calculate the variance of the residuals.
+            #     Following the first two values, the estimated beta values are
+            # stored, i.e. one value for each predictor of the design matrix
+            # ("Nr all predictors" values).
+            #     Following the beta values, another set of "Nr all predictors"
+            # values follows containing the sum-of-squares indicating the
+            # covariation of each predictor with the time course data (SS_XiY).
+            # These values are stored to allow easy calculation of explained
+            # variance terms for restricted models (i.e. to allow application of
+            # the extra-sum-of-squares principle); these values may be probably
+            # ignored (not stored) for custom processing.
+            #     The next volume contains the mean value of the (normalized) fMRI
+            # time course.
+            #     Only in case that serial correlation correction has been
+            # performed, one or two more values are stored. In case that the AR(1)
+            # model has been used the estimated order 1 autocorrelation value
+            # (ACF(1) term) is stored for each voxel. In case that the AR(2) model
+            # has been used, the two estimated ACF terms are stored, i.e. the data
+            # contains one value more than in the case of the AR(1) model.
         data_length = nr_data_point_values * nr_data_points
+
         data_all = np.zeros(data_length, dtype=np.float32)
         data_all = np.fromfile(f, dtype='<f', count=data_all.size, sep="",
                                offset=0)
@@ -334,29 +339,43 @@ def read_glm(filename):
         # ---------------------------------------------------------------------
         # Parse into separate maps.
         # ---------------------------------------------------------------------
-        # Multiple regression R values (multipleRegrR)
-        data_R2 = data_all[..., 0]
+        if header["RFX-GLM (0:std, 1:RFX)"] == 0:
+            # Multiple regression R values (multipleRegrR)
+            data_R2 = data_all[..., 0]
 
-        # Sum of squares values (mCorrSS)
-        data_SS = data_all[..., 1]
+            # Sum of squares values (mCorrSS)
+            data_SS = data_all[..., 1]
 
-        # Beta values (BetaMaps)
-        p = header["Nr all predictors"]
-        data_beta = data_all[..., 2:2+p]
+            # Beta values (BetaMaps)
+            p = header["Nr all predictors"]
+            data_beta = data_all[..., 2:2+p]
 
-        # Sum-of-squares indicating the covariation of each predictor with the
-        # time course (SS_XiY).
-        data_SS_XiY = data_all[..., 2+p:2+p+p]
+            # Sum-of-squares indicating the covariation of each predictor with the
+            # time course (SS_XiY).
+            data_SS_XiY = data_all[..., 2+p:2+p+p]
 
-        # Mean value of the (normalized) fMRI time course
-        data_meantc = np.squeeze(data_all[..., 2+p+p:2+p+p+1])
+            # Mean value of the (normalized) fMRI time course
+            data_meantc = np.squeeze(data_all[..., 2+p+p:2+p+p+1])
 
-        # arLag1 (Auto-regression lag value)
-        if header["Serial correlation(0:no, 1:AR(1), 2:AR(2))"] == 1:
-            data_ARlag = data_all[..., 2+p+p+1:2+p+p+2]
-        elif header["Serial correlation(0:no, 1:AR(1), 2:AR(2))"] == 2:
-            data_ARlag = data_all[..., 2+p+p+1:2+p+p+3]
-        else:
-            data_ARlag = np.zeros(data_R2.shape)  # placeholder array
+            # arLag1 (Auto-regression lag value)
+            if header["Serial correlation(0:no, 1:AR(1), 2:AR(2))"] == 1:
+                data_ARlag = data_all[..., 2+p+p+1:2+p+p+2]
+            elif header["Serial correlation(0:no, 1:AR(1), 2:AR(2))"] == 2:
+                data_ARlag = data_all[..., 2+p+p+1:2+p+p+3]
+            else:
+                data_ARlag = np.zeros(data_R2.shape)  # placeholder array
+        else:   
+            data_R2 = []
+            data_SS = []
+            data_SS_XiY = []
+            data_meantc = []
+            data_ARlag = []
+
+            # Multiple regression R values (multipleRegrR)
+            data_unkown = data_all[..., 0]
+
+            # Beta values (BetaMaps)
+            p = header["Nr all predictors"]
+            data_beta = data_all[..., 2:2+p]
 
     return (header, data_R2, data_SS, data_beta, data_SS_XiY, data_meantc, data_ARlag)
