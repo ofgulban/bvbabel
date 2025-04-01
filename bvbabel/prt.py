@@ -83,8 +83,12 @@ def read_prt(filename):
         data_prt[count_c]["Time stop"] = np.zeros(n, dtype=int)
         for j in range(n):
             values = lines[i+2+j].split()
-            data_prt[count_c]["Time start"][j] = int(values[0])
-            data_prt[count_c]["Time stop"][j] = int(values[1])
+            if header["ResolutionOfTime"] == "Seconds":
+                data_prt[count_c]["Time start"][j] = int(float(values[0])*1000.0)
+                data_prt[count_c]["Time stop"][j] = int(float(values[1])*1000.0)
+            else:
+                data_prt[count_c]["Time start"][j] = int(values[0])
+                data_prt[count_c]["Time stop"][j] = int(values[1])
 
         # Add parametric weights
         if "ParametricWeights" in header and header["ParametricWeights"] > 0:
@@ -104,6 +108,8 @@ def read_prt(filename):
         i += n + 3
         count_c += 1
 
+    if header["ResolutionOfTime"] == "Seconds":
+        header["ResolutionOfTime"] = "msec"
     return header, data_prt
 
 
