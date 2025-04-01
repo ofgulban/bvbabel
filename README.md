@@ -66,6 +66,7 @@ Hester Breman [@nausikaa8](https://github.com/nausikaa8)
 Jorie van Haren [@jorievanharen](https://github.com/jorievanharen)  
 Judith Eck [@ju-ec](https://github.com/ju-ec)  
 Assunta Ciarlo [@assuntaciarlo](https://github.com/assuntaciarlo)  
+Michael Lührs [@MichaelUM](https://github.com/MichaelUM)
 Caroline Brockhaus [@carbrock](https://github.com/carbrock)  
 Chengran Li [@ChengranAA](https://github.com/ChengranAA)
 
