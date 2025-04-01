@@ -36,6 +36,7 @@ def read_fmr(filename, rearrange_data_axes=True):
     info_pos = dict()
     info_tra = dict()
     info_multiband = dict()
+    slice_thickness_count = 0
 
     with open(filename, 'r') as f:
         lines = f.readlines()
@@ -124,14 +125,13 @@ def read_fmr(filename, rearrange_data_axes=True):
                 header[content[0]] = content[1]
             elif content[0] == "InplaneResolutionY":
                 header[content[0]] = content[1]
-            elif content[0] == "SliceThickness":
+            elif content[0] == "SliceThickness" and slice_thickness_count == 0:
                 header[content[0]] = content[1]
-                # NOTE[Faruk]: This is duplicate entry that appears in position
-                # information header too. I decided to use the last occurance
-                # as the true value for both header entries. These two entries
-                # should always match if the source file is not manipulated in
-                # some way.
-                info_pos[content[0]] = content[1]
+                slice_thickness_count +=1
+                # NOTE: This is duplicate entry that appears in position
+                # information header too. However the position information header
+                # is not filled when creating an FMR file from a NIfTI file
+                # that has been created outside of BrainVoyager.
             elif content[0] == "SliceGap":
                 header[content[0]] = content[1]
             elif content[0] == "VoxelResolutionVerified":
@@ -180,7 +180,7 @@ def read_fmr(filename, rearrange_data_axes=True):
             elif content[0] == "SliceThickness":
                 # NOTE[Faruk]: This is duplicate entry that appears twice.
                 # ee header['SliceThickness'] section above.
-                pass
+                info_pos[content[0]] = content[1]
             elif content[0] == "GapThickness":
                 info_pos[content[0]] = content[1]
 
