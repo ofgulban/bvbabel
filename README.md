@@ -13,6 +13,7 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 | DMR         | Yes   | No    | No     |       No|
 | GLM         | wip...| No    | No     |      Yes|
 | GTC         | Yes   | Yes   | No     |       No|
+| MDM         | Yes   | Yes   | Yes    |       No|
 | MSK         | Yes   | Yes   | No     |       No|
 | MTC         | Yes   | Yes   | Yes    |      Yes|
 | OBJ         | No    | Yes   | No     |       No|
