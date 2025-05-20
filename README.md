@@ -72,6 +72,7 @@ This project is licensed under [MIT](./LICENSE).
 | Assunta Ciarlo     | [@assuntaciarlo](https://github.com/assuntaciarlo) |
 | Jan Kurzawski      | [@jankurzawski](https://github.com/jankurzawski)   |
 | Michael Lührs      | [@MichaelUM](https://github.com/MichaelUM)         | 
+| Alessandra Pizzuti | [@27-apizzuti](https://github.com/27-apizzuti)     |
 | Caroline Brockhaus | [@carbrock](https://github.com/carbrock)           |
 | Chengran Li        | [@ChengranAA](https://github.com/ChengranAA)       |
 
