@@ -1,4 +1,8 @@
 '''
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!! WORK IN PROGRESS !!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 BYTES	DATA TYPE	DEFAULT	DESCRIPTION
 2	short int	1	NrOfSlices/MapType (t, F, correlation, crosscorrelation etc.) (*1)
 2	short int	 	NrOfMaps (equal to NrOfSlices)
