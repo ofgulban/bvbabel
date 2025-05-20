@@ -1,10 +1,10 @@
-"""Adjust data range of GE 7 T MP2RAGE UNI images."""
+"""Adjust data range for negative valued MP2RAGE UNI images."""
 
 import os
 import nibabel as nb
 import numpy as np
 
-FILE = "/Users/faruk/data/temp-hugo_caffarati/faruk/MP2RAGE_UNI.nii.gz"
+FILE = "/Users/faruk/data/test/MP2RAGE_UNI.nii.gz"
 
 # =============================================================================
 # Load nifti
