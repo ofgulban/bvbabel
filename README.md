@@ -41,7 +41,12 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 | No       | [NiBabel](https://nipy.org/nibabel/)  | 3.2.0          |
 
 ## Installation
+### Easy way
+```
+pip install bvbabel
+```
 
+### Alternative way
 1. Clone the latest release and unzip it.
 2. Change directory in your command line:
 ```

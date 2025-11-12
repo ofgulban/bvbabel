@@ -10,12 +10,13 @@ python setup.py sdist upload -r pypi
 Notes for PyPI (NEW, works):
 python setup.py sdist bdist_wheel
 twine upload --repository testpypi dist/*
+twine upload --repository pypi dist/*
 
 """
 
 from setuptools import setup
 
-VERSION = '0.2.0'
+VERSION = '0.3.0'
 
 setup(name='bvbabel',
       version=VERSION,
