@@ -7,7 +7,7 @@ from pprint import pprint
 FILE = "/home/faruk/Documents/test_bvbabel/SRF/surface_mesh.srf"
 
 # =============================================================================
-# Load vmr
+# Load SRF
 header, mesh_data = bvbabel.srf.read_srf(FILE)
 
 # See header information
