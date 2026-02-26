@@ -23,7 +23,7 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 | ROI         | Yes   | No    | No     |       No|
 | SRF         | Yes   | wip...| No     |      Yes|
 | SMP         | Yes   | Yes   | Yes    |      Yes|
-| SSM         | Yes   | No    | No     |       No|
+| SSM         | Yes   | Yes   | Yes    |      Yes|
 | SDM         | Yes   | Yes   | Yes    |      Yes|
 | TRF         | No    | No    | No     |       No|
 | V16         | Yes   | Yes   | Yes    |       No|
