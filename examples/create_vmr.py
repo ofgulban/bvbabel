@@ -5,7 +5,7 @@ import bvbabel
 OUTNAME = "/home/faruk/Git/bvbabel/test_data/temp_tests/default_bvbabel.vmr"
 
 # -----------------------------------------------------------------------------
-# Create VMR fiel with random intensity values
+# Create VMR file with random intensity values
 header, data = bvbabel.vmr.create_vmr()
 bvbabel.vmr.write_vmr(OUTNAME, header, data)
 
