@@ -230,12 +230,13 @@ def write_vtc(filename, header, data_img, rearrange_data_axes=True):
         data_img = np.reshape(data_img, data_img.size)
 
         if header["Data type (1:short int, 2:float)"] == 1:
-            f.write(data_img.astype("<h").tobytes(order="C"))
-
+            dtype = np.dtype("<h")
         elif header["Data type (1:short int, 2:float)"] == 2:
-            f.write(data_img.astype("<f").tobytes(order="C"))
+            dtype = np.dtype("<f")
         else:
             raise ("Unrecognized VTC data_img type.")
+
+        data_img.astype(dtype, copy=False).ravel(order="C").tofile(f)
 
 
 def create_vtc(rearrange_data_axes=True):
