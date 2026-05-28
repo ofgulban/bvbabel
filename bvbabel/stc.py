@@ -52,11 +52,11 @@ def read_stc(filename, nr_slices, nr_volumes, res_x, res_y, data_type=2, rearran
         data_img = np.fromfile(filename, dtype="<f", count=-1, sep="",
                                offset=0)
 
-    data_img = np.reshape(data_img, (nr_slices, nr_volumes, res_x, res_y))
+    data_img = np.reshape(data_img, (nr_volumes, nr_slices, res_y, res_x))
 
     # TODO[Faruk]: I need to double check this part with various data
     if rearrange_data_axes is True:
-        data_img = np.transpose(data_img, (3, 2, 0, 1))
+        data_img = np.transpose(data_img, (2, 3, 1, 0))
         data_img = data_img[:, ::-1, :, :]  # Flip BV axes
 
     return data_img
@@ -90,7 +90,7 @@ def write_stc(filename, data_img, data_type=2, rearrange_data_axes=True):
     """
     if rearrange_data_axes is True:
         data_img = data_img[:, ::-1, :, :]  # Flip BV axes
-        data_img = np.transpose(data_img, (2, 3, 1, 0))
+        data_img = np.transpose(data_img, (3, 2, 0, 1))
 
     with open(filename, 'wb') as f:
         if data_type == 1:
