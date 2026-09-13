@@ -89,6 +89,6 @@ def create_ssm(nr_vertices=32492):
     header["Nr vertices 2"] = nr_vertices
 
     # Create data
-    data_ssm = np.arange(1, nr_vertices+1)
+    data_ssm = np.arange(0, nr_vertices)
 
     return header, data_ssm
