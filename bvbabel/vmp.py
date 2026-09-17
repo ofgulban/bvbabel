@@ -175,27 +175,29 @@ def read_vmp(filename):
             data, = struct.unpack('<i', f.read(4))
             header["Map"][m]["UseFDRTableIndex"] = data
 
-            # Time course values associated with component "c"
-            if header["NrOfTimePoints"] > 0:
-                header["ComponentTimeCourseValues"] = []
-                for i in range(header["NrOfSubMaps"]):
-                    data = np.zeros(header["NrOfTimePoints"])
-                    for j in range(header["NrOfTimePoints"]):
-                        data[j], = struct.unpack('<f', f.read(4))
-                    header["ComponentTimeCourseValues"].append(data)
+        # Time course values associated with component "c"
+        if header["NrOfTimePoints"] > 0:
+            header["ComponentTimeCourseValues"] = []
+            for i in range(header["NrOfSubMaps"]):
+                data = np.zeros(header["NrOfTimePoints"])
+                for j in range(header["NrOfTimePoints"]):
+                    data[j], = struct.unpack('<f', f.read(4))
+                header["ComponentTimeCourseValues"].append(data)
 
-            # Component parameters
-            if header["NrOfComponentParams"] > 0:
-                header["ComponentTimeCourseParams"] = []
+        # Component parameters: all names, then values ordered by map
+        if header["NrOfComponentParams"] > 0:
+            header["ComponentTimeCourseParams"] = []
+            for i in range(header["NrOfComponentParams"]):
+                header["ComponentTimeCourseParams"].append(dict())
+
+                name = read_variable_length_string(f)
+                header["ComponentTimeCourseParams"][i]["Name"] = name
+                header["ComponentTimeCourseParams"][i]["Values"] = []
+
+            for j in range(header["NrOfSubMaps"]):
                 for i in range(header["NrOfComponentParams"]):
-                    header["ComponentTimeCourseParams"].append(dict())
-
-                    name = read_variable_length_string(f)
-                    header["ComponentTimeCourseParams"][i]["Name"] = name
-
-                    for j in range(header["NrOfSubMaps"]):
-                        data, = struct.unpack('<f', f.read(4))
-                        header["ComponentTimeCourseParams"][i]["Values"].append(data)
+                    data, = struct.unpack('<f', f.read(4))
+                    header["ComponentTimeCourseParams"][i]["Values"].append(data)
 
         # ---------------------------------------------------------------------
         # Read VMP image data
@@ -407,22 +409,23 @@ def write_vmp(filename, header, data_img):
             data = header["Map"][m]["UseFDRTableIndex"]
             f.write(struct.pack('<i', data))
 
-            # Time course values associated with component "c"
-            if header["NrOfTimePoints"] > 0:
-                data = header["ComponentTimeCourseValues"]
-                for i in range(header["NrOfSubMaps"]):
-                    for j in range(header["NrOfTimePoints"]):
-                        f.write(struct.pack('<f', data[i, j]))
+        # Time course values associated with component "c"
+        if header["NrOfTimePoints"] > 0:
+            data = header["ComponentTimeCourseValues"]
+            for i in range(header["NrOfSubMaps"]):
+                for j in range(header["NrOfTimePoints"]):
+                    f.write(struct.pack('<f', data[i][j]))
 
-            # Component parameters
-            if header["NrOfComponentParams"] > 0:
+        # Component parameters: all names, then values ordered by map
+        if header["NrOfComponentParams"] > 0:
+            for i in range(header["NrOfComponentParams"]):
+                name = header["ComponentTimeCourseParams"][i]["Name"]
+                write_variable_length_string(f, name)
+
+            for j in range(header["NrOfSubMaps"]):
                 for i in range(header["NrOfComponentParams"]):
-                    name = header["ComponentTimeCourseParams"][i]["Name"]
-                    write_variable_length_string(f, name)
-
                     data = header["ComponentTimeCourseParams"][i]["Values"]
-                    for j in range(header["NrOfSubMaps"]):
-                        f.write(struct.pack('<f', data[j]))
+                    f.write(struct.pack('<f', data[j]))
 
         # ---------------------------------------------------------------------
         # Write VMP image data
