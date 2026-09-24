@@ -21,13 +21,14 @@ def read_srf(filename):
     data : dictionary
         "vertices" : 2D numpy.array, (nr_vertices, XYZ coordinates)
             Vertex coordinates (float32).
-        "vertex_normals" : 2D numpy.array, (nr_vertices, XYZ coordinates)
+        "vertex normals" : 2D numpy.array, (nr_vertices, XYZ coordinates)
             Vertex normals (float32).
-        "faces" : 2D numpy.array, (nr_vertices, vertex_indices)
+        "faces" : 2D numpy.array, (nr_triangles, vertex_indices)
             Faces (triangles), as indices of vertices (int).
-        "vertex_colors" : 2D numpy.array, (nr_vertices, RGBA coordinates)
-            Vertex colors. Values are in between 0-1 (float32).
-        "vertex_neighbors" : list of lists, (nr vertices, nr neighbors)
+        "vertex colors" : 2D numpy.array, (nr_vertices, BGRA)
+            Vertex colors. Do not change Alpha in most cases. Blue, Green, Red
+            values are in between between 0-255 (uint8).
+        "vertex neighbors" : list of lists, (nr vertices, nr neighbors)
             Other vertex members if the faces each vertex is a member of (int).
             Number of neighbors can vary but in conventional meshes they are
             often 6 and occasionaly 5.
@@ -133,33 +134,35 @@ def read_srf(filename):
         # 1010 - 1019, the negative color bar indices are stored. The actual
         # colors are stored in the current functional look-up table.
 
-        vertex_colors = np.zeros((header["Nr vertices"], 4), dtype=np.float32)
+        vertex_colors = np.zeros((header["Nr vertices"], 4), dtype=np.uint8)
         for i in range(header["Nr vertices"]):
             data, = struct.unpack('<i', f.read(4))
             bytes = data.to_bytes(4, byteorder='little', signed=False)
 
             if data >= 1056964608:
-                vertex_colors[i, 0] = bytes[1] / 255.
-                vertex_colors[i, 1] = bytes[2] / 255.
-                vertex_colors[i, 2] = bytes[3] / 255
-                vertex_colors[i, 3] = bytes[0] / 255.
+                vertex_colors[i, 0] = bytes[0]
+                vertex_colors[i, 1] = bytes[1]
+                vertex_colors[i, 2] = bytes[2]
+                vertex_colors[i, 3] = bytes[3]
 
             elif data == 0:  # convex curvature color
-                vertex_colors[i, 0] = header["Vertex convex curvature R"]
-                vertex_colors[i, 1] = header["Vertex convex curvature G"]
-                vertex_colors[i, 2] = header["Vertex convex curvature B"]
-                vertex_colors[i, 3] = header["Vertex convex curvature A"]
+                vertex_colors[i, 0] = np.uint8(header["Vertex convex curvature B"] * 255)
+                vertex_colors[i, 1] = np.uint8(header["Vertex convex curvature G"] * 255)
+                vertex_colors[i, 2] = np.uint8(header["Vertex convex curvature R"] * 255)
+                vertex_colors[i, 3] = np.uint8(header["Vertex convex curvature A"] * 255)
 
             elif data == 1:  # concave curvature color
-                vertex_colors[i, 0] = header["Vertex concave curvature R"]
-                vertex_colors[i, 1] = header["Vertex concave curvature G"]
-                vertex_colors[i, 2] = header["Vertex concave curvature B"]
-                vertex_colors[i, 3] = header["Vertex concave curvature A"]
+                vertex_colors[i, 0] = np.uint8(header["Vertex concave curvature B"] * 255)
+                vertex_colors[i, 1] = np.uint8(header["Vertex concave curvature G"] * 255)
+                vertex_colors[i, 2] = np.uint8(header["Vertex concave curvature R"] * 255)
+                vertex_colors[i, 3] = np.uint8(header["Vertex concave curvature A"] * 255)
 
             # TODO: Implement other indices too
 
             else:
                 raise("Bad vertex color index! Should be 0, 1 or >=1056964608.")
+
+        mesh_data["vertex colors"] = vertex_colors
 
         # ---------------------------------------------------------------------
         # Loop over nearest neighbor data for each vertex
@@ -217,13 +220,14 @@ def write_srf(filename, header, mesh_data):
     mesh_data : dictionary
         "vertices" : 2D numpy.array, (nr_vertices, XYZ coordinates)
             Vertex coordinates (float32).
-        "vertex_normals" : 2D numpy.array, (nr_vertices, XYZ coordinates)
+        "vertex normals" : 2D numpy.array, (nr_vertices, XYZ coordinates)
             Vertex normals (float32).
-        "faces" : 2D numpy.array, (nr_vertices, vertex_indices)
+        "faces" : 2D numpy.array, (nr_triangles, vertex_indices)
             Faces (triangles), as indices of vertices (int).
-        "vertex_colors" : 2D numpy.array, (nr_vertices, RGBA coordinates)
-            Vertex colors. Values are in between 0-1 (float32).
-        "vertex_neighbors" : list of lists, (nr vertices, nr neighbors)
+        "vertex colors" : 2D numpy.array, (nr_vertices, BGRA)
+            Vertex colors. Do not change Alpha in most cases. Blue, Green, Red
+            values are in between between 0-255 (uint8).
+        "vertex neighbors" : list of lists, (nr vertices, nr neighbors)
             Other vertex members if the faces each vertex is a member of (int).
             Number of neighbors can vary but in conventional meshes they are
             often 6 and occasionaly 5.
@@ -304,8 +308,12 @@ def write_srf(filename, header, mesh_data):
         # NOTE[Faruk]: Give constant color to all vertices for now. The
         # vertex color structure is a bit complicated (see read_srf above).
         for i in range(header["Nr vertices"]):
-            data = 127
-            f.write(struct.pack('<i', data))
+            byte1 = np.uint8(mesh_data["vertex colors"][i, 0])
+            byte2 = np.uint8(mesh_data["vertex colors"][i, 1])
+            byte3 = np.uint8(mesh_data["vertex colors"][i, 2])
+            byte4 = np.uint8(63)  # NOTE: Temporary solution that forces RGB
+            data = (byte4 << 24) | (byte3 << 16) | (byte2 << 8) | byte1
+            f.write(struct.pack('<I', data))
 
         # ---------------------------------------------------------------------
         # Write nearest neighbour data for each vertex

@@ -1,27 +1,35 @@
 """Read Nifti write BrainVoyager VMR and V16 (anatomical image) files."""
+
 import os
 import bvbabel
 import nibabel as nb
 import numpy as np
 import pprint
+import shutil
 
-FILE = "/home/faruk/data2/DATA-AHEAD/temp/Ahead_brain_122017_blockface-image_ISO.nii.gz"
+FILE = "/Users/faruk/data/temp-David/SWI_0pt5_masked.nii.gz"
+MASK = "/Users/faruk/data/temp-David/SWI_0pt5_mask-subdural_v06.nii.gz"
+OUTDIR = "/Users/faruk/data/temp-David"
 
 SUFFIX = "bvbabel"
 
+PERC_MIN = 1
+PERC_MAX = 99
+
 # =============================================================================
+# Output directory
+if not os.path.exists(OUTDIR):
+    os.makedirs(OUTDIR)
+    print("  Output directory: {}\n".format(OUTDIR))
+
+# -----------------------------------------------------------------------------
 # Load Nifti
 nii = nb.load(FILE)
 nii_data = np.nan_to_num(nii.get_fdata(), nan=0.)
 
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# # (Optional - Use with caution!) Change the image orientation in BV
-# change orientation, if required to RAS+
-# input_orient = nb.aff2axcodes(nii.affine)
-# output_orient = (('L','R'),('P','A'),('I','S')) # RAS+
-# ornt = nb.orientations.axcodes2ornt(input_orient, output_orient)
-# nii_data = nb.orientations.apply_orientation(nii_data, ornt)
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# Load Mask
+nii_mask = nb.load(MASK)
+mask = np.asarray(nii_mask.dataobj, dtype=np.uint8)
 
 dims = nii_data.shape
 voxdims = [nii.header["pixdim"][1],
@@ -54,16 +62,22 @@ pprint.pprint(v16_header)
 
 # Save V16
 basename = FILE.split(os.extsep, 1)[0]
-outname = "{}_{}.v16".format(basename, SUFFIX)
-bvbabel.v16.write_v16(outname, v16_header, v16_data)
+# outname_v16 = "{}_{}.v16".format(basename, SUFFIX)
+# bvbabel.v16.write_v16(outname_v16, v16_header, v16_data)
 
 # -----------------------------------------------------------------------------
+# Determine clip range
+temp = nii_data[mask != 0]
+
+thr_min, thr_max = np.percentile(temp, [PERC_MIN, PERC_MAX])
+
 # Create VMR
 vmr_header, vmr_data = bvbabel.vmr.create_vmr()
 
 # Update VMR data (type cast nifti data to uint8 after range normalization)
 vmr_data = np.copy(nii_data)
-thr_min, thr_max = np.percentile(vmr_data[vmr_data != 0], [1, 99])
+thr_min = int(thr_min / 100) * 100  # round
+thr_max = int(thr_max / 100) * 100  # round
 vmr_data[vmr_data > thr_max] = thr_max
 vmr_data[vmr_data < thr_min] = thr_min
 vmr_data = vmr_data - thr_min
@@ -115,7 +129,25 @@ print("\n" + "="*79 + "\nVMR HEADER\n" + "="*79)
 pprint.pprint(vmr_header)
 
 # Save VMR
-outname = "{}_{}.vmr".format(basename, SUFFIX)
-bvbabel.vmr.write_vmr(outname, vmr_header, vmr_data)
+outname_vmr = "{}_{}_min-{}_max-{}.vmr".format(basename, SUFFIX, thr_min, thr_max)
+bvbabel.vmr.write_vmr(outname_vmr, vmr_header, vmr_data)
+
+print("---")
+print(f"Min: {thr_min} | Max: {thr_max}")
+print("---")
+
+# =============================================================================
+# Move generated files
+if not os.path.exists(OUTDIR):
+    os.makedirs(OUTDIR)
+    print("  Output directory: {}\n".format(OUTDIR))
+
+# Copy to a new directory
+shutil.copy(outname_vmr, OUTDIR)
+# shutil.copy(outname_v16, OUTDIR)
+
+# Remove old files
+os.remove(outname_vmr)
+# os.remove(outname_v16)
 
 print("\nFinished.\n")

@@ -1,4 +1,4 @@
-# <img src="visuals/bvbabel_logo.svg" width=256 /> *[work in progress...]*
+# <img src="visuals/bvbabel_logo.svg" width=256 />
 
 A lightweight Python library for reading & writing [BrainVoyager](https://www.brainvoyager.com/products/brainvoyager.html) file formats.
 
@@ -11,17 +11,19 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 | ------------|-------|-------|--------|---------|
 | FMR & STC   | Yes   | Yes   | Yes    |       No|
 | DMR         | Yes   | No    | No     |       No|
-| GLM         | wip...| No    | No     |      Yes|
+| GLM         | Yes   | Yes   | No     |      Yes|
 | GTC         | Yes   | Yes   | No     |       No|
+| MAP         | wip...| No    | No     |       No|
+| MDM         | Yes   | Yes   | Yes    |       No|
 | MSK         | Yes   | Yes   | No     |       No|
 | MTC         | Yes   | Yes   | Yes    |      Yes|
 | OBJ         | No    | Yes   | No     |       No|
 | POI         | Yes   | Yes   | No     |      Yes|
 | PRT         | Yes   | Yes   | No     |       No|
-| ROI         | Yes   | No    | No     |       No|
+| ROI         | Yes   | Yes   | No     |       No|
 | SRF         | Yes   | wip...| No     |      Yes|
 | SMP         | Yes   | Yes   | Yes    |      Yes|
-| SSM         | Yes   | No    | No     |       No|
+| SSM         | Yes   | Yes   | Yes    |      Yes|
 | SDM         | Yes   | Yes   | Yes    |      Yes|
 | TRF         | No    | No    | No     |       No|
 | V16         | Yes   | Yes   | Yes    |       No|
@@ -39,7 +41,12 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 | No       | [NiBabel](https://nipy.org/nibabel/)  | 3.2.0          |
 
 ## Installation
+### Easy way
+```
+pip install bvbabel
+```
 
+### Alternative way
 1. Clone the latest release and unzip it.
 2. Change directory in your command line:
 ```
@@ -61,13 +68,19 @@ python setup.py install
 This project is licensed under [MIT](./LICENSE).
 
 ## Contributors
-Omer Faruk Gulban [@ofgulban](https://github.com/ofgulban)  
-Hester Breman [@nausikaa8](https://github.com/nausikaa8)  
-Jorie van Haren [@jorievanharen](https://github.com/jorievanharen)  
-Judith Eck [@ju-ec](https://github.com/ju-ec)  
-Assunta Ciarlo [@assuntaciarlo](https://github.com/assuntaciarlo)  
-Caroline Brockhaus [@carbrock](https://github.com/carbrock)  
-Chengran Li [@ChengranAA](https://github.com/ChengranAA)
+| Name               | Link                                               |
+| -------------------|----------------------------------------------------|
+| Omer Faruk Gulban  | [@ofgulban](https://github.com/ofgulban)           |
+| Hester Breman      | [@nausikaa8](https://github.com/nausikaa8)         |
+| Judith Eck         | [@ju-ec](https://github.com/ju-ec)                 |
+| Jorie van Haren    | [@jorievanharen](https://github.com/jorievanharen) | 
+| Assunta Ciarlo     | [@assuntaciarlo](https://github.com/assuntaciarlo) |
+| Jan Kurzawski      | [@jankurzawski](https://github.com/jankurzawski)   |
+| Michael Lührs      | [@MichaelUM](https://github.com/MichaelUM)         | 
+| Alessandra Pizzuti | [@27-apizzuti](https://github.com/27-apizzuti)     |
+| Michaël Halleux    | [@MichaHllx](https://github.com/MichaHllx)         |
+| Caroline Brockhaus | [@carbrock](https://github.com/carbrock)           |
+| Chengran Li        | [@ChengranAA](https://github.com/ChengranAA)       |
 
 # Acknowledgments
 This project is fully supported by [Brain Innovation (Maastricht, NL)](https://www.brainvoyager.com/).
