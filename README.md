@@ -11,7 +11,7 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 | ------------|-------|-------|--------|---------|
 | FMR & STC   | Yes   | Yes   | Yes    |       No|
 | DMR         | Yes   | No    | No     |       No|
-| GLM         | wip...| No    | No     |      Yes|
+| GLM         | Yes   | Yes   | No     |      Yes|
 | GTC         | Yes   | Yes   | No     |       No|
 | MAP         | wip...| No    | No     |       No|
 | MDM         | Yes   | Yes   | Yes    |       No|
