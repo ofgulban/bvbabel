@@ -20,7 +20,7 @@ A lightweight Python library for reading & writing [BrainVoyager](https://www.br
 | OBJ         | No    | Yes   | No     |       No|
 | POI         | Yes   | Yes   | No     |      Yes|
 | PRT         | Yes   | Yes   | No     |       No|
-| ROI         | Yes   | No    | No     |       No|
+| ROI         | Yes   | Yes   | No     |       No|
 | SRF         | Yes   | wip...| No     |      Yes|
 | SMP         | Yes   | Yes   | Yes    |      Yes|
 | SSM         | Yes   | Yes   | Yes    |      Yes|
