@@ -34,7 +34,9 @@ def read_fmr(filename, rearrange_data_axes=True):
     """
     header = dict()
     info_pos = dict()
-    info_tra = dict()
+    # NOTE[Judith]: make the read function return a consitent header structure
+    # so that read-write round trips always produce a complete header
+    info_tra = {"NrOfPastSpatialTransformations": 0}
     info_multiband = dict()
     slice_thickness_count = 0
 
@@ -412,7 +414,8 @@ def write_fmr(filename, header, data_img, rearrange_data_axes=True):
 
         # ---------------------------------------------------------------------
         # Transformations section
-        if info_tra["NrOfPastSpatialTransformations"] > 0:
+        # NOTE[Judith]:makes the write function more robust
+        if info_tra.get("NrOfPastSpatialTransformations", 0) > 0:
             f.write("\n")
             data = info_tra["NrOfPastSpatialTransformations"]
             f.write("NrOfPastSpatialTransformations: {}\n".format(data))
