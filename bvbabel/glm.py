@@ -5,8 +5,21 @@ import numpy as np
 from bvbabel.utils import read_variable_length_string, read_RGB_bytes
 from bvbabel.utils import write_variable_length_string, write_RGB_bytes
 
-
 # =============================================================================
+
+def _rfx_beta_order(header):
+    """Return RFX beta-map indices in BrainVoyager file order."""
+    nr_subjects = header["Nr subjects"]
+    nr_predictors = header["Nr predictors per subject"] - 1
+
+    order = []
+    for i in range(nr_subjects):
+        start = i * nr_predictors
+        order.extend(range(start, start + nr_predictors))
+        order.append(nr_subjects * nr_predictors + i)
+
+    return order
+
 def read_glm(filename):
     """Read BrainVoyager GLM file v4.
 
@@ -31,7 +44,7 @@ def read_glm(filename):
     data_beta : 4D (if volume) OR 2D (if vertices) numpy.array
         Estimated beta values. For a standard GLM, one value is returned for
         each predictor of the design matrix. For a RFX GLM, the final dimension
-        contains the subject/predictor beta maps in file order.
+        follows the same order as header["Predictor info"].
     data_SS_XiY : 4D (if volume) OR 2D (if vertices) numpy.array or None
         Sum-of-squares indicating the covariation of each predictor with the
         time course data (SS_XiY). These values are stored to allow easy
@@ -59,7 +72,8 @@ def read_glm(filename):
     multiple correlation coefficient R (data_R2) together with the overall
     sum-of-squares term (data_SS) can be used to calculate the variance of
     the residuals as follows:
-        `VAR_residuals = data_SS * (1 - data_R2) / (header["Nr time points"]  - header["Nr all predictors"])`
+        `VAR_residuals = data_SS * (1 - data_R2) / (header["Nr time points"]  
+                        - header["Nr all predictors"])`
     Together with the stored inverted X'X matrix, this allows calculating the
     standard error for any beta or contrast t value using the usual equation
     (c is the contrast vector and b is the voxel's vector of stored beta
@@ -286,7 +300,6 @@ def read_glm(filename):
         serial_correlation = header[
             "Serial correlation(0:no, 1:AR(1), 2:AR(2))"
         ]
-
         if rfx_glm:
             nr_data_point_values = (
                 1
@@ -312,15 +325,14 @@ def read_glm(filename):
         # though BrainVoyager documentation does not specify it explicitly.
         header["Nr maps"] = nr_data_point_values
 
-
         # NOTE[Judith]: Read the expected number of float32 values.
         # Check that the GLM data section contains the expected number of values.
         expected_values = nr_data_point_values * nr_data_points
-        
+
         data_all = np.fromfile(
             f, dtype='<f4', count=expected_values
         )
-        
+
         if data_all.size != expected_values:
             raise ValueError(
                 "Incomplete GLM data section: expected {} float32 values, "
@@ -331,8 +343,8 @@ def read_glm(filename):
             raise ValueError(
                 "Unexpected additional bytes at the end of the GLM file."
             )
-            
-        # NOTE[Judith]: The surface data is a 2-D (maps, vertices) array on disk. 
+
+        # NOTE[Judith]: The surface data is a 2-D (maps, vertices) array on disk.
         # The previous 'dim'/'dims' typo prevented reading any SRF file.
         if glm_type == 0:
             dims = (nr_data_point_values,
@@ -345,6 +357,7 @@ def read_glm(filename):
             dims = (nr_data_point_values, header["Nr vertices"])
 
         data_all = np.reshape(data_all, dims)
+
         if glm_type == 2:
             # SRF-MTC: (maps, vertices) -> (vertices, maps).
             data_all = np.transpose(data_all, (1, 0))
@@ -369,7 +382,10 @@ def read_glm(filename):
             nr_rfx_betas = (
                 header["Nr subjects"] * header["Nr predictors per subject"]
             )
-            data_beta = data_all[..., 1:1+nr_rfx_betas]
+            data_beta_file_order = data_all[..., 1:1+nr_rfx_betas]
+            rfx_beta_order = _rfx_beta_order(header)
+            data_beta = np.empty_like(data_beta_file_order)
+            data_beta[..., rfx_beta_order] = data_beta_file_order
             data_SS = None
             data_SS_XiY = None
             data_meantc = None
@@ -393,8 +409,7 @@ def read_glm(filename):
             # The next volume contains the mean time-course value.
             # If serial correlation correction was performed, one additional
             # map is stored for AR(1), or two additional maps for AR(2).
-            
-            
+
             # Multiple regression R values (multipleRegrR)
             data_R2 = data_all[..., 0]
 
@@ -423,9 +438,7 @@ def read_glm(filename):
                 data_ARlag = data_all[..., ar_start:ar_start+2]
             else:
                 data_ARlag = np.zeros(data_R2.shape, dtype=np.float32)
-
     return (header, data_R2, data_SS, data_beta, data_SS_XiY, data_meantc, data_ARlag)
-
 
 # =============================================================================
 # NOTE[Judith]: Writing GLMs.
@@ -434,7 +447,6 @@ def read_glm(filename):
 def write_glm(filename, header, data_R2, data_SS, data_beta, data_SS_XiY,
               data_meantc, data_ARlag=None):
     """Write a BrainVoyager GLM using the seven values returned by read_glm.
-
     Parameters
     ----------
     filename : str or path-like
@@ -444,11 +456,10 @@ def write_glm(filename, header, data_R2, data_SS, data_beta, data_SS_XiY,
     data_R2, data_SS, data_beta, data_SS_XiY, data_meantc, data_ARlag : arrays
         in the same order as returned by 'read_glm'.
         For RFX, 'data_R2' is the first (global) RFX map, 'data_beta' 
-        holds the subject/predictor beta maps, and all other map arguments 
+        follows header["Predictor info"], and all other map arguments 
         should be 'None'. 
         For standard (non-RFX) GLMs, 'data_ARlag' is optional only when 
         serial correlation is zero.
-
     Notes
     -----
     FMR-STC and VMR-VTC arrays use (Z, X, Y[, maps]) orientation;
@@ -462,7 +473,6 @@ def write_glm(filename, header, data_R2, data_SS, data_beta, data_SS_XiY,
     ]
     nr_predictors = header["Nr all predictors"]
     nr_studies = header["Nr studies"]
-
     if rfx_flag not in (0, 1):
         raise ValueError("Unsupported RFX-GLM flag: {}".format(rfx_flag))
     if serial_correlation not in (0, 1, 2):
@@ -476,6 +486,7 @@ def write_glm(filename, header, data_R2, data_SS, data_beta, data_SS_XiY,
 
     if glm_type == 0:
         spatial_shape = (header["DimZ"], header["DimX"], header["DimY"])
+
     elif glm_type == 1:
         r = header["Resolution multiplier (1, 2, 3 times VMR resolution)"]
         ranges = tuple(
@@ -486,6 +497,7 @@ def write_glm(filename, header, data_R2, data_SS, data_beta, data_SS_XiY,
             raise ValueError("Invalid VTC GLM bounding box or resolution.")
         dim_X, dim_Y, dim_Z = (size // r for size in ranges)
         spatial_shape = (dim_Z, dim_X, dim_Y)
+
     elif glm_type == 2:
         spatial_shape = (header["Nr vertices"],)
     else:
@@ -518,8 +530,8 @@ def write_glm(filename, header, data_R2, data_SS, data_beta, data_SS_XiY,
                (data_SS, data_SS_XiY, data_meantc, data_ARlag)):
             raise ValueError("RFX GLMs have no SS, SS_XiY, mean or AR maps.")
         nr_maps = 1 + nr_rfx_betas
-        maps = [first_map] + [beta_maps[..., i]
-                              for i in range(nr_rfx_betas)]
+        rfx_beta_order = _rfx_beta_order(header)
+        maps = [first_map] + [beta_maps[..., i] for i in rfx_beta_order]
     else:
         second_map = as_map_array(data_SS, spatial_shape, "data_SS")
         beta_maps = as_map_array(
