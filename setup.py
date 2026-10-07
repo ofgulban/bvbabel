@@ -16,7 +16,7 @@ twine upload --repository pypi dist/*
 
 from setuptools import setup
 
-VERSION = '0.3.0'
+VERSION = '0.4.0'
 
 setup(name='bvbabel',
       version=VERSION,
